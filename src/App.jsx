@@ -10,6 +10,8 @@ function App() {
   const [count, setCount] = useState(0);
 
   const [isConnected, setIsConnected] = useState(false);
+
+  const [messages, setMessages] = useState([]);
   
   const [username, setUsername] = useState('');
 
@@ -46,7 +48,7 @@ function App() {
 
   function sendMessageToChatServer() {
     console.log(`프론트 - sendMessageToChatServer input: ${userInput}`);
-    socket?.emit("new message", { message: userInput, username: username }, (response) => {
+    socket?.emit("new message", { username: username, message: userInput }, (response) => {
       console.log(response); // "got it"
     });
   }
@@ -54,22 +56,39 @@ function App() {
   function onMessageRecieved(msg) {
     console.log('프론트 - onMessageReceived');
     console.log(msg);
+
+    setMessages(previous => [...previous, msg]);
   }
 
-useEffect(() => {
-  console.log('useEffect called!');
-  socket?.on('connect', onConnected);
-  socket?.on('disconnect', onDisconnected);
-  
-  socket?.on('new message', onMessageRecieved);
+  useEffect(() => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      left: 0,
+      behavior: "smooth"
+    })
+  }, [messages]);
 
-  return() => {
-    console.log('useEffect clean up function called!');
-    socket?.off('connect', onConnected);
-    socket?.off('disconnect', onDisconnected);
-    socket?.off('new message', onMessageRecieved);
-  };
-}, [socket]);
+
+  useEffect(() => {
+    console.log('useEffect called!');
+    socket?.on('connect', onConnected);
+    socket?.on('disconnect', onDisconnected);
+    
+    socket?.on('new message', onMessageRecieved);
+
+    return() => {
+      console.log('useEffect clean up function called!');
+      socket?.off('connect', onConnected);
+      socket?.off('disconnect', onDisconnected);
+      socket?.off('new message', onMessageRecieved);
+    };
+  }, [socket]);
+
+  const messageList = messages.map((aMsg, index) => 
+    <li key={index}>
+      {aMsg.username} :{aMsg.message}
+    </li>
+  );
 
   return (
     <>
@@ -107,9 +126,9 @@ useEffect(() => {
         </button>
       </div>
       
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ul>
+        {messageList}
+      </ul>
     </>
   )
 }
