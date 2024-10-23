@@ -104,3 +104,9 @@
   overflow: hidden;
   color: #e70d0d;
 }
+
+.Card button {
+  width: 200px;
+  padding: 10px 20px;   /* 버튼의 크기를 적절히 설정 */
+  margin: 5px;
+}

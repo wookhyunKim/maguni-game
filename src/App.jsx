@@ -19,6 +19,8 @@ function App() {
 
   const [forbiddenWords, setForbiddenWords] = useState([]);
 
+  const [remainingTime, setRemainingTime] = useState(0); // 180초 = 3분
+
   function connectToChatServer() {
     console.log('connectToChatServer');
     const _socket = io('http://localhost:3000', {
@@ -54,6 +56,14 @@ function App() {
     setUserInput('');
   }
 
+
+  function sendStartToChatServer() {
+    console.log(`sendStartToChatServer`);
+    socket?.emit("start game", (response) => {
+      console.log(response);
+    });
+  }
+
   function onMessageRecieved(msg) {
     console.log('프론트 - onMessageReceived');
     console.log(msg);
@@ -76,12 +86,17 @@ function App() {
     setForbiddenWords(filteredList);
   }
 
-
-  function useforbiddenWord(alertMessage) {
-    alert(alertMessage); // 금칙어 사용 알림
+  function timerstart(time) {
+    setRemainingTime(time);
   }
 
+  function useforbiddenWord(alertMessage) {
+    // alert(alertMessage); // 금칙어 사용 알림
+  }
 
+  function gameover(alertMessage) {
+    alert(alertMessage);
+  }
 
 
   function handleKeyUp(event) {
@@ -99,6 +114,23 @@ function App() {
   }, [messages]);
 
 
+  useEffect(() => {
+    if (isConnected) {
+      const timerInterval = setInterval(() => {
+        setRemainingTime(prevTime => prevTime - 1);
+      }, 1000);
+
+        if (remainingTime <= 0) {
+      clearInterval(timerInterval);
+      // alert('게임이 종료되었습니다!');
+    }
+
+
+      return () => clearInterval(timerInterval); // 클린업
+    }
+  }, [remainingTime]);
+
+
   useEffect(() => {   //소켓 별 이벤트 리스너
     console.log('useEffect called!');
     socket?.on('connect', onConnected); //서버랑 연결이 되면
@@ -107,6 +139,9 @@ function App() {
     socket?.on('forbidden word', forbiddenWordRecieved); //금칙어 지정
     socket?.on('alert forbidden word', useforbiddenWord); //금칙어 사용했다 알림을 받으면
     socket?.on('forbidden word list', updateforbiddenWordList);
+    socket?.on('timer start', timerstart);
+    socket?.on('game over', gameover);
+
 
 
     return () => {
@@ -132,7 +167,10 @@ function App() {
         <div className="Card">
           {/* 접속 상태에 따라 입력 필드와 버튼 표시 */}
           {isConnected ? (
-            <button onClick={disconnectToChatServer}>접속종료</button>
+            <>
+              <button onClick={disconnectToChatServer}>접속종료</button>
+              <button onClick={sendStartToChatServer}>게임시작</button>
+            </>
           ) : (
             <>
               <input
@@ -154,6 +192,9 @@ function App() {
           </div>
           <div class="right-section">
             <div>
+              <div>
+                <h3>남은 시간: {remainingTime}초</h3>
+              </div>
               <div className="container mt-4">
                 <h3>금칙어 목록</h3>
                 <table className="table table-bordered table-hover">
