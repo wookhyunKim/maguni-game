@@ -27,7 +27,7 @@ io.on('connection', (client) => {               //client가 연결되면 실행
 
     // 랜덤으로 금칙어 선택
     const newForbiddenWord = forbiddenWords[Math.floor(Math.random() * forbiddenWords.length)];
-    const userForbiddenWord = { username: connectedClientUsername, forbiddenword: newForbiddenWord };
+    const userForbiddenWord = { username: connectedClientUsername, forbiddenword: newForbiddenWord, count: 0 };
     userforbiddenWordlist.push(userForbiddenWord);
 
     // 클라이언트에 금칙어 전송
@@ -42,8 +42,10 @@ io.on('connection', (client) => {               //client가 연결되면 실행
 
         // 금칙어 체크
         if (msg.message.includes(msg.forbiddenWord)) {
-            // 모든 클라이언트에게 금칙어 사용 알림 전송
-            client.broadcast.emit('alert forbidden word', `${msg.username}이(가) 금칙어 "${msg.forbiddenWord}"를 사용했습니다!`);
+            const forbiddenWordEntry = userforbiddenWordlist.find(e => e.username === connectedClientUsername);
+            forbiddenWordEntry.count += 1;
+            client.broadcast.emit('alert forbidden word', `${msg.username}이(가) 금칙어 "${msg.forbiddenWord}"를 사용했습니다! 현재 사용 횟수: ${forbiddenWordEntry.count}`);
+            io.emit('forbidden word list', userforbiddenWordlist);            
         }
 
 

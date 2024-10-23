@@ -72,8 +72,6 @@ function App() {
   }
 
   function updateforbiddenWordList(list) {
-    console.log('updateforbiddenWordList');
-
     const filteredList = list.filter(word => word.username !== username); // 자신의 username과 일치하는 항목 제외
     setForbiddenWords(filteredList);
   }
@@ -164,6 +162,7 @@ function App() {
                       <th scope="col">#</th>
                       <th scope="col">유저</th>
                       <th scope="col">금칙어</th>
+                      <th scope="col">사용횟수</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -172,6 +171,7 @@ function App() {
                         <th scope="row">{index + 1}</th>
                         <td>{word.username}</td>
                         <td>{word.forbiddenword}</td>
+                        <td>{word.count}</td>
                       </tr>
                     ))}
                   </tbody>
