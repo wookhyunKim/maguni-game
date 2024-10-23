@@ -1,42 +1,105 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.Chatlist {
+  margin-top: 250px;
+  margin-bottom: 50px;
+  color: #000000;
+  overflow-y: auto;
+  flex-grow: 1;
+  overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤 */
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  max-height: 100%;
+}
+
+.Chatlist li {
+  line-height: 1.5; /* 줄 간격 조절 */
+  margin: 15px 0; /* 리스트 항목 간의 여백 추가 */
+}
+
+.Navbar {
+  overflow: hidden;
+  background-color: #333;
+  color: #ffffff;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.MessageInput {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+}
+
+.MessageInput > input {
+  flex-grow: 1;
+}
+
+.Card {
+  display: flex;
+}
+
+.Card > input {
+  flex-grow: 1;
+}
+
+.welcome-message {
+  font-weight: bold; /* 글씨를 굵게 */
+  font-size: 2.7em; /* 글꼴 크기 증가 */
+  color: #000000; /* 원하는 색상으로 변경 */
+  margin-bottom: 10px; /* 리스트 항목 간의 여백 추가 */
+}
+
+.forbiddenBox {
+  position: fixed;
+  top: 50px; /* 원하는 위치로 조정 */
+  right: 20px;
+  width: 800px; /* 박스 너비 */
+  height: auto; /* 높이는 내용에 따라 조절 */
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* 금칙어가 많아지면 스크롤 */
+}
+
+.forbiddenBox h3 {
+  margin-top: 0;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.forbiddenBox ul {
+  list-style: none;
+  padding: 0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.forbiddenBox li {
+  margin: 5px 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+
+.split-container {
+  display: flex;
+  height: 100vh; /* 화면 전체 높이 */
 }
 
-.card {
-  padding: 2em;
+/* 왼쪽, 오른쪽 영역 설정 */
+.left-section, .right-section {
+  flex: 1; /* 각각 50% 차지 */
+  display: flex;
+  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: center; /* 가로 중앙 정렬 */
+  padding: 20px;
 }
 
-.read-the-docs {
-  color: #888;
+/* 각 섹션의 배경 색상 */
+.left-section {
+  background-color: #f1f1f1;
+  overflow: hidden;
+}
+
+.right-section {
+  background-color: #d1d1d1;
+  overflow: hidden;
 }
