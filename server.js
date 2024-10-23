@@ -14,17 +14,17 @@ const io = new Server(server, { //모든 클라이언트가 접근 가능한 웹
 });
 
 // 금칙어 목록
-const forbiddenWords = ['야', '응', '오키'];
+const forbiddenWords = ['야', '응', '오키', '뭐', '팀장', '하이', '니', '뭔데', '나', '음', '인정', '정글', '나만무', '행복', '그만', '가보자', '베고파'];
 //사용자별 금칙어 목록
 var userforbiddenWordlist = [];
 
-let gameDuration = 10 * 1000;        // 3 * 60 * 1000; // 3분 = 180000ms
+let gameDuration = 2 * 60 * 1000;        // 3 * 60 * 1000; // 3분 = 180000ms
 let gameTimer;
 
 function startGameTimer() {
     console.log('게임시작 10초')
     // 타이머 시작 (3분)
-    io.emit('timer start', gameDuration/1000);
+    io.emit('timer start', gameDuration / 1000);
     gameTimer = setTimeout(() => {
         // 필요시 추가적인 게임 종료 로직
         endGame();
@@ -34,10 +34,8 @@ function startGameTimer() {
 function endGame() {
     // 게임 종료 후 리셋하거나, 점수 처리, 리셋된 상태 전송 등의 작업을 수행
     console.log('게임이 종료되었습니다.');
-    // 타이머가 끝나면 게임 종료 메시지 전송
-    io.emit('game over', '게임이 종료되었습니다!');
-    // 유저 데이터를 초기화하거나 다른 필요한 로직 수행
-    // userforbiddenWordlist = []; // 예시로 금칙어 리스트 초기화z
+
+    io.emit('game over', userforbiddenWordlist);
 }
 
 

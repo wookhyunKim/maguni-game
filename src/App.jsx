@@ -21,6 +21,10 @@ function App() {
 
   const [remainingTime, setRemainingTime] = useState(0); // 180초 = 3분
 
+  const [gameResults, setGameResults] = useState([]);
+
+  const [isGameOver, setIsGameOver] = useState(false);
+
   function connectToChatServer() {
     console.log('connectToChatServer');
     const _socket = io('http://localhost:3000', {
@@ -49,7 +53,7 @@ function App() {
   }
 
   function sendMessageToChatServer() {
-    console.log(`프론트 - sendMessageToChatServer input: ${userInput}`);
+    console.log(`1111프론트 - sendMessageToChatServer input: ${userInput}`);
     socket?.emit("new message", { username: username, message: userInput, forbiddenWord: forbiddenWord }, (response) => {   //메세지 서버로 전송
       console.log(response);
     });
@@ -91,11 +95,14 @@ function App() {
   }
 
   function useforbiddenWord(alertMessage) {
-    // alert(alertMessage); // 금칙어 사용 알림
+    alert(alertMessage); // 금칙어 사용 알림
   }
 
-  function gameover(alertMessage) {
-    alert(alertMessage);
+  function gameover(results) {
+    alert("게임이 종료되었습니다!");
+
+    setGameResults(results);
+    setIsGameOver(true);
   }
 
 
@@ -120,10 +127,10 @@ function App() {
         setRemainingTime(prevTime => prevTime - 1);
       }, 1000);
 
-        if (remainingTime <= 0) {
-      clearInterval(timerInterval);
-      // alert('게임이 종료되었습니다!');
-    }
+      if (remainingTime <= 0) {
+        clearInterval(timerInterval);
+        // alert('게임이 종료되었습니다!');
+      }
 
 
       return () => clearInterval(timerInterval); // 클린업
@@ -191,34 +198,56 @@ function App() {
             </ul>
           </div>
           <div class="right-section">
-            <div>
-              <div>
-                <h3>남은 시간: {remainingTime}초</h3>
-              </div>
-              <div className="container mt-4">
-                <h3>금칙어 목록</h3>
-                <table className="table table-bordered table-hover">
-                  <thead className="table-dark">
+            {isGameOver ? (
+              <div className="results-screen">
+                <h2>게임 결과</h2>
+                <table className="table table-bordered">
+                  <thead>
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">유저</th>
-                      <th scope="col">금칙어</th>
-                      <th scope="col">사용횟수</th>
+                      <th>사용자</th>
+                      <th>금칙어 사용 횟수</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {forbiddenWords.map((word, index) => (
+                    {gameResults.map((result, index) => (
                       <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>{word.username}</td>
-                        <td>{word.forbiddenword}</td>
-                        <td>{word.count}</td>
+                        <td>{result.username}</td>
+                        <td>{result.count}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </div>
+            ) : (
+              <div>
+                <div>
+                  <h3>남은 시간: {remainingTime}초</h3>
+                </div>
+                <div className="container mt-4">
+                  <h3>금칙어 목록</h3>
+                  <table className="table table-bordered table-hover">
+                    <thead className="table-dark">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">유저</th>
+                        <th scope="col">금칙어</th>
+                        <th scope="col">사용횟수</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {forbiddenWords.map((word, index) => (
+                        <tr key={index}>
+                          <th scope="row">{index + 1}</th>
+                          <td>{word.username}</td>
+                          <td>{word.forbiddenword}</td>
+                          <td>{word.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
