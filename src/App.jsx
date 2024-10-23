@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
 //
@@ -24,6 +24,8 @@ function App() {
   const [gameResults, setGameResults] = useState([]);
 
   const [isGameOver, setIsGameOver] = useState(false);
+
+  const messageListRef = useRef(null);
 
   function connectToChatServer() {
     console.log('connectToChatServer');
@@ -113,12 +115,10 @@ function App() {
   }
 
   useEffect(() => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      left: 0,
-      behavior: "smooth"
-    })
-  }, [messages]);
+    if (messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight; // 최하단으로 스크롤 이동
+    }
+  }, [messages]); // messages가 업데이트될 때마다 실행
 
 
   useEffect(() => {
@@ -189,74 +189,76 @@ function App() {
             </>
           )}
         </div>
+      </div>
 
-        <div class="split-container">
-          <div class="left-section">
-            <ul className='Chatlist'>
-              <li className='welcome-message'>금칙어 게임에 오신것을 환영합니다!</li>
-              {messageList}
-            </ul>
-          </div>
-          <div class="right-section">
-            {isGameOver ? (
-              <div className="results-screen">
-                <h2>게임 결과</h2>
-                <table className="table table-bordered">
-                  <thead>
+      <div class="split-container">
+        <div class="left-section">
+          <ul className='Chatlist' ref={messageListRef}>
+            <li className='welcome-message'>금칙어 게임에 오신것을 환영합니다!</li>
+            {messageList}
+          </ul>
+        </div>
+        <div class="right-section">
+          {isGameOver ? (
+            <div className="results-screen">
+              <h2>게임 결과</h2>
+              <table className="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>사용자</th>
+                    <th>금칙어 사용 횟수</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {gameResults.map((result, index) => (
+                    <tr key={index}>
+                      <td>{result.username}</td>
+                      <td>{result.count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div>
+              <div>
+                <h3>남은 시간: {remainingTime}초</h3>
+              </div>
+              <div className="container mt-4">
+                <h3>금칙어 목록</h3>
+                <table className="table table-bordered table-hover">
+                  <thead className="table-dark">
                     <tr>
-                      <th>사용자</th>
-                      <th>금칙어 사용 횟수</th>
+                      <th scope="col">#</th>
+                      <th scope="col">유저</th>
+                      <th scope="col">금칙어</th>
+                      <th scope="col">사용횟수</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {gameResults.map((result, index) => (
+                    {forbiddenWords.map((word, index) => (
                       <tr key={index}>
-                        <td>{result.username}</td>
-                        <td>{result.count}</td>
+                        <th scope="row">{index + 1}</th>
+                        <td>{word.username}</td>
+                        <td>{word.forbiddenword}</td>
+                        <td>{word.count}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            ) : (
-              <div>
-                <div>
-                  <h3>남은 시간: {remainingTime}초</h3>
-                </div>
-                <div className="container mt-4">
-                  <h3>금칙어 목록</h3>
-                  <table className="table table-bordered table-hover">
-                    <thead className="table-dark">
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">유저</th>
-                        <th scope="col">금칙어</th>
-                        <th scope="col">사용횟수</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {forbiddenWords.map((word, index) => (
-                        <tr key={index}>
-                          <th scope="row">{index + 1}</th>
-                          <td>{word.username}</td>
-                          <td>{word.forbiddenword}</td>
-                          <td>{word.count}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
-      <div className="MessageInput">
-        <input value={userInput} onChange={e => setUserInput(e.target.value)} onKeyUp={handleKeyUp} placeholder='메세지를 입력하세요' />
-        <button onClick={() => sendMessageToChatServer()}>
-          보내기
-        </button>
-      </div>
+      <>
+        <div className="MessageInput">
+          <input value={userInput} onChange={e => setUserInput(e.target.value)} onKeyUp={handleKeyUp} placeholder='메세지를 입력하세요' />
+          <button onClick={() => sendMessageToChatServer()}>
+            보내기
+          </button>
+        </div>
+      </>
     </>
   )
 }

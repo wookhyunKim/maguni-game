@@ -18,7 +18,7 @@ const forbiddenWords = ['야', '응', '오키', '뭐', '팀장', '하이', '니'
 //사용자별 금칙어 목록
 var userforbiddenWordlist = [];
 
-let gameDuration = 2 * 60 * 1000;        // 3 * 60 * 1000; // 3분 = 180000ms
+let gameDuration = 3 * 60 * 1000;        // 3 * 60 * 1000; // 3분 = 180000ms
 let gameTimer;
 
 function startGameTimer() {
