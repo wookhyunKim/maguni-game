@@ -27,7 +27,7 @@ function App() {
 
   function connectToChatServer() {
     console.log('connectToChatServer');
-    const _socket = io('http://localhost:3000', {
+    const _socket = io('https://reactsocketiochatapp.onrender.com', {
       autoConnect: false,
       query: {
         username: username,
