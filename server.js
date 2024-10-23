@@ -43,7 +43,7 @@ io.on('connection', (client) => {               //client가 연결되면 실행
         // 금칙어 체크
         if (msg.message.includes(msg.forbiddenWord)) {
             // 모든 클라이언트에게 금칙어 사용 알림 전송
-            io.emit('alert forbidden word', `${msg.username}이(가) 금칙어 "${msg.forbiddenWord}"를 사용했습니다!`);
+            client.broadcast.emit('alert forbidden word', `${msg.username}이(가) 금칙어 "${msg.forbiddenWord}"를 사용했습니다!`);
         }
 
 

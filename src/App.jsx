@@ -72,8 +72,12 @@ function App() {
   }
 
   function updateforbiddenWordList(list) {
-    setForbiddenWords(list);
+    console.log('updateforbiddenWordList');
+
+    const filteredList = list.filter(word => word.username !== username); // 자신의 username과 일치하는 항목 제외
+    setForbiddenWords(filteredList);
   }
+
 
   function useforbiddenWord(alertMessage) {
     alert(alertMessage); // 금칙어 사용 알림
@@ -104,7 +108,7 @@ function App() {
     socket?.on('new message', onMessageRecieved); //서버로부터 새 메세지를 받으면
     socket?.on('forbidden word', forbiddenWordRecieved); //금칙어 지정
     socket?.on('alert forbidden word', useforbiddenWord); //금칙어 사용했다 알림을 받으면
-    socket?.on('forbidden word list', updateforbiddenWordList); //금칙어 사용했다 알림을 받으면
+    socket?.on('forbidden word list', updateforbiddenWordList);
 
 
     return () => {
