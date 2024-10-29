@@ -1,12 +1,12 @@
 .Chatlist {
   margin-top: 250px;
-  margin-bottom: 50px;
+  margin-bottom: 300px;
   color: #000000;
-  overflow-y: auto;
   flex-grow: 1;
   overflow-y: auto; /* 내용이 넘칠 경우 세로 스크롤 */
   list-style-type: none;
-  padding: 0;
+  padding: 50px;
+  padding-bottom: 70px;
   margin: 0;
   max-height: 100%;
 }
