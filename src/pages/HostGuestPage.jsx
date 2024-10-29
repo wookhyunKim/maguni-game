@@ -1,11 +1,16 @@
 import { useState, useEffect} from 'react'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { io } from "socket.io-client";
 
 const HostGuestPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const username = location.state?.username;
+
+  const Gotogameroompage = () => {
+    navigate('/gameroom', { state: { roomcode:  role === 'host' ? generatedCode : roomcode, username: username }});
+  }
 
   const [isConnected, setIsConnected] = useState(false);
 
@@ -85,11 +90,15 @@ const HostGuestPage = () => {
     return code;
   }
 
+  
+  ///////////////////////////////////////////////////////
+
 
 
   return (
     <>
 
+      
       <div className='Navbar'>
         <h1>유저: {username}</h1>
         <h1>방: {role === 'host' ? generatedCode : roomcode}</h1>
@@ -135,6 +144,7 @@ const HostGuestPage = () => {
       <div className="split-container">
         <div className="left-section">
           <li className='welcome-message'>금칙어 게임에 오신것을 환영합니다!</li>
+          <button onClick={Gotogameroompage}>게임 시작하기</button>
         </div>
         <div className="right-section">
           <div>
