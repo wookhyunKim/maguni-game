@@ -9,7 +9,9 @@ function App() {
 
   const [username, setUsername] = useState('');
 
-  const [roomnumber, setRoomnumber] = useState('');
+  const [roomcode, setroomcode] = useState('');
+
+  const [role, setRole] = useState(null); // 역할 (host 또는 participant)
 
   const [socket, setSocket] = useState(null);
 
@@ -17,13 +19,16 @@ function App() {
 
   const [forbiddenWords, setForbiddenWords] = useState([]);
 
+  const [generatedCode, setGeneratedCode] = useState(''); // 호스트용 코드 표시
+
   function connectToChatServer() {
     console.log('connectToChatServer');
     const _socket = io('http://localhost:3000', {
       autoConnect: false,
       query: {
         username: username,
-        roomnumber: roomnumber
+        role: role,
+        roomnumber: role === 'host' ? generatedCode : roomcode,
       }
     });
     _socket.connect();
@@ -68,12 +73,25 @@ function App() {
   }, [socket]);
 
 
+  // 6자리 랜덤 코드 생성 함수
+  function generateRoomCode() {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+      code += letters.charAt(Math.floor(Math.random() * letters.length));
+    }
+    setGeneratedCode(code);
+    return code;
+  }
+
+
+
   return (
     <>
 
       <div className='Navbar'>
         <h1>유저: {username}</h1>
-        <h1>방: {roomnumber}</h1>
+        <h1>방: {role === 'host' ? generatedCode : roomcode}</h1>
         <h3>접속상태: {isConnected ? "접속중" : "미접속"}</h3>
         <div className="Card">
           {/* 접속 상태에 따라 입력 필드와 버튼 표시 */}
@@ -88,12 +106,30 @@ function App() {
                 onChange={e => setUsername(e.target.value)}
                 placeholder="사용자 이름을 입력하세요"
               />
-              <input
-                value={roomnumber}
-                onChange={e => setRoomnumber(e.target.value)}
-                placeholder="방코드를 입력하세요"
-              />
-              <button onClick={connectToChatServer}>접속하기</button>
+              {role === 'host' ? (
+                <>
+                  <input
+                    value={generatedCode || generateRoomCode()}
+                    readOnly
+                    placeholder="방 코드 (자동 생성됨)"
+                  />
+                  <button onClick={connectToChatServer}>접속하기</button>
+                </>
+              ) : role === 'participant' ? (
+                <>
+                  <input
+                    value={roomcode}
+                    onChange={(e) => setroomcode(e.target.value.toUpperCase())}
+                    placeholder="방 코드를 입력하세요"
+                  />
+                  <button onClick={connectToChatServer}>접속하기</button>
+                </>
+              ) : (
+                <>
+                  <button onClick={() => setRole('host')}>호스트로 접속</button>
+                  <button onClick={() => setRole('participant')}>참가자로 접속</button>
+                </>
+              )}
             </>
           )}
         </div>
