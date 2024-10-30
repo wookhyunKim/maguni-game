@@ -132,14 +132,6 @@ const GameRoomPage = () => {
                                     <span>{username}</span>
                                     <div>{getCode}</div>
                                 </div>
-                                <div className="user-wordlist">
-                                    <span>{username}</span>
-                                    <div>{getCode}</div>
-                                </div>
-                                <div className="user-wordlist">
-                                    <span>{username}</span>
-                                    <div>{getCode}</div>
-                                </div>
                             </div>
                         </div >
                         <div className="sidebar_mymission">
