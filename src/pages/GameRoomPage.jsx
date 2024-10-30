@@ -1,28 +1,20 @@
-import { joinSession, leaveSession } from '../../openvidu/app_openvidu.js';
-import { useLocation } from 'react-router-dom';
+import { joinSession } from '../../openvidu/app_openvidu.js';
 import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
 import Footer from '../components/layout/Footer.jsx';
+import useRoomStore from '../components/store/roomStore.js';
+import usePlayerStore  from '../components/store/players.js';
 
 const GameRoomPage = () => {
-    const location = useLocation();
-    const username = location.state?.username;
-    const roomcode = location.state?.roomcode;
-    const isHost = location.state?.isHost;
-    console.log(username, roomcode);
 
-    // const [roomcode, setRoomcode] = useState(""); // 빈 문자열로 초기화
-    // const [username, setUsername] = useState(""); // 빈 문자열로 초기화
-    // // roomcode 업데이트하기
-    // const handleRoomcodeChange = (roomcode) => {
-    //     setRoomcode(roomcode);
-    // };
+    //store 상태관리
 
-    // // username 업데이트하기
-    // const handleUsernameChange = (username) => {
-    //     setUsername(username);
-    // };
-
+    //username을 usePlayerStore에서 가져옴
+    const username = usePlayerStore(state=>state.username)
+    //roomcode를 useRoomStore에서 가져옴
+    const roomcode = useRoomStore(state=>state.roomcode)
+    //players를 usePlayerStore에서 가져옴
+    const players = usePlayerStore(state=>state.players)
 
     return (
         <>
@@ -74,16 +66,12 @@ const GameRoomPage = () => {
                         <div className="sidebar_wordlist">
                             <div className="sidebar_index">금칙어 목록</div>
                             <div className="sidebar_content">
-                                {/* <div className="user-wordlist">
-                                    <span>{username}</span>
-                                    <div>{getCode}</div>
-                                </div> */}
-                                {/* {users.map((user) => (
-                                    <div className="user-wordlist" key={user.id}>
-                                    <span>{username}</span>
-                                    <div>{getCode}</div>
+                                {players.map((player, index) => (
+                                    <div className="user-wordlist" key={index}>
+                                    <span>{player.nickname}</span>
+                                    <div>{player.words[0]}</div>
                                 </div> 
-                                ))} */}
+                                ))}
                             </div>
                         </div >
                         <div className="sidebar_mymission">

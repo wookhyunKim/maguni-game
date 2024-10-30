@@ -13,43 +13,42 @@ import {create} from 'zustand';
 // 인풋상자 활성화 여부
 
 export const usePlayerStore = create((set) => ({
-    // 현재 플레이어 설정
-    curPlayer: {
-        nickname: '',
-        isHost : false,
-    },
+    
+    // 현재 플레이어 닉네임값/설정하기
+    username:'',
+    setUsername: (newUsername) => set({ username: newUsername }),
 
-    //닉네임설정
-    setNickname: (input_nickname) => set((state)=>({
-        curPlayer: {
-            ...state.curPlayer,
-            nickname:input_nickname
-        }
-    })),
+    //플레이어 리스트
+    //플레이어 리스트 예시 형식
+    players: [],
+    setPlayers: (newPlayers) => set({ players: newPlayers }),
 
-    //호스트 여부설정
-    setIsHost: () => set((state)=>({
-        curPlayer: {
-            ...state.curPlayer,
-            isHost : true
-        }
-    })),
+    //플레이어
 
-    // 플레이어 리스트
-    players : {},
 
-    //플레이어 추가 : val은 nickname
-    addPlayer: (nick_name) => set((state)=>({
-        playerList : {
-            ...state.playerList,
-            playerNum:'', 
-            nickname :nick_name, 
-            filter : [], 
-            mike :true, 
-            sound :true, 
-            isInputActive: false
-        }
-    })),
+    // //호스트 여부설정
+    // setIsHost: () => set((state)=>({
+    //     curPlayer: {
+    //         ...state.curPlayer,
+    //         isHost : true
+    //     }
+    // })),
+
+    // // 플레이어 리스트
+    // players : {},
+
+    // //플레이어 추가 : val은 nickname
+    // addPlayer: (nick_name) => set((state)=>({
+    //     playerList : {
+    //         ...state.playerList,
+    //         playerNum:'', 
+    //         nickname :nick_name, 
+    //         filter : [], 
+    //         mike :true, 
+    //         sound :true, 
+    //         isInputActive: false
+    //     }
+    // })),
     
     // //플레이어 삭제 : val은 playerId
     // deletePlayer: (playerId) => set((state)=>{
