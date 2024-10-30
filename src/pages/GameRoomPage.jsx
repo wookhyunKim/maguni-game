@@ -22,14 +22,13 @@ const GameRoomPage = () => {
     };
 
     const insertWord = ()=>{
-        let word = isHost? "방장" : "게스트";
         return axios({
             method: "POST",
             url: "http://localhost:3001/member/api/v1/word",
             data: {
                 "roomCode": roomcode,
                 "nickname": username,
-                "word": word,
+                "word": inputValue
             },
         }).then((res)=>{
             console.log(res.data['success'])
@@ -128,10 +127,16 @@ const GameRoomPage = () => {
                         <div className="sidebar_wordlist">
                             <div className="sidebar_index">금칙어 목록</div>
                             <div className="sidebar_content">
-                                <div className="user-wordlist">
+                                {/* <div className="user-wordlist">
                                     <span>{username}</span>
                                     <div>{getCode}</div>
-                                </div>
+                                </div> */}
+                                {users.map((user) => (
+                                    <div className="user-wordlist" key={user.id}>
+                                    <span>{username}</span>
+                                    <div>{getCode}</div>
+                                </div> 
+                                ))}
                             </div>
                         </div >
                         <div className="sidebar_mymission">
