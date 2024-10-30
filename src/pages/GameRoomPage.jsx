@@ -1,11 +1,64 @@
+import { useEffect, useRef, useState } from "react";
 import { joinSession, leaveSession } from '../../openvidu/app_openvidu.js';
 import { useLocation } from 'react-router-dom';
+import { calculateFilterPosition } from "../../filter/calculate-filter-position.ts";
+import { loadDetectionModel } from "../../filter/load-detection-model.js";
+
+const videoSize = {
+    width: 640,
+    height: 480,
+};
+
 
 const GameRoomPage = () => {
     const location = useLocation();
     const username = location.state?.username;
     const roomcode = location.state?.roomcode;
     console.log(username, roomcode);
+
+    const canvasRef = useRef(null);
+    const initialLoadedRef = useRef(false);
+    const [status, setStatus] = useState("Initializing...");
+
+    const estimateFacesLoop = (model, image, ctx) => {
+
+        const videoElement = document.getElementById('myVideo');
+
+        if (!videoElement) {
+            console.log("취소됨")
+            return;
+
+        }
+
+        model.estimateFaces(videoElement).then((face) => {
+            ctx.clearRect(0, 0, videoSize.width, videoSize.height);
+            if (face[0]) {
+                const { x, y, width, height } = calculateFilterPosition(face[0].keypoints);
+                ctx.drawImage(image, x, y, width, height);
+            }
+            requestAnimationFrame(() => estimateFacesLoop(model, image, ctx));
+        });
+    };
+
+    const startFiltering = () => {
+        const canvasContext = canvasRef.current?.getContext("2d");
+        if (!canvasContext || initialLoadedRef.current) return;
+
+        initialLoadedRef.current = true;
+
+        const image = new Image();
+        image.src = "sunglasses.png";
+
+        setStatus("Load Model...");
+
+        loadDetectionModel().then((model) => {
+            setStatus("Model Loaded");
+            requestAnimationFrame(() =>
+                estimateFacesLoop(model, image, canvasContext),
+            );
+        });
+    };
+
     return (
         <>
             <nav className="navbar navbar-default">
@@ -58,9 +111,20 @@ const GameRoomPage = () => {
                             value="Leave session" />
                     </div>
                     <div id="main-video" className="col-md-6">
-                        <p></p>
-                        <video autoPlay playsInline={true}></video>
+                        <p></p><div className="webcam-container" style={{ position: 'relative', height: videoSize.height, width: videoSize.width }}>
+                            <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                                <video id = "myVideo" autoPlay playsInline width={videoSize.width} height={videoSize.height}></video>
+
+                            </div>
+                            <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                                <canvas ref={canvasRef} width={videoSize.width} height={videoSize.height} className="filter-canvas"></canvas>
+
+                            </div>
+                        </div>
+                        <p className="status">{status}</p>
+
                         <div style={{ margin: '10px' }}>
+                            <button onClick={startFiltering}>필터 시작</button>
                             <button id="startButton">게임 시작</button>
                             <button id="stopButton" disabled>게임 종료</button>
                             <div id="count">금칙어(아니) 카운트: 0</div>
