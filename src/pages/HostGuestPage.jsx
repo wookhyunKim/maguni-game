@@ -126,6 +126,7 @@ function joinRoom() {
       code += letters.charAt(Math.floor(Math.random() * letters.length));
     }
     setGeneratedCode(code);
+    setRoomcode(code);
     return code;
   }
 
