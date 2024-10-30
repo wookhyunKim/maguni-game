@@ -193,13 +193,13 @@ function joinRoom() {
           <div className="connectedUserList">
             <div>
               <div className="container mt-4">
-                <h3>금칙어 목록</h3>
+                <h3>접속자 목록</h3>
                 <table className="table table-bordered table-hover">
                   <thead className="table-dark">
                     <tr>
                       <th scope="col">#</th>
                       <th scope="col">유저</th>
-                      <th scope="col">금칙어</th>
+                      {/* <th scope="col"></th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -207,7 +207,7 @@ function joinRoom() {
                       <tr key={index}>
                         <th scope="row">{index + 1}</th>
                         <td>{word.username}</td>
-                        <td>{word.forbiddenword}</td>
+                        {/* <td>{word.forbiddenword}</td> */}
                       </tr>
                     ))}
                   </tbody>

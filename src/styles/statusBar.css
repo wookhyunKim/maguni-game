@@ -1,14 +1,5 @@
-/* .status-bar {
-    background-color: blue;
-    display:flex;
-    flex-direction:row;
-    justify-content: space-between;
-    align-items:center;
-    width:100%;
-} */
-
 .status-bar {
-    background-color: #333;
+    background-color: blue;
     display:grid;
     grid-template-columns: 300px 2fr 1fr 300px;
     align-items:center;
