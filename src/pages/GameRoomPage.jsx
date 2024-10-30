@@ -131,12 +131,12 @@ const GameRoomPage = () => {
                                     <span>{username}</span>
                                     <div>{getCode}</div>
                                 </div> */}
-                                {users.map((user) => (
+                                {/* {users.map((user) => (
                                     <div className="user-wordlist" key={user.id}>
                                     <span>{username}</span>
                                     <div>{getCode}</div>
                                 </div> 
-                                ))}
+                                ))} */}
                             </div>
                         </div >
                         <div className="sidebar_mymission">
