@@ -9,7 +9,7 @@ const HostGuestPage = () => {
   const username = location.state?.username;
 
   const Gotogameroompage = () => {
-    navigate('/gameroom', { state: { roomcode:  role === 'host' ? generatedCode : roomcode, username: username }});
+    navigate('/gameroom', { state: { roomcode:  role === 'host' ? generatedCode : roomcode, username: username,isHost:role==='host'?true:false }});
   }
 
   const [isConnected, setIsConnected] = useState(false);

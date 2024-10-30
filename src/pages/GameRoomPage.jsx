@@ -1,28 +1,67 @@
 import { joinSession, leaveSession } from '../../openvidu/app_openvidu.js';
+import { useEffect, useState } from 'react'; 
 import { useLocation } from 'react-router-dom';
+import '../styles/gameroompage.css'
+import axios from 'axios';
 
 const GameRoomPage = () => {
     const location = useLocation();
     const username = location.state?.username;
     const roomcode = location.state?.roomcode;
+    const isHost = location.state?.isHost;
     console.log(username, roomcode);
+    const [getCode,setGetCode] = useState('');
+
+
+    //상태관리
+    const [inputValue, setInputValue] = useState('');
+
+    //
+    const handleInputChange = (e) => {
+        setInputValue(e.target.value);
+    };
+
+    const insertWord = ()=>{
+        let word = isHost? "방장" : "게스트";
+        return axios({
+            method: "POST",
+            url: "http://localhost:3000/member/api/v1/word",
+            data: {
+                "roomCode": roomcode,
+                "nickname": username,
+                "word": word,
+            },
+        }).then((res)=>{
+            console.log(res.data['success'])
+            return getWords();
+        }).catch((err)=>{
+            console.log(err)
+        })
+    }
+
+    const getWords = ()=>{
+        return axios({
+            method: "GET",
+            url: `http://localhost:3000/member/api/v1/word/${roomcode}/${username}`,
+        }).then((res)=>{
+            // console.log(res.data[0][0])
+            setGetCode(res.data[0][0])
+     
+
+            // setGetCode(prevGetCode => [...prevGetCode, 'sk']);
+        }).catch((err)=>{
+            console.log(err)
+        })
+    }
+    useEffect(() => {
+      console.log(getCode)
+    }, [getCode]);
+
+
     return (
         <>
-            <nav className="navbar navbar-default">
-                <div className="container">
-                    <div className="navbar-header">
-                        <a className="navbar-brand nav-icon"
-                            href="https://github.com/OpenVidu/openvidu-tutorials/tree/master/openvidu-js"
-                            title="GitHub Repository" target="_blank">
-                            <i className="fa fa-github" aria-hidden="true"></i>
-                        </a>
-                        <a className="navbar-brand nav-icon"
-                            href="http://www.docs.openvidu.io/en/stable/tutorials/openvidu-js/"
-                            title="Documentation" target="_blank">
-                            <i className="fa fa-book" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
+            <nav className="navbar">
+                <div className="navbar-header"></div>
             </nav>
 
             <div id="main-container" className="container">
@@ -66,18 +105,52 @@ const GameRoomPage = () => {
                             <div id="count">금칙어(아니) 카운트: 0</div>
                         </div>
                     </div>
-                    <div id="video-container" className="col-md-6"></div>
+                    <div id="video-container" className="col-md-6">
+                    </div>
+                    <div className="input-group" style={{ margin: '10px 0' }}>
+                        <input 
+                            type="text"
+                            className="form-control"
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            placeholder="메시지를 입력하세요"
+                        />
+                        <button 
+                            className="btn btn-primary"
+                            onClick={insertWord}
+                            style={{ marginLeft: '5px' }}
+                        >
+                            전송
+                        </button>
+                    </div>
+                    <div className="gameroom-sidebar">
+                        <div className="sidebar_wordlist">
+                            <div className="sidebar_index">금칙어 목록</div>
+                            <div className="sidebar_content">
+                                <div className="user-wordlist">
+                                    <span>woogi</span>
+                                    <div>염팀장</div>
+                                </div>
+                                <div className="user-wordlist">
+                                    <span>nappayeom</span>
+                                    <div>염팀장</div>
+                                </div>
+                                <div className="user-wordlist">
+                                    <span>taemtaem</span>
+                                    <div>염팀장</div>
+                                </div>
+                            </div>
+                        </div >
+                        <div className="sidebar_mymission">
+                            <div className="sidebar_index">나의 미션</div>
+                            <div className="sidebar_content">sdf</div>
+                        </div>
+                        <div className="sidebar_goongye">
+                            <div className="sidebar_index">진행자</div>
+                            <div className="sidebar_content">sdf</div>
+                        </div>
+                    </div>
                     <div id="subtitles" style={{
-                        position: 'absolute',
-                        bottom: '10px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        color: 'white',
-                        background: 'rgba(0, 0, 0, 0.7)',
-                        padding: '10px',
-                        borderRadius: '5px',
-                        fontSize: '18px',
-                        zIndex: 1000
                     }}>
                         자막
                     </div>
@@ -85,9 +158,6 @@ const GameRoomPage = () => {
             </div>
 
             <footer className="footer">
-                <div className="container">
-                    <div className="text-muted">OpenVidu © 2022</div>
-                </div>
             </footer>
         </>
     );
