@@ -3,10 +3,13 @@ import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
 import Footer from '../components/layout/Footer.jsx';
 import useRoomStore from '../components/store/roomStore.js';
-import usePlayerStore  from '../components/store/players.js';
+import {usePlayerStore}  from '../components/store/players.js';
 
 const GameRoomPage = () => {
-
+const videoSize ={
+    width : 640,
+    height:480
+}
     //store 상태관리
 
     //username을 usePlayerStore에서 가져옴
@@ -57,14 +60,14 @@ const GameRoomPage = () => {
 
                             </div>
                             <div style={{ position: 'absolute', top: 0, left: 0 }}>
-                                <canvas ref={canvasRef} width={videoSize.width} height={videoSize.height} className="filter-canvas"></canvas>
+                                {/* <canvas ref={canvasRef} width={videoSize.width} height={videoSize.height} className="filter-canvas"></canvas> */}
 
                             </div>
                         </div>
                         <p className="status">{status}</p>
 
                         <div style={{ margin: '10px' }}>
-                            <button onClick={startFiltering}>필터 시작</button>
+                            {/* <button onClick={startFiltering}>필터 시작</button> */}
                             <button id="startButton">게임 시작</button>
                             <button id="stopButton" disabled>게임 종료</button>
                             <div id="count">금칙어(아니) 카운트: 0</div>

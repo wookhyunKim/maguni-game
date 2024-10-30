@@ -23,42 +23,7 @@ export const usePlayerStore = create((set) => ({
     players: [],
     setPlayers: (newPlayers) => set({ players: newPlayers }),
 
-    //플레이어
-
-
-    // //호스트 여부설정
-    // setIsHost: () => set((state)=>({
-    //     curPlayer: {
-    //         ...state.curPlayer,
-    //         isHost : true
-    //     }
-    // })),
-
-    // // 플레이어 리스트
-    // players : {},
-
-    // //플레이어 추가 : val은 nickname
-    // addPlayer: (nick_name) => set((state)=>({
-    //     playerList : {
-    //         ...state.playerList,
-    //         playerNum:'', 
-    //         nickname :nick_name, 
-    //         filter : [], 
-    //         mike :true, 
-    //         sound :true, 
-    //         isInputActive: false
-    //     }
-    // })),
     
-    // //플레이어 삭제 : val은 playerId
-    // deletePlayer: (playerId) => set((state)=>{
-    //     const newPlayerList = [...state.players];
-    //     delete newPlayerList[playerId];
-    //     playerList : [...prev.playerList, {playerNum: (prev.playerList.length)+1, nicknmae:val}];
-
-    // }),
-
-    //플레이어 
 
 }))
 
