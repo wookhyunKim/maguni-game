@@ -1,13 +1,19 @@
 import axios from 'axios';
 import { useState, useEffect} from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import useRoomStore from '../components/store/roomStore';
+import { usePlayerStore } from '../components/store/players';
 import { io } from "socket.io-client";
 
 const HostGuestPage = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const username = location.state?.username;
+
+  //username을 usePlayerStore에서 가져옴
+  const username = usePlayerStore(state=>state.username)
+
+  //roomcode, setRoomcode를 useRoomStore에서 가져옴
+  const roomcode = useRoomStore(state=>state.roomcode)
+  const setRoomcode = useRoomStore(state=>state.setRoomcode)
 
   const Gotogameroompage = () => {
     navigate('/gameroom', { state: { roomcode:  role === 'host' ? generatedCode : roomcode, username: username,isHost:role==='host'?true:false }});
@@ -16,7 +22,7 @@ const HostGuestPage = () => {
   const [isConnected, setIsConnected] = useState(false);
 
 
-  const [roomcode, setroomcode] = useState('');
+  // const [roomcode, setroomcode] = useState('');
 
   const [role, setRole] = useState(null); // 역할 (host 또는 participant)
 
@@ -158,7 +164,7 @@ function joinRoom() {
                 <>
                   <input
                     value={roomcode}
-                    onChange={(e) => setroomcode(e.target.value.toUpperCase())}
+                    onChange={(e) => setRoomcode(e.target.value.toUpperCase())}
                     placeholder="방 코드를 입력하세요"
                   />
                   <button onClick={connectToChatServer}>접속하기</button>

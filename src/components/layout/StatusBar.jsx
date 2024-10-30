@@ -1,7 +1,7 @@
 import Timer from '../common/FullTimerClock'
 import ProfileCard from '../common/ProfileCard'
 import SessionBar from '../common/SessionBar'
-import '../../styles/statusBar.css'
+import '../../styles/statusbar.css'
 import teamLogo from '../../assets/images/teamLogoImage.png'
 
 const StatusBar = () => {
