@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import "../../styles/sessionBar.css";
 import ProgressBar from "@ramonak/react-progress-bar";
+import PropTypes from 'prop-types'; // PropTypes import 추가
+
 
 const SessionBar = ({ initialTime = 120 }) => {
     const [remainingTime, setRemainingTime] = useState(initialTime);
@@ -38,5 +40,10 @@ const SessionBar = ({ initialTime = 120 }) => {
         />
     );
 }
+
+// PropTypes 정의 추가
+SessionBar.propTypes = {
+    initialTime: PropTypes.number // defaultValue가 있으므로 isRequired는 불필요
+};
 
 export default SessionBar;

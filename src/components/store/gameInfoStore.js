@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import {scriptData} from './gameScripts';
-import { duration } from 'html2canvas/dist/types/css/property-descriptors/duration';
+// import { duration } from 'html2canvas/dist/types/css/property-descriptors/duration';
 
 //전체 시간
 const useStoreTime = create((set) => ({
