@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { joinSession, leaveSession } from '../../openvidu/app_openvidu.js';
 import { useEffect, useState } from 'react'; 
 import { useLocation } from 'react-router-dom';
@@ -97,9 +98,20 @@ const GameRoomPage = () => {
                             value="Leave session" />
                     </div>
                     <div id="main-video" className="col-md-6">
-                        <p></p>
-                        <video autoPlay playsInline={true}></video>
+                        <p></p><div className="webcam-container" style={{ position: 'relative', height: videoSize.height, width: videoSize.width }}>
+                            <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                                <video id = "myVideo" autoPlay playsInline width={videoSize.width} height={videoSize.height}></video>
+
+                            </div>
+                            <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                                <canvas ref={canvasRef} width={videoSize.width} height={videoSize.height} className="filter-canvas"></canvas>
+
+                            </div>
+                        </div>
+                        <p className="status">{status}</p>
+
                         <div style={{ margin: '10px' }}>
+                            <button onClick={startFiltering}>필터 시작</button>
                             <button id="startButton">게임 시작</button>
                             <button id="stopButton" disabled>게임 종료</button>
                             <div id="count">금칙어(아니) 카운트: 0</div>
