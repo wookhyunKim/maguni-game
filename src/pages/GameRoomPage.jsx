@@ -1,81 +1,68 @@
 import { useEffect, useRef, useState } from "react";
 import { joinSession, leaveSession } from '../../openvidu/app_openvidu.js';
+import { useEffect, useState } from 'react'; 
 import { useLocation } from 'react-router-dom';
-import { calculateFilterPosition } from "../../filter/calculate-filter-position.ts";
-import { loadDetectionModel } from "../../filter/load-detection-model.js";
-
-const videoSize = {
-    width: 640,
-    height: 480,
-};
-
+import '../styles/gameroompage.css'
+import axios from 'axios';
 
 const GameRoomPage = () => {
     const location = useLocation();
     const username = location.state?.username;
     const roomcode = location.state?.roomcode;
+    const isHost = location.state?.isHost;
     console.log(username, roomcode);
+    const [getCode,setGetCode] = useState('');
 
-    const canvasRef = useRef(null);
-    const initialLoadedRef = useRef(false);
-    const [status, setStatus] = useState("Initializing...");
 
-    const estimateFacesLoop = (model, image, ctx) => {
+    //상태관리
+    const [inputValue, setInputValue] = useState('');
 
-        const videoElement = document.getElementById('myVideo');
-
-        if (!videoElement) {
-            console.log("취소됨")
-            return;
-
-        }
-
-        model.estimateFaces(videoElement).then((face) => {
-            ctx.clearRect(0, 0, videoSize.width, videoSize.height);
-            if (face[0]) {
-                const { x, y, width, height } = calculateFilterPosition(face[0].keypoints);
-                ctx.drawImage(image, x, y, width, height);
-            }
-            requestAnimationFrame(() => estimateFacesLoop(model, image, ctx));
-        });
+    //
+    const handleInputChange = (e) => {
+        setInputValue(e.target.value);
     };
 
-    const startFiltering = () => {
-        const canvasContext = canvasRef.current?.getContext("2d");
-        if (!canvasContext || initialLoadedRef.current) return;
+    const insertWord = ()=>{
+        return axios({
+            method: "POST",
+            url: "http://localhost:3001/member/api/v1/word",
+            data: {
+                "roomCode": roomcode,
+                "nickname": username,
+                "word": inputValue
+            },
+        }).then((res)=>{
+            console.log(res.data['success'])
+            return getWords();
+        }).catch((err)=>{
+            console.log(err)
+        })
+    }
 
-        initialLoadedRef.current = true;
+    //
+    const getWords = ()=>{
+        return axios({
+            method: "GET",
+            url: `http://localhost:3001/member/api/v1/word/${roomcode}/${username}`,
+        }).then((res)=>{
+            // console.log(res.data[0][0])
+            setGetCode(res.data[0][0])
+     
 
-        const image = new Image();
-        image.src = "sunglasses.png";
+            // setGetCode(prevGetCode => [...prevGetCode, 'sk']);
+        }).catch((err)=>{
+            console.log(err)
+        })
+    }
+    useEffect(() => {
+      console.log(getCode)
+    }, [getCode]);
 
-        setStatus("Load Model...");
-
-        loadDetectionModel().then((model) => {
-            setStatus("Model Loaded");
-            requestAnimationFrame(() =>
-                estimateFacesLoop(model, image, canvasContext),
-            );
-        });
-    };
 
     return (
         <>
-            <nav className="navbar navbar-default">
-                <div className="container">
-                    <div className="navbar-header">
-                        <a className="navbar-brand nav-icon"
-                            href="https://github.com/OpenVidu/openvidu-tutorials/tree/master/openvidu-js"
-                            title="GitHub Repository" target="_blank">
-                            <i className="fa fa-github" aria-hidden="true"></i>
-                        </a>
-                        <a className="navbar-brand nav-icon"
-                            href="http://www.docs.openvidu.io/en/stable/tutorials/openvidu-js/"
-                            title="Documentation" target="_blank">
-                            <i className="fa fa-book" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
+            <nav className="navbar">
+                <div className="navbar-header"></div>
             </nav>
 
             <div id="main-container" className="container">
@@ -130,18 +117,50 @@ const GameRoomPage = () => {
                             <div id="count">금칙어(아니) 카운트: 0</div>
                         </div>
                     </div>
-                    <div id="video-container" className="col-md-6"></div>
+                    <div id="video-container" className="col-md-6">
+                    </div>
+                    <div className="input-group" style={{ margin: '10px 0' }}>
+                        <input 
+                            type="text"
+                            className="form-control"
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            placeholder="메시지를 입력하세요"
+                        />
+                        <button 
+                            className="btn btn-primary"
+                            onClick={insertWord}
+                            style={{ marginLeft: '5px' }}
+                        >
+                            전송
+                        </button>
+                    </div>
+                    <div className="gameroom-sidebar">
+                        <div className="sidebar_wordlist">
+                            <div className="sidebar_index">금칙어 목록</div>
+                            <div className="sidebar_content">
+                                {/* <div className="user-wordlist">
+                                    <span>{username}</span>
+                                    <div>{getCode}</div>
+                                </div> */}
+                                {/* {users.map((user) => (
+                                    <div className="user-wordlist" key={user.id}>
+                                    <span>{username}</span>
+                                    <div>{getCode}</div>
+                                </div> 
+                                ))} */}
+                            </div>
+                        </div >
+                        <div className="sidebar_mymission">
+                            <div className="sidebar_index">나의 미션</div>
+                            <div className="sidebar_content">sdf</div>
+                        </div>
+                        <div className="sidebar_goongye">
+                            <div className="sidebar_index">진행자</div>
+                            <div className="sidebar_content">sdf</div>
+                        </div>
+                    </div>
                     <div id="subtitles" style={{
-                        position: 'absolute',
-                        bottom: '10px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        color: 'white',
-                        background: 'rgba(0, 0, 0, 0.7)',
-                        padding: '10px',
-                        borderRadius: '5px',
-                        fontSize: '18px',
-                        zIndex: 1000
                     }}>
                         자막
                     </div>
@@ -149,9 +168,6 @@ const GameRoomPage = () => {
             </div>
 
             <footer className="footer">
-                <div className="container">
-                    <div className="text-muted">OpenVidu © 2022</div>
-                </div>
             </footer>
         </>
     );
