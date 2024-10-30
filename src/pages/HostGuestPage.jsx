@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState, useEffect} from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -29,6 +30,7 @@ const HostGuestPage = () => {
 
   function connectToChatServer() {
     console.log('connectToChatServer');
+    role==='host' ? createRoom() : joinRoom();
     const _socket = io('http://localhost:3000', {
       autoConnect: false,
       query: {
@@ -40,6 +42,37 @@ const HostGuestPage = () => {
     _socket.connect();
     setSocket(_socket);
   }
+
+  function createRoom() {
+    return axios({
+        method: "POST",
+        url: "http://localhost:3001/room/api/v1",
+        data: {
+            "roomCode": generatedCode,
+            "nickname": username,
+        },
+    }).then((res)=>{
+        console.log(res.data['success'])
+    }).catch((err)=>{
+        console.log(err)
+    })
+}
+
+function joinRoom() {
+  return axios({
+      method: "POST",
+      url: "http://localhost:3001/member/participant/game/api/v1",
+      data: {
+          "roomCode": roomcode,
+          "nickname": username,
+      },
+  }).then((res)=>{
+      console.log(res.data['success'])
+  }).catch((err)=>{
+      console.log(err)
+  })
+}
+
 
   function disconnectToChatServer() {
     console.log('disconnectToChatServer');

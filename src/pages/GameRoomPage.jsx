@@ -25,7 +25,7 @@ const GameRoomPage = () => {
         let word = isHost? "방장" : "게스트";
         return axios({
             method: "POST",
-            url: "http://localhost:3000/member/api/v1/word",
+            url: "http://localhost:3001/member/api/v1/word",
             data: {
                 "roomCode": roomcode,
                 "nickname": username,
@@ -39,10 +39,11 @@ const GameRoomPage = () => {
         })
     }
 
+    //
     const getWords = ()=>{
         return axios({
             method: "GET",
-            url: `http://localhost:3000/member/api/v1/word/${roomcode}/${username}`,
+            url: `http://localhost:3001/member/api/v1/word/${roomcode}/${username}`,
         }).then((res)=>{
             // console.log(res.data[0][0])
             setGetCode(res.data[0][0])
@@ -128,16 +129,16 @@ const GameRoomPage = () => {
                             <div className="sidebar_index">금칙어 목록</div>
                             <div className="sidebar_content">
                                 <div className="user-wordlist">
-                                    <span>woogi</span>
-                                    <div>염팀장</div>
+                                    <span>{username}</span>
+                                    <div>{getCode}</div>
                                 </div>
                                 <div className="user-wordlist">
-                                    <span>nappayeom</span>
-                                    <div>염팀장</div>
+                                    <span>{username}</span>
+                                    <div>{getCode}</div>
                                 </div>
                                 <div className="user-wordlist">
-                                    <span>taemtaem</span>
-                                    <div>염팀장</div>
+                                    <span>{username}</span>
+                                    <div>{getCode}</div>
                                 </div>
                             </div>
                         </div >
