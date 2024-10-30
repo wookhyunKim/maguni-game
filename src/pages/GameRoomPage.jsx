@@ -1,3 +1,5 @@
+import {useEffect, useState} from 'react'
+
 import { joinSession } from '../../openvidu/app_openvidu.js';
 import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
@@ -18,6 +20,101 @@ const videoSize ={
     const roomcode = useRoomStore(state=>state.roomcode)
     //players를 usePlayerStore에서 가져옴
     const players = usePlayerStore(state=>state.players)
+
+    // 음성인식 관련 상태
+    const [count, setCount] = useState(0);
+    const [isStoppedManually, setIsStoppedManually] = useState(false);
+
+    useEffect(() => {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+
+        recognition.lang = 'ko-KR';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onstart = () => {
+            console.log('녹음이 시작되었습니다.');
+            document.getElementById('startButton').disabled = true;
+            document.getElementById('stopButton').disabled = false;
+        };
+
+        recognition.onresult = (event) => {
+            let finalTranscript = '';
+            let interimTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                const result = event.results[i];
+                const transcript = result[0].transcript.trim();
+
+                if (result.isFinal) {
+                    finalTranscript += transcript + ' ';
+                    // 금칙어 카운트
+                    const word = "아니";
+                    const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
+                    setCount(prev => prev + occurrences);
+                    const countElement = document.getElementById('count');
+                    if (countElement) {
+                        countElement.innerText = `"아니" 카운트: ${count + occurrences}`;
+                    }
+                } else {
+                    interimTranscript += transcript + ' ';
+                }
+            }
+
+            const transcriptElement = document.getElementById('subtitles');
+            if (transcriptElement) {
+                transcriptElement.innerText = finalTranscript + interimTranscript;
+            }
+        };
+
+        recognition.onend = () => {
+            console.log('녹음이 종료되었습니다.');
+            if (!isStoppedManually) {
+                console.log('자동으로 음성 인식 재시작');
+                recognition.start();
+            }
+        };
+
+        recognition.onerror = (event) => {
+            console.error('음성 인식 오류:', event.error);
+            if (event.error !== 'no-speech') {
+                recognition.stop();
+                recognition.start();
+            }
+        };
+
+        // 버튼 이벤트 설정
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+
+        const handleStart = () => {
+            setIsStoppedManually(false);
+            recognition.start();
+        };
+
+        const handleStop = () => {
+            setIsStoppedManually(true);
+            recognition.stop();
+            setCount(0);
+            const countElement = document.getElementById('count');
+            if (countElement) {
+                countElement.innerText = `"아니" 카운트: 0`;
+            }
+            startButton.disabled = false;
+            stopButton.disabled = true;
+        };
+
+        startButton?.addEventListener('click', handleStart);
+        stopButton?.addEventListener('click', handleStop);
+
+        // Clean up
+        return () => {
+            recognition.stop();
+            startButton?.removeEventListener('click', handleStart);
+            stopButton?.removeEventListener('click', handleStop);
+        };
+    }, [count, isStoppedManually]);
 
     return (
         <>

@@ -1,6 +1,6 @@
-#main-video, #main-video *{
+/* #main-video, #main-video *{
     display:none;
-}
+} */
 .vsc-controller vsc-nosource {
     display: none;
 }
