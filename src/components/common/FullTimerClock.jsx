@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react";
 import useStoreTime from "../store/gameInfoStore";
+import '../../styles/fulltimeclock.css'
 
 const timerStyles = {
     container: {

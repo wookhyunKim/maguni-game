@@ -1,12 +1,15 @@
 import axios from 'axios';
 import { useState, useEffect} from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useRoomStore from '../components/store/roomStore';
 import { usePlayerStore } from '../components/store/players';
 import { io } from "socket.io-client";
 
 const HostGuestPage = () => {
   const navigate = useNavigate();
+
+  //toggle 여부 상태 관리
+  const [isToggled, setIsToggled] = useState(false);
 
   //username을 usePlayerStore에서 가져옴
   const username = usePlayerStore(state=>state.username)
@@ -130,90 +133,95 @@ function joinRoom() {
     return code;
   }
 
+  //접속하기 누르면, toggle상태 바뀌고, chatserver에 커넥트 되게 함 
+  function connectBtnHandler() {
+    connectToChatServer();
+    setIsToggled(true);
+  }
+
+  function disconnectBtnHandler() {
+    disconnectToChatServer();
+    window.location.reload();
+  }
   
   ///////////////////////////////////////////////////////
 
-
-
   return (
     <>
-
-      
-      <div className='Navbar'>
-        <h1>유저: {username}</h1>
-        <h1>방: {role === 'host' ? generatedCode : roomcode}</h1>
-        <h3>접속상태: {isConnected ? "접속중" : "미접속"}</h3>
-        <div className="Card">
-          {/* 접속 상태에 따라 입력 필드와 버튼 표시 */}
-          {isConnected ? (
-            <>
-              <button onClick={disconnectToChatServer}>접속종료</button>
-            </>
-          ) : (
-            <>
-  
-              {role === 'host' ? (
-                <>
-                  <input
-                    value={generatedCode || generateRoomCode()}
-                    readOnly
-                    placeholder="방 코드 (자동 생성됨)"
-                  />
-                  <button onClick={connectToChatServer}>접속하기</button>
-                </>
-              ) : role === 'participant' ? (
-                <>
-                  <input
-                    value={roomcode}
-                    onChange={(e) => setRoomcode(e.target.value.toUpperCase())}
-                    placeholder="방 코드를 입력하세요"
-                  />
-                  <button onClick={connectToChatServer}>접속하기</button>
-                </>
-              ) : (
-                <>
-                  <button onClick={() => setRole('host')}>호스트로 접속</button>
-                  <button onClick={() => setRole('participant')}>참가자로 접속</button>
-                </>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="split-container">
-        <div className="left-section">
-          <li className='welcome-message'>금칙어 게임에 오신것을 환영합니다!</li>
-          <button onClick={Gotogameroompage}>게임 시작하기</button>
-        </div>
-        <div className="right-section">
-          <div>
-            <div className="container mt-4">
-              <h3>금칙어 목록</h3>
-              <table className="table table-bordered table-hover">
-                <thead className="table-dark">
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">유저</th>
-                    <th scope="col">금칙어</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {forbiddenWords.map((word, index) => (
-                    <tr key={index}>
-                      <th scope="row">{index + 1}</th>
-                      <td>{word.username}</td>
-                      <td>{word.forbiddenword}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+      {!isToggled ? (
+        <div className='beforeToggleContainer'>
+          <h1>유저: {username}</h1>
+          <h1>방: {role === 'host' ? generatedCode : roomcode}</h1>
+          <h3>접속상태: {isConnected ? "접속중" : "미접속"}</h3>
+          <div className="Card">
+            {isConnected ? (
+              <>
+                <button onClick={disconnectBtnHandler}>접속종료</button>
+              </>
+            ) : (
+              <>
+                {role === 'host' ? (
+                  <>
+                    <input
+                      value={generatedCode || generateRoomCode()}
+                      readOnly
+                      placeholder="방 코드 (자동 생성됨)"
+                    />
+                    <button onClick={connectBtnHandler}>접속하기</button>
+                  </>
+                ) : role === 'participant' ? (
+                  <>
+                    <input
+                      value={roomcode}
+                      onChange={(e) => setRoomcode(e.target.value.toUpperCase())}
+                      placeholder="방 코드를 입력하세요"
+                    />
+                    <button onClick={connectBtnHandler}>접속하기</button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => setRole('host')}>호스트로 접속</button>
+                    <button onClick={() => setRole('participant')}>참가자로 접속</button>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="afterToggleContainer">
+          <div className="connectedUserList">
+            <div>
+              <div className="container mt-4">
+                <h3>금칙어 목록</h3>
+                <table className="table table-bordered table-hover">
+                  <thead className="table-dark">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">유저</th>
+                      <th scope="col">금칙어</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {forbiddenWords.map((word, index) => (
+                      <tr key={index}>
+                        <th scope="row">{index + 1}</th>
+                        <td>{word.username}</td>
+                        <td>{word.forbiddenword}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className="startGameSection">
+            <button onClick={Gotogameroompage}>게임 시작하기</button>
+          </div>
+        </div>
+      )}
     </>
-  )
+ );
 };
 
 

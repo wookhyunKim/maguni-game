@@ -118,9 +118,6 @@ const videoSize ={
 
     return (
         <>
-            <nav className="navbar">
-                <div className="navbar-header"></div>
-            </nav>
             <StatusBar/>
             <div id="main-container" className="container">
                 <div id="join">
