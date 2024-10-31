@@ -89,23 +89,25 @@ useEffect(()=>{
 },[playerlist])
 
 return (
-  <div className="input-group" style={{ margin: '10px 0' }}>
-      <p>{index !=0? playerlist[index-1]: playerlist[playerlist.length-1]}</p>
-      <input 
-          type="text"
-          className="form-control"
-          value={inputValue}
-          onChange={handleInputChange}
-          placeholder="메시지를 입력하세요"
-          />
-      <button 
-          className="btn btn-primary"
-          onClick={insertWord}
-          style={{ marginLeft: '5px' }}
-      >
-          전송
-      </button>
-  </div>
+    <>
+        <p>{index !=0? playerlist[index-1]: playerlist[playerlist.length-1]} 님의 금칙어를 입력해주세요</p>
+        <div className="input-group" style={{ margin: '10px 0' }}>
+            <input 
+                type="text"
+                className="form-control"
+                value={inputValue}
+                onChange={handleInputChange}
+                placeholder="메시지를 입력하세요"
+                />
+            <button 
+                className="btn btn-primary"
+                onClick={insertWord}
+                style={{ marginLeft: '5px' }}
+            >
+                전송
+            </button>
+        </div>
+  </>
 );
 }
 // PropTypes 정의 추가
