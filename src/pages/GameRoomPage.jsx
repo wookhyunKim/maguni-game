@@ -25,6 +25,9 @@ const videoSize ={
     const [count, setCount] = useState(0);
     const [isStoppedManually, setIsStoppedManually] = useState(false);
 
+    const [currentPlayers, setCurrentPlayers] = useState([]);
+    const [myIndex, setMyIndex] = useState(-1);
+
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
@@ -116,6 +119,18 @@ const videoSize ={
         };
     }, [count, isStoppedManually]);
 
+    useEffect(() => {
+        // playerlist에서 자신의 인덱스 찾기
+        const myIdx = players.findIndex(player => player.nickname === username);
+        setMyIndex(myIdx);
+
+        // 자신을 제외한 플레이어 목록 생성
+        if (myIdx !== -1) {
+            const filteredPlayers = players.filter((_, index) => index !== myIdx);
+            setCurrentPlayers(filteredPlayers);
+        }
+    }, [players, username]);
+
     return (
         <>
             <StatusBar/>
@@ -178,7 +193,7 @@ const videoSize ={
                                 <div className="sidebar_content">
                                     <table className="user-wordlist-table">
                                         <tbody>
-                                            {players.map((player, index) => (
+                                            {currentPlayers.map((player, index) => (
                                                 <tr key={index}>
                                                     <td>{player.nickname}</td>
                                                     <td>{player.words[0]}</td>

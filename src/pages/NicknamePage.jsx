@@ -5,8 +5,6 @@ import { usePlayerStore } from '../components/store/playerStore';
 
 const NicknamePage = () => {
  
-    
-  
   //store을 import해와서, 그곳에 username을 저장함
   const username = usePlayerStore(state=>state.username);
   const setUsername = usePlayerStore(state=>state.setUsername);
