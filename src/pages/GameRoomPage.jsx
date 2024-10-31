@@ -145,52 +145,76 @@ const videoSize ={
                 <div id="session" style={{ display: 'none' }}>
                     <div id="session-header">
                         <h1 id="session-title"></h1>
+                    </div>
+                    <div id="session-body">
+                        <div className="main-content">
+                            <div id="main-video" className="col-md-6">
+                                <p></p><div className="webcam-container" style={{ position: 'relative', height: videoSize.height, width: videoSize.width }}>
+                                    <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                                        <video id = "myVideo" autoPlay playsInline width={videoSize.width} height={videoSize.height}></video>
+
+                                    </div>
+                                    <div style={{ position: 'absolute', top: 0, left: 0 }}>
+                                        {/* <canvas ref={canvasRef} width={videoSize.width} height={videoSize.height} className="filter-canvas"></canvas> */}
+
+                                    </div>
+                                </div>
+                                <p className="status">{status}</p>
+
+                                <div className="main-status"style={{ margin: '10px' }}>
+                                    {/* <button onClick={startFiltering}>필터 시작</button> */}
+                                    <button id="startButton">게임 시작</button>
+                                    <button id="stopButton" disabled>게임 종료</button>
+                                    <div id="count">금칙어(아니) 카운트: 0</div>
+                                </div>
+                            </div>
+                            <div id="video-container" className="col-md-6">
+                            </div>
+                        </div>
                         
-                    </div>
-                    <div id="main-video" className="col-md-6">
-                        <p></p><div className="webcam-container" style={{ position: 'relative', height: videoSize.height, width: videoSize.width }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0 }}>
-                                <video id = "myVideo" autoPlay playsInline width={videoSize.width} height={videoSize.height}></video>
-
+                        <div className="gameroom-sidebar">
+                            <div className="sidebar_wordlist">
+                                <div className="sidebar_index">금칙어 목록</div>
+                                <div className="sidebar_content">
+                                    <table className="user-wordlist-table">
+                                        <tbody>
+                                            {players.map((player, index) => (
+                                                <tr key={index}>
+                                                    <td>{player.nickname}</td>
+                                                    <td>{player.words[0]}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <div style={{ position: 'absolute', top: 0, left: 0 }}>
-                                {/* <canvas ref={canvasRef} width={videoSize.width} height={videoSize.height} className="filter-canvas"></canvas> */}
-
+                            <div className="sidebar_mymission">
+                                <div className="sidebar_index">나의 미션</div>
+                                <div className="sidebar_content">
+                                    <table className="user-wordlist-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>미션 내용</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div className="sidebar_goongye">
+                                <div className="sidebar_index">진행자</div>
+                                <div className="sidebar_content">
+                                    <table className="user-wordlist-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>진행자 정보</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                        <p className="status">{status}</p>
-
-                        <div style={{ margin: '10px' }}>
-                            {/* <button onClick={startFiltering}>필터 시작</button> */}
-                            <button id="startButton">게임 시작</button>
-                            <button id="stopButton" disabled>게임 종료</button>
-                            <div id="count">금칙어(아니) 카운트: 0</div>
-                        </div>
-                    </div>
-                    <div id="video-container" className="col-md-6">
                     </div>
                     
-                    <div className="gameroom-sidebar">
-                        <div className="sidebar_wordlist">
-                            <div className="sidebar_index">금칙어 목록</div>
-                            <div className="sidebar_content">
-                                {players.map((player, index) => (
-                                    <div className="user-wordlist" key={index}>
-                                    <span>{player.nickname}</span>
-                                    <div>{player.words[0]}</div>
-                                </div> 
-                                ))}
-                            </div>
-                        </div >
-                        <div className="sidebar_mymission">
-                            <div className="sidebar_index">나의 미션</div>
-                            <div className="sidebar_content">sdf</div>
-                        </div>
-                        <div className="sidebar_goongye">
-                            <div className="sidebar_index">진행자</div>
-                            <div className="sidebar_content">sdf</div>
-                        </div>
-                    </div>
                     <div id="subtitles" style={{
                     }}>
                         자막

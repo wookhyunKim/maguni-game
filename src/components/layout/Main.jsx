@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import MainSingleVideo from '../common/MainSingleVideo'
 import MissionCard from '../common/MissionCard'
 import SideElement from '../common/SideElement'
 import UserBannedWords from '../common/UserBannedWords'
 import useStoreTime from "../store/gameInfoStore";
-import useScriptStore from "../store/gameScripts";
+import useScriptStore from "../../assets/gameScripts";
 import useGameStore from "../store/gameInfoStore";
 
 import goongYeImage from '../../assets/images/goongYeImage.png'
