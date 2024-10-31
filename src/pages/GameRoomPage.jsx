@@ -25,6 +25,7 @@ const videoSize ={
     const [count, setCount] = useState(0);
     const [isStoppedManually, setIsStoppedManually] = useState(false);
 
+    //플레이어 목록에서 자신을 제외한 목록 생성
     const [currentPlayers, setCurrentPlayers] = useState([]);
     const [myIndex, setMyIndex] = useState(-1);
 
@@ -119,6 +120,7 @@ const videoSize ={
         };
     }, [count, isStoppedManually]);
 
+    //금칙어 목록에서 자신의 금칙어를 제외한 목록 생성
     useEffect(() => {
         // playerlist에서 자신의 인덱스 찾기
         const myIdx = players.findIndex(player => player.nickname === username);
