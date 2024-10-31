@@ -5,7 +5,7 @@ import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
 import Footer from '../components/layout/Footer.jsx';
 import useRoomStore from '../components/store/roomStore.js';
-import {usePlayerStore}  from '../components/store/players.js';
+import {usePlayerStore}  from '../components/store/playerStore.js';
 
 const GameRoomPage = () => {
 const videoSize ={

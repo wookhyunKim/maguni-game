@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
 import useRoomStore from '../components/store/roomStore';
-import { usePlayerStore } from '../components/store/players';
+import { usePlayerStore } from '../components/store/playerStore';
 import { io } from "socket.io-client";
 
 const HostGuestPage = () => {

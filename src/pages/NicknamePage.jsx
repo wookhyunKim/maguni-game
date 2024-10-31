@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { usePlayerStore } from '../components/store/players';
+import { usePlayerStore } from '../components/store/playerStore';
 
 
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../../styles/input.css'
 import axios from 'axios';
 import PropTypes from 'prop-types'; 
-import { usePlayerStore } from '../store/players';
+import { usePlayerStore } from '../store/playerStore';
 
 
 function Input({username, roomcode}) {
