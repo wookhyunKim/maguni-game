@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import { joinSession } from '../../openvidu/app_openvidu.js';
 import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
+import ForbiddenWordlistModal from '../components/modals/forbiddenWordlistModal.jsx';
 import Footer from '../components/layout/Footer.jsx';
 import useRoomStore from '../components/store/roomStore.js';
 import { usePlayerStore } from '../components/store/playerStore.js';
@@ -379,7 +380,8 @@ const GameRoomPage = () => {
                     </div>
                 </div>
             </div>
-            <Footer username={username} roomcode={roomcode} />
+            <ForbiddenWordlistModal forbiddenWordlist={forbiddenWordlist} setForbiddenWordlist={setForbiddenWordlist}/>
+            <Footer username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList}/>
         </>
     );
 };

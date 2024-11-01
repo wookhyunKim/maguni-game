@@ -6,7 +6,7 @@ import soundOnIcon from '../../assets/images/soundOnIcon.png';
 import soundOffIcon from '../../assets/images/SoundOffIcon.png';
 import treasureCardsIcon from '../../assets/images/treasureCardsIcon.png';
 
-const Footer = ({username, roomcode}) => {
+const Footer = ({username, roomcode, participantList, setParticipantList}) => {
   return (
     <div className="footer">
         <div className="footer-tip">
@@ -26,7 +26,7 @@ const Footer = ({username, roomcode}) => {
                             value="게임 종료" />
         </div>
         <div className="footer-input">
-          <Input username={username} roomcode={roomcode}></Input>
+          <Input username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList}></Input>
         </div>
     </div>
   )
@@ -35,7 +35,9 @@ const Footer = ({username, roomcode}) => {
 // PropTypes 정의 추가
 Footer.propTypes = {
   username: PropTypes.string.isRequired,
-  roomcode: PropTypes.string.isRequired
+  roomcode: PropTypes.string.isRequired,
+  participantList: PropTypes.array.isRequired,
+  setParticipantList: PropTypes.func.isRequired
 };
 
 
