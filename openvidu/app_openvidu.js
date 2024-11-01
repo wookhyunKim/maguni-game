@@ -30,9 +30,9 @@ export function joinSession() {
 
       // When the HTML video has been appended to DOM...
       subscriber.on('videoElementCreated', event => {
+         appendCanvas(event.element, subscriber.stream.connection);
 
          // Add a new <p> element for the user's nickname just below its video
-         // appendUserData(event.element, subscriber.stream.connection);
       });
    });
 
@@ -82,8 +82,9 @@ export function joinSession() {
 
             // When our HTML video has been added to DOM...
             publisher.on('videoElementCreated', function (event) {
-               initMainVideo(event.element, myUserName);
-               // appendUserData(event.element, myUserName);
+               appendCanvas(event.element, myUserName);
+
+               // initMainVideo(event.element, myUserName);
                event.element['muted'] = true;
             });
 
@@ -118,6 +119,39 @@ window.onbeforeunload = function () {
 };
 
 
+function appendCanvas(videoElement, connection) {
+   var userData;
+   var nodeId;
+   if (typeof connection === "string") {
+      userData = connection;
+      nodeId = connection;
+   } else {
+      userData = JSON.parse(connection.data).clientData;
+      nodeId = connection.connectionId;
+   }
+
+   // 공통 부모 요소를 생성합니다.
+   const container = document.createElement('div');
+   container.style.position = 'relative';
+   container.style.width = 640;
+   container.style.height = 480;
+
+   // 기존 비디오 요소를 부모 요소로 이동합니다.
+   videoElement.parentNode.insertBefore(container, videoElement);
+   container.appendChild(videoElement);
+
+   const canvas = document.createElement('canvas');
+   canvas.className = "canvas";
+   canvas.id = userData;
+   canvas.width = 640;
+   canvas.height = 480;
+   canvas.style.position = 'absolute';
+   canvas.style.top = '0';
+   canvas.style.left = '0';
+   canvas.style.zIndex = '1';
+
+   container.appendChild(canvas);
+}
 
 
 function appendUserData(videoElement, connection) {
@@ -135,7 +169,7 @@ function appendUserData(videoElement, connection) {
    dataNode.id = "data-" + nodeId;
    dataNode.innerHTML = "<p>" + userData + "</p>";
    videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
-   addClickListener(videoElement, userData);
+   // addClickListener(videoElement, userData);
 }
 
 function removeUserData(connection) {
@@ -163,11 +197,11 @@ function addClickListener(videoElement, userData) {
    });
 }
 
-function initMainVideo(videoElement, userData) {
-   document.querySelector('#main-video video').srcObject = videoElement.srcObject;
-   document.querySelector('#main-video p').innerHTML = userData;
-   document.querySelector('#main-video video')['muted'] = true;
-}
+// function initMainVideo(videoElement, userData) {
+//    document.querySelector('#main-video video').srcObject = videoElement.srcObject;
+//    document.querySelector('#main-video p').innerHTML = userData;
+//    document.querySelector('#main-video video')['muted'] = true;
+// }
 
 
 /**
