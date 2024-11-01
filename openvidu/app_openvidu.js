@@ -32,7 +32,7 @@ export function joinSession() {
       subscriber.on('videoElementCreated', event => {
 
          // Add a new <p> element for the user's nickname just below its video
-         appendUserData(event.element, subscriber.stream.connection);
+         // appendUserData(event.element, subscriber.stream.connection);
       });
    });
 
@@ -83,7 +83,7 @@ export function joinSession() {
             // When our HTML video has been added to DOM...
             publisher.on('videoElementCreated', function (event) {
                initMainVideo(event.element, myUserName);
-               appendUserData(event.element, myUserName);
+               // appendUserData(event.element, myUserName);
                event.element['muted'] = true;
             });
 

@@ -10,6 +10,7 @@ function Input({username, roomcode}) {
 //상태관리: inputvlaue, getcode
 const [inputValue, setInputValue] = useState('');
 const [getCode,setGetCode] = useState('');
+const players = usePlayerStore(state=>state.players);
 const setPlayers = usePlayerStore(state=>state.setPlayers)
 
 const [gamers,setGamers] = useState([]);
