@@ -36,7 +36,7 @@ const insertWord = ()=>{
             "word": inputValue
         },
     }).then((res)=>{
-        console.log(res.data['success'])
+        // console.log(res.data['success'])
         return getWords();
     }).catch((err)=>{
         console.log(err)
@@ -83,7 +83,6 @@ useEffect(()=>{
 
 useEffect(()=>{
     const idx = setIndex(playerlist.findIndex((player) => player === username));
-    console.log("index : ",idx)
     // console.log("gamers : ",gamers.length, gamers);
     // console.log("playerlist: ",playerlist.length,playerlist)
 },[playerlist])
