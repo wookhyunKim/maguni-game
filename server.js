@@ -13,10 +13,8 @@ const io = new Server(server, { //모든 클라이언트가 접근 가능한 웹
     }
 });
 
-// 금칙어 목록
-const forbiddenWords = ['야', '응', '오키', '뭐', '팀장', '하이', '니', '뭔데', '나', '음', '인정', '정글', '나만무', '행복', '그만', '가보자', '베고파'];
-//사용자별 금칙어 목록
-var roomForbiddenWords = {};
+
+var roomUserList = {};
 
 
 io.on('connection', (client) => {               //client가 연결되면 실행
@@ -37,24 +35,23 @@ io.on('connection', (client) => {               //client가 연결되면 실행
     console.log(`사용자 ${username} 가 ${roomnumber} 방에 참가`);
 
     // 방별 금칙어 선택 및 저장
-    if (!roomForbiddenWords[roomnumber]) {
-        roomForbiddenWords[roomnumber] = []; // 새로운 방 생성 시 초기화
+    if (!roomUserList[roomnumber]) {
+        roomUserList[roomnumber] = []; // 새로운 방 생성 시 초기화
     }
 
-    // 랜덤으로 금칙어 선택
-    const newForbiddenWord = forbiddenWords[Math.floor(Math.random() * forbiddenWords.length)];
-    const userForbiddenWord = { username: username, forbiddenword: newForbiddenWord };
-    roomForbiddenWords[roomnumber].push(userForbiddenWord);
+    // // 랜덤으로 금칙어 선택
+    const newUser = { username: username}
 
-    // 클라이언트에 금칙어 전송
-    client.emit('forbidden word', newForbiddenWord);
-    // 금칙어 리스트 전송
-    io.to(roomnumber).emit('forbidden word list', roomForbiddenWords[roomnumber]);
+    roomUserList[roomnumber].push(newUser);
+
+
+    // 유저 리스트 전송
+    io.to(roomnumber).emit('send user list', roomUserList[roomnumber]);
 
     client.on('disconnect', () => {         //client로부터 disconnection
         console.log(`사용자가 나갔습니다... ${username}`);
-        roomForbiddenWords[roomnumber] = roomForbiddenWords[roomnumber].filter(user => user.username !== username);
-        io.to(roomnumber).emit('forbidden word list', roomForbiddenWords[roomnumber]);
+        roomUserList[roomnumber] = roomUserList[roomnumber].filter(user => user.username !== username);
+        io.to(roomnumber).emit('send user list', roomUserList[roomnumber]);
     })
 });
 

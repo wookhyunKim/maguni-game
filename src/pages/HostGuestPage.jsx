@@ -24,16 +24,11 @@ const HostGuestPage = () => {
 
   const [isConnected, setIsConnected] = useState(false);
 
-
-  // const [roomcode, setroomcode] = useState('');
-
   const [role, setRole] = useState(null); // 역할 (host 또는 participant)
 
   const [socket, setSocket] = useState(null);
 
-  const [forbiddenWord, setForbiddenWord] = useState('');
-
-  const [forbiddenWords, setForbiddenWords] = useState([]);
+  const [userList, setUserList] = useState([]);
 
   const [generatedCode, setGeneratedCode] = useState(''); // 호스트용 코드 표시
 
@@ -98,20 +93,16 @@ function joinRoom() {
     setIsConnected(false);
   }
 
-  function forbiddenWordRecieved(word) {
-    setForbiddenWord(word);
-  }
 
-  function updateforbiddenWordList(list) {
-    setForbiddenWords(list);
+  function updateUserList(list) {
+    setUserList(list);
   }
 
   useEffect(() => {   //소켓 별 이벤트 리스너
     console.log('useEffect called!');
     socket?.on('connect', onConnected); //서버랑 연결이 되면
     socket?.on('disconnect', onDisconnected); //서버로부터 연결이 끊어지면
-    socket?.on('forbidden word', forbiddenWordRecieved); //금칙어 지정
-    socket?.on('forbidden word list', updateforbiddenWordList);
+    socket?.on('send user list', updateUserList);
 
     return () => {
       console.log('useEffect clean up function called!');
@@ -121,15 +112,22 @@ function joinRoom() {
   }, [socket]);
 
 
-  // 6자리 랜덤 코드 생성 함수
+  // 역할이 변경될 때 코드를 생성하도록 수정
+  useEffect(() => {
+    if (role === 'host') {
+      const code = generateRoomCode();
+      setGeneratedCode(code);
+      setRoomcode(code);
+    }
+  }, [role]);
+
+  // generateRoomCode 함수 수정
   function generateRoomCode() {
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let code = '';
     for (let i = 0; i < 6; i++) {
       code += letters.charAt(Math.floor(Math.random() * letters.length));
     }
-    setGeneratedCode(code);
-    setRoomcode(code);
     return code;
   }
 
@@ -203,11 +201,10 @@ function joinRoom() {
                     </tr>
                   </thead>
                   <tbody>
-                    {forbiddenWords.map((word, index) => (
+                    {userList.map((word, index) => (
                       <tr key={index}>
                         <th scope="row">{index + 1}</th>
                         <td>{word.username}</td>
-                        {/* <td>{word.forbiddenword}</td> */}
                       </tr>
                     ))}
                   </tbody>
