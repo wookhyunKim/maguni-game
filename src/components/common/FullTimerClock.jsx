@@ -3,8 +3,9 @@
 //호스트가 게임 시작하기 누르면, 타이머 시작됨
 //다만 모달 뜨는 순간만 타이머 멈춤
 
-import { useEffect, useState } from "react";
-import useStoreTime from "../store/gameInfoStore";
+import { useEffect} from "react";
+import {useStoreTime} from "../store/gameInfoStore";
+import '../../styles/fulltimeclock.css'
 
 const timerStyles = {
     container: {

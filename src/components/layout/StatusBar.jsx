@@ -4,12 +4,12 @@ import SessionBar from '../common/SessionBar'
 import '../../styles/statusBar.css'
 import teamLogo from '../../assets/images/teamLogoImage.png'
 
-const StatusBar = () => {
+const StatusBar = (sessionTime) => {
   return (
     <div className="status-bar">
         <img className="teamLogo" src={teamLogo}></img>
         {/* remainingTime은 세션별로 남은시간 입력*/}
-        <SessionBar className="sessionBar" remainingTime = "120"/>
+        <SessionBar className="sessionBar" sessionTime = {sessionTime}/>
         {/* nickname은 유저 닉네임, playerNumber는 player번호, imageUrl는 프로필 이미지*/}
         <ProfileCard className="profileCard"/>
         <Timer className="timer"/>
