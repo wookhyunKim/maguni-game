@@ -1,18 +1,17 @@
-import { useEffect} from 'react';
-import { useModalStore } from '../store/modalStore.js';
 import PropTypes from 'prop-types';
 import '../../styles/modals.css';
+import { useEffect } from 'react';
+// modals 상태 가져오기
 
-const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist }) => {
-    const { setModal } = useModalStore();
 
+const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
-            setModal('forbiddenWordlist', false);
+            onClose();
         }, 5000);
 
         return () => clearTimeout(timer);
-    }, [setModal]);
+    }, [onClose]);
 
     return (
         <div className="modal-overlay">
@@ -45,6 +44,7 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist }) => {
 ForbiddenWordlistModal.propTypes = {
     participantList: PropTypes.array.isRequired,
     forbiddenWordlist: PropTypes.array.isRequired,
+    onClose: PropTypes.func.isRequired,
 };
 
 export default ForbiddenWordlistModal;

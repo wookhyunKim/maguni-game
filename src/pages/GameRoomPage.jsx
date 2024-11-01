@@ -7,6 +7,7 @@ import ForbiddenWordlistModal from '../components/modals/forbiddenWordlistModal.
 import Footer from '../components/layout/Footer.jsx';
 import useRoomStore from '../components/store/roomStore.js';
 import { usePlayerStore } from '../components/store/playerStore.js';
+import { useModalStore } from '../components/store/modalStore.js';
 import IMG from "../../src/assets/images/dish.png"
 import axios from 'axios';
 
@@ -31,6 +32,12 @@ const GameRoomPage = () => {
     // 음성인식 관련 상태
     const [isStoppedManually, setIsStoppedManually] = useState(false); //수동 종료
 
+    //모달 관련 상태
+    const { modals, setModal } = useModalStore();
+
+    //사이드바에 금칙어 보이는 여부
+    const [isWordsShown, setIsWordsShown] = useState(false);
+
 
     // ========================== 금칙어 설정 완료 ================
     // DB에서 유저별 금칙어 리스트 가져오기 => forbiddenWordlist
@@ -44,6 +51,29 @@ const GameRoomPage = () => {
             console.log(err)
         })
     }
+
+    //===========================금칙어 안내 모달 창 띄우기===========================
+    const forbiddenwordAnouncement = async() => {
+        try {
+            // 먼저 플레이어 리스트 가져오기
+            await getPlayersInfo();
+            // 데이터를 가져온 후 모달 창 띄우기
+            setModal('forbiddenWordlist', true);
+
+            // Promise를 사용하여 타이머 완료를 기다림
+            await new Promise(resolve => {
+                setTimeout(() => {
+                    setModal('forbiddenWordlist', false);
+                    resolve(); // 타이머 완료 후 Promise 해결
+                }, 5000);
+            });
+
+            // 모달이 완전히 닫힌 후에 사이드바에 금칙어 표시
+            setIsWordsShown(true);
+        } catch (error) {
+            console.error('금칙어 안내 모달 창 띄우기 오류:', error);
+        }
+    };
 
     // ========================== 추가 기능 =====================
     function nameCanvas() {
@@ -252,7 +282,7 @@ const GameRoomPage = () => {
             startButton?.removeEventListener('click', handleStart);
             stopButton?.removeEventListener('click', handleStop);
         };
-    }, [forbiddenWordlist]);
+    }, [forbiddenWordlist, isStoppedManually, username, socket, handleForbiddenWordUsed]);
     // ================================================================================================================
 
     return (
@@ -301,10 +331,11 @@ const GameRoomPage = () => {
                                 <div className="App">
                                     <h1>방 접속 페이지</h1>
                                     <>
+                                        <button onClick={forbiddenwordAnouncement}>금칙어 설정 완료2</button>
                                         <button onClick={getPlayersInfo}>금칙어 설정 완료</button>
                                         <button onClick={disconnectFromRoom}>방 나가기</button>
                                         <button id="startButton">음성인식시작</button>
-                                        <button id="stopButton" disabled>음석 인식 종료</button>
+                                        <button id="stopButton" disabled>음성 인식 종료</button>
                                         <button id="bulchikonCanvas" onClick={bulchikonCanvas}>벌칙</button>
                                         <button id="nameCanvas" onClick={nameCanvas}>이름</button>
                                         <button id="wordonCanvas" onClick={wordonCanvas}>금칙어</button>
@@ -339,13 +370,11 @@ const GameRoomPage = () => {
                                     <table className="user-wordlist-table">
                                         <tbody>
                                             <ul>
-                                                {participantList.map(user => (
-                                                    // user !== username && ( // 자신이 아닌 경우에만 표시
+                                                {isWordsShown && participantList.map(user => (
                                                     <li key={user}>
                                                         {user} - {forbiddenWordlist.find(e => e.nickname === user)?.words || '금칙어 없음'}
                                                         - 금칙어 카운트: {forbiddenWordCount[user] || 0}
                                                     </li>
-                                                    // )
                                                 ))}
                                             </ul>
                                         </tbody>
@@ -380,7 +409,12 @@ const GameRoomPage = () => {
                     </div>
                 </div>
             </div>
-            <ForbiddenWordlistModal forbiddenWordlist={forbiddenWordlist} setForbiddenWordlist={setForbiddenWordlist}/>
+            {modals.forbiddenWordlist &&(
+            <ForbiddenWordlistModal 
+                participantList={participantList}
+                forbiddenWordlist={forbiddenWordlist}
+                onClose={() => setModal('forbiddenWordlist', false)}
+            />)}
             <Footer username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList}/>
         </>
     );
