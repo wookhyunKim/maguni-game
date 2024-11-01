@@ -7,6 +7,7 @@ import StatusBar from '../components/layout/StatusBar.jsx';
 import Footer from '../components/layout/Footer.jsx';
 import useRoomStore from '../components/store/roomStore.js';
 import {usePlayerStore}  from '../components/store/playerStore.js';
+import IMG from "../../src/assets/images/dish.png"
 
 const GameRoomPage = () => {
 const videoSize ={
@@ -39,6 +40,94 @@ const videoSize ={
     // forbiddenWordlist를 players 배열에서 생성하는 로직 추가
     const [forbiddenWordlist, setForbiddenWordlist] = useState([]);
 
+
+    // const [state, setState] = useState("Initializing...");
+// ================================================================================================================
+function draw() {
+    const videoContainer = document.getElementById("video-container");
+    if (!videoContainer) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = videoSize.width;
+    canvas.height = videoSize.height;
+    canvas.style.position = "absolute";
+    canvas.style.top = videoContainer.offsetTop + "px";
+    canvas.style.left = videoContainer.offsetLeft + "px";
+    canvas.style.zIndex = "10";
+    const ctx = canvas.getContext("2d");
+    ctx.font = "12px serif";
+    ctx.fillText(players[myIndex].nickname, 10, 50);
+    videoContainer.parentNode.insertBefore(canvas, videoContainer.nextSibling);
+  }
+function getforbiddenword() {
+    const videoContainer = document.getElementById("video-container");
+    if (!videoContainer) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = videoSize.width;
+    canvas.height = videoSize.height;
+    canvas.style.position = "absolute";
+    canvas.style.top = videoContainer.offsetTop + "px";
+    canvas.style.left = videoContainer.offsetLeft + "px";
+    canvas.style.zIndex = "10";
+    const ctx = canvas.getContext("2d");
+    ctx.font = "40px serif";
+    ctx.fillText(players[myIndex].words[0], 400,50);
+    videoContainer.parentNode.insertBefore(canvas, videoContainer.nextSibling);
+  }
+
+// 비디오에 벌칙 캔버스
+function beolchick() {
+    // video-container 요소를 찾음
+    const videoContainer = document.getElementById("video-container");
+    
+    // video-container가 없으면 함수 종료
+    if (!videoContainer) return;
+    
+    const canvas = document.createElement("canvas");
+    canvas.width = videoSize.width;
+    canvas.height = videoSize.height;
+    canvas.style.position = "absolute";
+    canvas.style.top = videoContainer.offsetTop + "px";
+    canvas.style.left = videoContainer.offsetLeft + "px";
+    canvas.style.zIndex = "10";
+    
+    // 부모 요소에 canvas 추가
+    videoContainer.parentNode.insertBefore(canvas, videoContainer.nextSibling);
+    
+    const img = new Image();
+    img.src = IMG; // 이미지 소스 설정
+    const WIDTH = 280;
+    const HEIGHT = 120;
+    let yPosition = -HEIGHT; // 시작 위치는 캔버스 위쪽 바깥
+    const targetY = videoSize.height / 2 - HEIGHT / 2; // 목표 위치 (중앙)
+    
+    const ctx = canvas.getContext("2d");
+    
+    img.onload = () => {
+        // 애니메이션 함수 정의
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화
+            
+            // 현재 위치에 이미지 그리기
+            ctx.drawImage(img, WIDTH/2,yPosition-200, WIDTH, HEIGHT); // 수평 중앙 정렬
+            
+            // 목표 위치까지 이동
+            if (yPosition < targetY) {
+                yPosition += 5; // 속도 조절 (숫자가 커질수록 빨라짐)
+                requestAnimationFrame(animate); // 다음 프레임 요청
+            } else {
+                // 목표에 도달하면 멈춤
+                setTimeout(() => {
+                    canvas.remove(); // 2초 후에 캔버스 제거
+                }, 1500);
+            }
+        }
+        
+        animate(); // 애니메이션 시작
+    };
+    
+}
+
+// ================================================================================================================
     useEffect(() => {
         // players 배열의 각 플레이어에 대해 금칙어 리스트 생성
         const newForbiddenWordlist = players.map((player, index) => ({
@@ -197,7 +286,7 @@ const videoSize ={
           stopButton?.removeEventListener('click', handleStop);
         };
       }, [forbiddenWordCount, isStoppedManually, isConnected]);
-
+// ================================================================================================================
     return (
         <>
             <StatusBar/>
@@ -255,9 +344,11 @@ const videoSize ={
                                                     </li>
                                                 ))}
                                             </ul>
-
                                             <button id="startButton">음성인식 시작</button>
                                             <button id="stopButton" disabled>음석 인식 종료</button>
+                                            <button id="beolchick" onClick={beolchick}>벌칙</button>
+                                            <button id="draw" onClick={draw}>이름</button>
+                                            <button id="getforbiddenword" onClick={getforbiddenword}>금칙어</button>
                                             {/* <div id="count">금칙어(아니) 카운트: {forbiddenWordCount[username] || 0}</div> */}
                                             <div
                                                 id="subtitles"
