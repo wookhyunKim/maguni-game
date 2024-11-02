@@ -12,6 +12,8 @@ import { useModalStore } from '../components/store/modalStore.js';
 import IMG from "../../src/assets/images/dish.png"
 import axios from 'axios';
 import { useStoreTime } from '../components/store/gameInfoStore.js';
+import GoongYeAnouncingEndModal from '../components/modals/goongYeAnouncingEndModal.jsx';
+import Goon from "../assets/images/goongYeImage.png";
 
 const GameRoomPage = () => {
     const videoSize = {
@@ -419,14 +421,31 @@ const GameRoomPage = () => {
         };
     }, [socket]);
 
-    // 게임 준비 완료 함수
-    const handleGameReady = () => {
-        socket?.emit('ready for game');
+
+    // 게임 종료 안내 함수 추가
+    const startGameEndAnnouncement = () => {
+        setModal('goongYeAnouncingEnd', true);
+        
+        setTimeout(() => {
+            setModal('goongYeAnouncingEnd', false);
+        }, 5000);
     };
+    ////////////////////////////////////////////////////모달 창에서 이미지 바로 보이게 하기 위해 미리 로드///////////////
+    // 컴포넌트 마운트 시 이미지 미리 로드
+    useEffect(() => {
+        const preloadImages = () => {
+            const images = [Goon];
+            images.forEach(image => {
+                const img = new Image();
+                img.src = image;
+            });
+        };
+        preloadImages();
+    }, []);
 //////////////////////////////////////////////////////////////////////
     return (
         <>
-            <StatusBar />
+            <StatusBar username={username} />
             <div id="main-container" className="container">
                 {/* ---------- 대기실 2 ----------*/}
                 <div id="join">
@@ -468,7 +487,7 @@ const GameRoomPage = () => {
                                     </div>
                                 </div>
                                 <div className="App">
-                                    <h1>방 접속 페이지</h1>
+
                                     <>
                                         <button id="penaltyButton">벌칙 시작</button> {/* New Penalty Button */}
                                         <button onClick={forbiddenwordAnouncement}>금칙어 설정 완료2</button>
@@ -479,7 +498,7 @@ const GameRoomPage = () => {
                                         <button id="bulchikonCanvas" onClick={bulchikonCanvas}>벌칙</button>
                                         <button id="nameCanvas" onClick={nameCanvas}>이름</button>
                                         <button id="wordonCanvas" onClick={wordonCanvas}>금칙어</button>
-                                        <button id="gameReady" onClick={handleGameReady}>게임 준비 완료</button>
+                                        <button onClick={startGameEndAnnouncement}>게임 종료 안내</button>
                                         <div
                                             id="subtitles"
                                             style={{
@@ -559,6 +578,11 @@ const GameRoomPage = () => {
             {modals.goongYeForbiddenWord && (
                 <GoongYeForbiddenWordModal 
                     onClose={() => setModal('goongYeForbiddenWord', false)}
+                />
+            )}
+            {modals.goongYeAnouncingEnd && (
+                <GoongYeAnouncingEndModal 
+                    onClose={() => setModal('goongYeAnouncingEnd', false)}
                 />
             )}
             <Footer username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList}/>

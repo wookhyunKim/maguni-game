@@ -1,16 +1,30 @@
 import PropTypes from 'prop-types';
 import '../../styles/modals.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useGameStageStore from '../store/gameStage.js';
-// import Goon from "../../assets/images/goongYeImage.png"
+import Goon from "../../assets/images/goongYeImage.png"
+
+// 이미지 미리 로딩
+const preloadImage = new Image();
+preloadImage.src = Goon;
 
 const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose }) => {
     const { goongYeRevealForbiddenWord } = useGameStageStore();
+    const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     useEffect(() => {
+        // 이미지가 이미 캐시되어 있는지 확인
+        if (preloadImage.complete) {
+            setIsImageLoaded(true);
+        } else {
+            preloadImage.onload = () => {
+                setIsImageLoaded(true);
+            };
+        }
+
         const timer = setTimeout(() => {
             onClose();
-        }, goongYeRevealForbiddenWord.sessiontime * 1000);
+        }, 5000); // 5초로 고정
 
         return () => clearTimeout(timer);
     }, [onClose]);
@@ -18,9 +32,17 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                {/* <img src={Goon}/> */}
-                <h2>금칙어 공개 5초</h2>
-                {/* <table className="forbidden-word-table">
+                <img 
+                    src={Goon} 
+                    alt="궁예"
+                    style={{ 
+                        maxWidth: '300px',
+                        height: 'auto',
+                        display: isImageLoaded ? 'block' : 'none'
+                    }}
+                />
+                <h2>금칙어 공개</h2>
+                <table className="forbidden-word-table">
                     <thead>
                         <tr>
                             <th>참가자</th>
@@ -35,9 +57,14 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
                             </tr>
                         ))}
                     </tbody>
-                </table> */}
+                </table>
                 <div className="timer">
-                    <div className="progress-bar" />
+                    <div 
+                        className="progress-bar" 
+                        style={{
+                            animation: 'progress 5s linear'
+                        }}
+                    />
                 </div>
             </div>
         </div>
