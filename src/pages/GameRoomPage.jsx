@@ -11,7 +11,6 @@ import { usePlayerStore } from '../components/store/playerStore.js';
 import { useModalStore } from '../components/store/modalStore.js';
 import IMG from "../../src/assets/images/dish.png"
 import axios from 'axios';
-import { useStoreTime } from '../components/store/gameInfoStore.js';
 
 const GameRoomPage = () => {
     const videoSize = {
@@ -41,21 +40,22 @@ const GameRoomPage = () => {
     //사이드바에 금칙어 보이는 여부
     const [isWordsShown, setIsWordsShown] = useState(false);
 
-    // 시간 관련 상태 추가
-    const [isGameStarted, setIsGameStarted] = useState(false);
+    const [timer, setTimer] = useState(20); // 타이머 상태
+    const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
+
     useEffect(() => {
         // ... existing code ...
-    
+
         const penaltyButton = document.getElementById('penaltyButton');
-    
+
         const handlePenalty = () => {
             // Emit an event that the filter should display for 2 seconds
             const event = new CustomEvent('startPenaltyFilter');
             window.dispatchEvent(event);
         };
-    
+
         penaltyButton?.addEventListener('click', handlePenalty);
-    
+
         return () => {
             penaltyButton?.removeEventListener('click', handlePenalty);
         };
@@ -75,17 +75,14 @@ const GameRoomPage = () => {
         })
     }
 
-    //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
-    const startSettingForbiddenWord = () => {
-        setModal('goongYeForbiddenWord', true);
-        
-        setTimeout(() => {
-            setModal('goongYeForbiddenWord', false);
-        }, 5000);
-    };
-
+    function startGame() {
+        socket.emit('start game', roomcode); // 게임 시작 요청
+        setGameActive(true);
+        setTimer(20); // 타이머 초기화
+        document.getElementById('startButton').click();
+    }
     //===========================금칙어 안내 모달 창 띄우기===========================
-    const forbiddenwordAnouncement = async() => {
+    const forbiddenwordAnouncement = async () => {
         try {
             // 먼저 플레이어 리스트 가져오기
             await getPlayersInfo();
@@ -102,10 +99,36 @@ const GameRoomPage = () => {
 
             // 모달이 완전히 닫힌 후에 사이드바에 금칙어 표시
             setIsWordsShown(true);
+
+            // 금칙어 안내가 끝난 후 1초 뒤에 자동으로 게임 시작
+            setTimeout(() => {
+                // socket.emit('start game', roomcode); // 게임 시작 요청
+                // setGameActive(true);
+                // setTimer(20); // 타이머 초기화
+                document.getElementById('startgame').click();
+
+
+
+            }, 1000);
+
         } catch (error) {
             console.error('금칙어 안내 모달 창 띄우기 오류:', error);
         }
     };
+
+    //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
+    const startSettingForbiddenWord = () => {
+
+        // setModal('goongYeForbiddenWord', true);
+
+        // setTimeout(() => {
+        //     setModal('goongYeForbiddenWord', false);
+        // }, 3000);
+
+        socket.emit('start setting word', roomcode);
+    };
+
+
 
     // ========================== 추가 기능 =====================
     function nameCanvas() {
@@ -279,21 +302,61 @@ const GameRoomPage = () => {
                 }, i * 300); // 각 호출 사이에 300ms의 간격을 둡니다
             }
         });
+        // 타이머 업데이트
+        _socket.on('timer update', (time) => {
+            setTimer(time);
+        });
+        // 게임 종료 처리
+        _socket.on('game ended', (finalCounts) => {
+            console.log(finalCounts);
+            setGameActive(false);
+            console.log('게임이 종료되었습니다. 최종 결과:', finalCounts);
+            alert(`게임이 종료되었습니다. 최종 결과: ${JSON.stringify(finalCounts)}`);
+            document.getElementById('stopButton').click();
+        });
+
+        _socket.on('setting word ended', () => {
+            console.log('금칙어 설정이 끝났습니다.');
+            forbiddenwordAnouncement();
+        });
+    
+        _socket.on('open modal', () => {
+            console.log('모달 오픈');
+            setModal('goongYeForbiddenWord', true);
+
+            setTimeout(() => {
+                setModal('goongYeForbiddenWord', false);
+            }, 3000);
+        });
 
     }
+
+
 
     const handleForbiddenWordUsed = (occurrences) => {
         socket.emit('forbidden word used', username, occurrences);
     };
 
+    useEffect(() => {
+        // 타이머 기능
+        if (gameActive && timer > 0) {
+            const countdown = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+            return () => clearInterval(countdown);
+        } else if (timer === 0) {
+            socket.emit('end game', roomcode); // 타이머가 끝나면 게임 종료 요청
+        }
+    }, [gameActive, timer]);
+
 
 
     // =========================== 방나가기 ========================
-    function disconnectFromRoom() {
-        socket?.disconnect();
-        setParticipantList([]);
-        setForbiddenWordCount({});
-    }
+    // function disconnectFromRoom() {
+    //     socket?.disconnect();
+    //     setParticipantList([]);
+    //     setForbiddenWordCount({});
+    // }
 
     // ======================== 음성인식시작 ========================
     useEffect(() => {
@@ -351,8 +414,8 @@ const GameRoomPage = () => {
 
         const handleStop = () => {
             setIsStoppedManually(true);
-            startButton.disabled = false;
-            stopButton.disabled = true;
+            // startButton.disabled = false;
+            // stopButton.disabled = true;
             recognition.stop();
         };
 
@@ -385,45 +448,9 @@ const GameRoomPage = () => {
             stopButton?.removeEventListener('click', handleStop);
         };
     }, [forbiddenWordlist, isStoppedManually, username, socket, handleForbiddenWordUsed]);
-    
-    
-    
-    // ====================게임 진행 동기화 관련==========================================================
 
-    useEffect(() => {
-        if (!socket) return;
 
-        // 게임 시작 시
-        socket.on('game start', () => {
-            setIsGameStarted(true);
-        });
 
-        // 타이머 업데이트
-        socket.on('timer update', (remainingTime) => {
-            useStoreTime.getState().setTime(remainingTime);
-        });
-
-        // 게임 종료 시
-        socket.on('game end', () => {
-            setIsGameStarted(false);
-            // 게임 종료 처리 로직
-        });
-
-        // 컴포넌트 마운트 시 시간 동기화 요청
-        socket.emit('request time sync');
-
-        return () => {
-            socket.off('game start');
-            socket.off('timer update');
-            socket.off('game end');
-        };
-    }, [socket]);
-
-    // 게임 준비 완료 함수
-    const handleGameReady = () => {
-        socket?.emit('ready for game');
-    };
-//////////////////////////////////////////////////////////////////////
     return (
         <>
             <StatusBar />
@@ -470,16 +497,18 @@ const GameRoomPage = () => {
                                 <div className="App">
                                     <h1>방 접속 페이지</h1>
                                     <>
-                                        <button id="penaltyButton">벌칙 시작</button> {/* New Penalty Button */}
-                                        <button onClick={forbiddenwordAnouncement}>금칙어 설정 완료2</button>
                                         <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
-                                        <button onClick={disconnectFromRoom}>방 나가기</button>
-                                        <button id="startButton">음성인식시작</button>
-                                        <button id="stopButton" disabled>음성 인식 종료</button>
-                                        <button id="bulchikonCanvas" onClick={bulchikonCanvas}>벌칙</button>
+                                        {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
+                                        <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
+                                        <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
+                                        {/* <button id="bulchikonCanvas" onClick={bulchikonCanvas}>벌칙</button> */}
+                                        <button id="penaltyButton">벌칙 시작</button> {/* New Penalty Button */}
                                         <button id="nameCanvas" onClick={nameCanvas}>이름</button>
                                         <button id="wordonCanvas" onClick={wordonCanvas}>금칙어</button>
-                                        <button id="gameReady" onClick={handleGameReady}>게임 준비 완료</button>
+                                        <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>
+                                        <div>
+                                            남은 시간: {timer}초
+                                        </div>
                                         <div
                                             id="subtitles"
                                             style={{
@@ -550,18 +579,18 @@ const GameRoomPage = () => {
                     </div>
                 </div>
             </div>
-            {modals.forbiddenWordlist &&(
-            <ForbiddenWordlistModal 
-                participantList={participantList}
-                forbiddenWordlist={forbiddenWordlist}
-                onClose={() => setModal('forbiddenWordlist', false)}
-            />)}
+            {modals.forbiddenWordlist && (
+                <ForbiddenWordlistModal
+                    participantList={participantList}
+                    forbiddenWordlist={forbiddenWordlist}
+                    onClose={() => setModal('forbiddenWordlist', false)}
+                />)}
             {modals.goongYeForbiddenWord && (
-                <GoongYeForbiddenWordModal 
+                <GoongYeForbiddenWordModal
                     onClose={() => setModal('goongYeForbiddenWord', false)}
                 />
             )}
-            <Footer username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList}/>
+            <Footer username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList} />
         </>
     );
 };
