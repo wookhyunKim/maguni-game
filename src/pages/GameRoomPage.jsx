@@ -57,8 +57,8 @@ const GameRoomPage = () => {
     useEffect(() => {
         // ... existing code ...
     
+    },)
     const [videoRef,setVideoRef] = useState(undefined);
-
 
     // ========================== 금칙어 설정 완료 ================
     // DB에서 유저별 금칙어 리스트 가져오기 => forbiddenWordlist
@@ -71,7 +71,7 @@ const GameRoomPage = () => {
         }).catch((err) => {
             console.log(err)
         })
-    }
+    };
 
     //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
     const startSettingForbiddenWord = () => {
@@ -282,62 +282,62 @@ const GameRoomPage = () => {
         videoContainer.appendChild(compositeCanvas);
     };
 
-const beolFiltert = ()=>{
-    if(!detectModel) {
-        console.log("detect model is not loaded")
-        return};
+    const beolFiltert = ()=>{
+        if(!detectModel) {
+            console.log("detect model is not loaded")
+            return};
 
-        const originCanvas = document.getElementById(`canvas_${username}`);
+            const originCanvas = document.getElementById(`canvas_${username}`);
 
-        const canvas = document.createElement("canvas");
-        // 크기를 originCanvas와 동일하게 설정
-        canvas.width = originCanvas.offsetWidth; 
-        canvas.height = originCanvas.offsetHeight; 
-        canvas.style.position = "absolute";
-        canvas.style.top = originCanvas.offsetTop + "px";
-        canvas.style.left = originCanvas.offsetLeft + "px";
-        canvas.style.zIndex = "1";
-        const ctx = canvas.getContext("2d");
-        
-        originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
+            const canvas = document.createElement("canvas");
+            // 크기를 originCanvas와 동일하게 설정
+            canvas.width = originCanvas.offsetWidth; 
+            canvas.height = originCanvas.offsetHeight; 
+            canvas.style.position = "absolute";
+            canvas.style.top = originCanvas.offsetTop + "px";
+            canvas.style.left = originCanvas.offsetLeft + "px";
+            canvas.style.zIndex = "1";
+            const ctx = canvas.getContext("2d");
+            
+            originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
 
 
-        const image = new Image();
-        image.src = SUNGLASS;
+            const image = new Image();
+            image.src = SUNGLASS;
 
-        const startfi=()=>{
-            detectModel.estimateFaces(canvas).then((faces) => {
-                ctx.clearRect(
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height
-                );
-
-                ctx.drawImage(
-                    videoRef,
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height
-                );
-
-                if (faces[0]) {
-                    const { x, y, width, height } = calculateFilterPosition(
-                        "eyeFilter",
-                        faces[0].keypoints
+            const startfi=()=>{
+                detectModel.estimateFaces(canvas).then((faces) => {
+                    ctx.clearRect(
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
                     );
-                    ctx.drawImage(image, x, y, width, height);
-                }
-                requestAnimationFrame(startfi);
-            })
-        }
-        requestAnimationFrame(startfi);
-        setTimeout(() => {
-            canvas.remove(); 
-        }, 3000);
 
-}
+                    ctx.drawImage(
+                        videoRef,
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
+
+                    if (faces[0]) {
+                        const { x, y, width, height } = calculateFilterPosition(
+                            "eyeFilter",
+                            faces[0].keypoints
+                        );
+                        ctx.drawImage(image, x, y, width, height);
+                    }
+                    requestAnimationFrame(startfi);
+                })
+            }
+            requestAnimationFrame(startfi);
+            setTimeout(() => {
+                canvas.remove(); 
+            }, 3000);
+
+    }
 
     const startFiltering = (video,ctx,compositeCanvas) => {
         if(!detectModel) return;
@@ -391,24 +391,24 @@ const beolFiltert = ()=>{
         );
     }
     
-function createSession(sessionId) {
-    return new Promise((resolve, reject) => {
-        axios.post(`${APPLICATION_SERVER_URL}api/sessions`, 
-            { customSessionId: sessionId }, 
-            {
-                headers: {
-                    "Content-Type": "application/json"
+    function createSession(sessionId) {
+        return new Promise((resolve, reject) => {
+            axios.post(`${APPLICATION_SERVER_URL}api/sessions`, 
+                { customSessionId: sessionId }, 
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 }
-            }
-        )
-        .then((response) => {
-            resolve(response.data); // The sessionId
-        })
-        .catch((error) => {
-            reject(error);
+            )
+            .then((response) => {
+                resolve(response.data); // The sessionId
+            })
+            .catch((error) => {
+                reject(error);
+            });
         });
-    });
-}
+    }
 
     
     function createToken(sessionId) {
@@ -748,6 +748,6 @@ function createSession(sessionId) {
             <Footer username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList}/>
         </>
     );
-};
-
-export default GameRoomPage;
+}
+  
+export default GameRoomPage
