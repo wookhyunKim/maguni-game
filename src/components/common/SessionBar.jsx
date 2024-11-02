@@ -24,6 +24,7 @@ const SessionBar = ({sessionTime}) => {
                     width="100%"
                     baseBgColor="#FFFFFF"
                     borderRadius="15px"
+                    labelClassName='timeRemainedText'
                     labelAlignment="center"
                     labelColor="#ffffff"
                     labelSize="16px"
