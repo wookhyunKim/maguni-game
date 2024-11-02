@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react'
 import io from 'socket.io-client';
 import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
+import ForbiddenWordlistModal from '../components/modals/forbiddenWordlistModal.jsx';
+import GoongYeForbiddenWordModal from '../components/modals/goongYeForbiddenwordModal.jsx';
 import Footer from '../components/layout/Footer.jsx';
 import useRoomStore from '../components/store/roomStore.js';
 import { usePlayerStore } from '../components/store/playerStore.js';
+import { useModalStore } from '../components/store/modalStore.js';
 import IMG from "../../src/assets/images/dish.png"
 import axios from 'axios';
-
+import { useStoreTime } from '../components/store/gameInfoStore.js';
 import { OpenVidu } from "openvidu-browser";
 import { calculateFilterPosition } from "../../filter/calculate-filter-position.ts";
 import { loadDetectionModel } from "../../filter/load-detection-model.js";
@@ -35,6 +38,7 @@ const GameRoomPage = () => {
     // 음성인식 관련 상태
     const [isStoppedManually, setIsStoppedManually] = useState(false); //수동 종료
 
+
     // openvidu
     let [OV,setOV] = useState(null);
     let [session,setSession] = useState(null);
@@ -42,6 +46,16 @@ const GameRoomPage = () => {
     const [detectModel,setDetectModel] = useState();
     const FRAME_RATE = 30;
     const APPLICATION_SERVER_URL = "https://mmyopenvidu.onrender.com/";
+    //모달 관련 상태
+    const { modals, setModal } = useModalStore();
+
+    //사이드바에 금칙어 보이는 여부
+    const [isWordsShown, setIsWordsShown] = useState(false);
+
+    // 시간 관련 상태 추가
+    const [isGameStarted, setIsGameStarted] = useState(false);
+    useEffect(() => {
+        // ... existing code ...
     
     const [videoRef,setVideoRef] = useState(undefined);
 
@@ -58,6 +72,38 @@ const GameRoomPage = () => {
             console.log(err)
         })
     }
+
+    //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
+    const startSettingForbiddenWord = () => {
+        setModal('goongYeForbiddenWord', true);
+        
+        setTimeout(() => {
+            setModal('goongYeForbiddenWord', false);
+        }, 5000);
+    };
+
+    //===========================금칙어 안내 모달 창 띄우기===========================
+    const forbiddenwordAnouncement = async() => {
+        try {
+            // 먼저 플레이어 리스트 가져오기
+            await getPlayersInfo();
+            // 데이터를 가져온 후 모달 창 띄우기
+            setModal('forbiddenWordlist', true);
+
+            // Promise를 사용하여 타이머 완료를 기다림
+            await new Promise(resolve => {
+                setTimeout(() => {
+                    setModal('forbiddenWordlist', false);
+                    resolve(); // 타이머 완료 후 Promise 해결
+                }, 5000);
+            });
+
+            // 모달이 완전히 닫힌 후에 사이드바에 금칙어 표시
+            setIsWordsShown(true);
+        } catch (error) {
+            console.error('금칙어 안내 모달 창 띄우기 오류:', error);
+        }
+    };
 
     // ========================== 추가 기능 =====================
     function nameCanvas() {
@@ -531,9 +577,46 @@ function createSession(sessionId) {
             startButton?.removeEventListener('click', handleStart);
             stopButton?.removeEventListener('click', handleStop);
         };
-    }, [forbiddenWordlist]);
-    // ================================================================================================================
+    }, [forbiddenWordlist, isStoppedManually, username, socket, handleForbiddenWordUsed]);
+    
+    
+    
+    // ====================게임 진행 동기화 관련==========================================================
 
+    useEffect(() => {
+        if (!socket) return;
+
+        // 게임 시작 시
+        socket.on('game start', () => {
+            setIsGameStarted(true);
+        });
+
+        // 타이머 업데이트
+        socket.on('timer update', (remainingTime) => {
+            useStoreTime.getState().setTime(remainingTime);
+        });
+
+        // 게임 종료 시
+        socket.on('game end', () => {
+            setIsGameStarted(false);
+            // 게임 종료 처리 로직
+        });
+
+        // 컴포넌트 마운트 시 시간 동기화 요청
+        socket.emit('request time sync');
+
+        return () => {
+            socket.off('game start');
+            socket.off('timer update');
+            socket.off('game end');
+        };
+    }, [socket]);
+
+    // 게임 준비 완료 함수
+    const handleGameReady = () => {
+        socket?.emit('ready for game');
+    };
+//////////////////////////////////////////////////////////////////////
     return (
         <>
             <StatusBar />
@@ -580,6 +663,7 @@ function createSession(sessionId) {
                                         <button id="bulchikonCanvas" onClick={beol(username)}>벌칙</button>
                                         <button id="nameCanvas" onClick={nameCanvas}>이름</button>
                                         <button id="wordonCanvas" onClick={wordonCanvas}>금칙어</button>
+                                        <button id="gameReady" onClick={handleGameReady}>게임 준비 완료</button>
                                         <div
                                             id="subtitles"
                                             style={{
@@ -611,13 +695,11 @@ function createSession(sessionId) {
                                     <table className="user-wordlist-table">
                                         <tbody>
                                             <ul>
-                                                {participantList.map(user => (
-                                                    // user !== username && ( // 자신이 아닌 경우에만 표시
+                                                {isWordsShown && participantList.map(user => (
                                                     <li key={user}>
                                                         {user} - {forbiddenWordlist.find(e => e.nickname === user)?.words || '금칙어 없음'}
                                                         - 금칙어 카운트: {forbiddenWordCount[user] || 0}
                                                     </li>
-                                                    // )
                                                 ))}
                                             </ul>
                                         </tbody>
@@ -652,7 +734,18 @@ function createSession(sessionId) {
                     </div>
                 </div>
             </div>
-            <Footer username={username} roomcode={roomcode} />
+            {modals.forbiddenWordlist &&(
+            <ForbiddenWordlistModal 
+                participantList={participantList}
+                forbiddenWordlist={forbiddenWordlist}
+                onClose={() => setModal('forbiddenWordlist', false)}
+            />)}
+            {modals.goongYeForbiddenWord && (
+                <GoongYeForbiddenWordModal 
+                    onClose={() => setModal('goongYeForbiddenWord', false)}
+                />
+            )}
+            <Footer username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList}/>
         </>
     );
 };

@@ -33,6 +33,12 @@ const useGameStageStore = create((set) => ({
     sessiontime: 20
   },
 
+  //금칙어 공개단계: 5초
+  goongYeRevealForbiddenWord: {
+    sessiontime: 5,
+    script: scriptData.revealForbiddenWord
+  },
+
   //게임 진행단계 120초
   stagePlayingTime: {
     sessiontime: 120,

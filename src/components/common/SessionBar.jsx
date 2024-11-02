@@ -1,49 +1,48 @@
-import { useState, useEffect } from "react";
-import "../../styles/sessionBar.css";
+import { useEffect, useState } from 'react';
+import { useStoreTime } from '../store/gameInfoStore';
 import ProgressBar from "@ramonak/react-progress-bar";
-import PropTypes from 'prop-types'; // PropTypes import 추가
+import '../../styles/sessionBar.css';
+// import characterImage from '../../assets/images/bombImage.png';
 
+const SessionBar = ({sessionTime}) => {
+    const time = useStoreTime((state) => state.time);
+    const [progress, setProgress] = useState(sessionTime);
 
-const SessionBar = ({ initialTime = 120 }) => {
-    const [remainingTime, setRemainingTime] = useState(initialTime);
-
-    const getSeconds = (time) => {
-        const seconds = Number(time % 60);
-        return seconds < 10 ? "0" + String(seconds) : String(seconds);
-    };
-
-    // 1초씩 줄어드는 effect
     useEffect(() => {
-        const interval_id = setInterval(() => {
-            setRemainingTime(remainedTime => {
-                if (remainedTime <= 1) {
-                    clearInterval(interval_id);
-                    console.log("타이머 종료 이벤트 호출");
-                    return 0;
-                }
-                return remainedTime - 1;
-            });
-        }, 1000);
-
-        return () => clearInterval(interval_id);
-    }, []);
+        // time이 변경될 때마다 progress 업데이트
+        setProgress(time);
+    }, [time]); // time이 변경될 때마다 실행
 
     return (
-        <ProgressBar
-            className="progressBar"
-            completed={parseInt((remainingTime / initialTime) * 100)}
-            maxCompleted={100}
-            barContainerClassName="container"
-            completedClassName="barRemainTime"
-            customLabel={`${parseInt(remainingTime / 60)}:${getSeconds(remainingTime)} 초`}
-            labelClassName="label"
-        />
+        <div className="session-bar-container">
+            <div className="progress-wrapper">
+                <ProgressBar 
+                    completed={progress}
+                    maxCompleted={sessionTime}
+                    customLabel={`${progress}초`}
+                    height="30px"
+                    width="100%"
+                    baseBgColor="#FFFFFF"
+                    borderRadius="15px"
+                    labelAlignment="center"
+                    labelColor="#ffffff"
+                    labelSize="16px"
+                    transitionDuration="1s"
+                    className="custom-progress-bar"
+                    barContainerClassName="completed-bar"
+                />
+                {/* <img 
+                    src={characterImage} 
+                    alt="character" 
+                    className="character-image"
+                    style={{
+                        left: `${(progress / sessionTime) * 100}%`,
+                        transform: 'translateX(-50%)'
+                    }}
+                /> */}
+            </div>
+        </div>
     );
-}
-
-// PropTypes 정의 추가
-SessionBar.propTypes = {
-    initialTime: PropTypes.number // defaultValue가 있으므로 isRequired는 불필요
 };
 
 export default SessionBar;

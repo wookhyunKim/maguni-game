@@ -14,6 +14,11 @@ export const scriptData = {
         { step: "4", text: "마지막 금칙어가 내려지노니… 그 누구라도 이 규칙을 가볍게 여기지 말지어다!" }
     ],
 
+
+    goongYeRevealForbiddenWord: [
+        "이제 금칙어를 공개하노라."
+    ],
+
     stagePlayingTime: [
         "게임을 시작하노라! 누구 하나 준비가 안 된 자가 있다면 감히 입을 열어보거라!"
     ],

@@ -15,7 +15,7 @@ const setPlayers = usePlayerStore(state=>state.setPlayers)
 
 const [gamers,setGamers] = useState([]);
 const [playerlist,setPlayerlist] = useState([]);
-const [index,setIndex] = useState(0);
+const [index,setIndex] = useState(-1);
 
 
 useEffect(() => {
@@ -76,17 +76,12 @@ useEffect(()=>{
     getPlayersInfo();
 },[])
 
-useEffect(()=>{
-    setPlayerlist(gamers.map(gamer => gamer.nickname))
-    // console.log("gamers : ",gamers.length, gamers);
-    // console.log("playerlist: ",playerlist.length,playerlist)
-},[gamers])
-
-useEffect(()=>{
-    const idx = setIndex(playerlist.findIndex((player) => player === username));
-    // console.log("gamers : ",gamers.length, gamers);
-    // console.log("playerlist: ",playerlist.length,playerlist)
-},[playerlist])
+useEffect(() => {
+    setPlayerlist(gamers.map(gamer => gamer.nickname));
+    // username의 인덱스를 찾아서 설정
+    const currentIndex = gamers.findIndex(gamer => gamer.nickname === username);
+    setIndex(currentIndex);
+}, [gamers, username]);
 
 return (
     <>

@@ -7,6 +7,7 @@ const useStoreTime = create((set) => ({
     setTime: (newTime) => set({ time: newTime }),
     decrementTime: () =>
         set((state) => ({ time: Math.max(state.time - 1, 0) })),
+    resetTime: () => set({ time: 300 }),
 }));
 
 // 게임 정보 스토어
