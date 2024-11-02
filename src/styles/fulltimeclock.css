@@ -1,0 +1,23 @@
+.timer-container {
+    height: 48px;
+    border: 2px solid black;
+    background: white;
+    padding: 10px 30px;
+    font-size: 48px;
+    font-weight: bold;
+    color: #0066FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+}
+
+.timer-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer-number, .timer-colon {
+    line-height: 1;
+}
