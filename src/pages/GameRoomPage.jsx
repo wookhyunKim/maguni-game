@@ -55,26 +55,10 @@ const GameRoomPage = () => {
     const [timer, setTimer] = useState(20); // 타이머 상태
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
-    useEffect(() => {
-        // ... existing code ...
-
-        const penaltyButton = document.getElementById('penaltyButton');
-
-        const handlePenalty = () => {
-            // Emit an event that the filter should display for 2 seconds
-            const event = new CustomEvent('startPenaltyFilter');
-            window.dispatchEvent(event);
-        };
-
-        penaltyButton?.addEventListener('click', handlePenalty);
-
-        return () => {
-            penaltyButton?.removeEventListener('click', handlePenalty);
-        };
-    }, [count, isStoppedManually]);
+ 
 
     
-    },)
+    
     const [videoRef,setVideoRef] = useState(undefined);
 
     // ========================== 금칙어 설정 완료 ================
@@ -519,7 +503,6 @@ const GameRoomPage = () => {
         });
     
         _socket.on('open modal', () => {
-            console.log('모달 오픈');
             setModal('goongYeForbiddenWord', true);
 
             setTimeout(() => {
@@ -601,7 +584,6 @@ const GameRoomPage = () => {
                     finalTranscript += transcript + ' ';
                     // 금칙어 카운트 수정
                     const word = forbiddenWordlist.find(e => e.nickname === username)?.words;
-                    console.log(forbiddenWordlist);
                     console.log(word);
 
                     if (word) {
@@ -657,7 +639,7 @@ const GameRoomPage = () => {
             startButton?.removeEventListener('click', handleStart);
             stopButton?.removeEventListener('click', handleStop);
         };
-    }, [forbiddenWordlist, isStoppedManually, username, socket, handleForbiddenWordUsed]);
+    }, [forbiddenWordlist, isStoppedManually, username, socket]);
 
 
 
