@@ -129,7 +129,7 @@ const GameRoomPage = () => {
 
 
 
-    // ========================== 추가 기능 =====================
+// ====================================================== 캔버스에 그리기 ====================================================== 
     function nameCanvas() {
         const videoContainer = document.getElementById("video-container");
         if (!videoContainer) return;
@@ -211,7 +211,7 @@ const GameRoomPage = () => {
         };
     }
 
-    // =========================== Join ========================
+// ====================================================== Join ====================================================== 
     function joinSession() {
         let mySessionId = document.getElementById("sessionId").value;
         let myUserName = document.getElementById("userName").value;
@@ -261,8 +261,67 @@ const GameRoomPage = () => {
                 });
         });
     }
-    
 
+
+    
+    function removeUserData(connection) {
+        var dataNode = document.getElementById("data-" + connection.connectionId);
+        dataNode.parentNode.removeChild(dataNode);
+    }
+    
+    function removeAllUserData() {
+        var nicknameElements = document.getElementsByClassName("data-node");
+        while (nicknameElements[0]) {
+            nicknameElements[0].parentNode.removeChild(nicknameElements[0]);
+        }
+    }
+    
+    
+// ====================================================== OPENVIDU API ====================================================== 
+function getToken(mySessionId) {
+    return createSession(mySessionId).then((sessionId) =>
+        createToken(sessionId)
+    );
+}
+
+function createSession(sessionId) {
+    return new Promise((resolve, reject) => {
+        axios.post(`${APPLICATION_SERVER_URL}api/sessions`, 
+            { customSessionId: sessionId }, 
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        )
+        .then((response) => {
+            resolve(response.data); // The sessionId
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+
+function createToken(sessionId) {
+    return new Promise((resolve, reject) => {
+        axios.post(`${APPLICATION_SERVER_URL}api/sessions/${sessionId}/connections`, {}, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then((response) => {
+            resolve(response.data); // The token
+        })
+        .catch((error) => {
+            reject(error);
+        });
+        
+    });
+}
+// ====================================================== 비디오 스트림 ====================================================== 
+ const startStreaming = async ( mediaStream) => {
     const startStreaming = async ( mediaStream) => {
         await new Promise((resolve) => setTimeout(resolve, 2000));
     
@@ -285,7 +344,7 @@ const GameRoomPage = () => {
         await new Promise((resolve) => {
             video.onloadedmetadata = () => {
                 video.play();
-                startFiltering(video,ctx,compositeCanvas);
+                videoStreamStart(video,ctx,compositeCanvas);
                 resolve();
             };
         });
@@ -306,7 +365,40 @@ const GameRoomPage = () => {
         videoContainer.appendChild(compositeCanvas);
     };
 
-    const beolFiltert = ()=>{
+    const videoStreamStart = (video,ctx,compositeCanvas) => {
+        if(!detectModel) return;
+
+        let animationFrameID;
+            const estimateFacesLoop = () => {
+                    ctx.clearRect(
+                        0,
+                        0,
+                        compositeCanvas.width,
+                        compositeCanvas.height
+                    );
+
+                    ctx.drawImage(
+                        video,
+                        0,
+                        0,
+                        compositeCanvas.width,
+                        compositeCanvas.height
+                    );
+
+
+                    requestAnimationFrame(estimateFacesLoop);
+
+            };
+            requestAnimationFrame(estimateFacesLoop);
+
+        return () => {
+            if (animationFrameID) {
+                cancelAnimationFrame(animationFrameID);
+            }
+        };
+    };
+// ====================================================== 선글라스 벌칙 ====================================================== 
+ const penaltySunglasses = ()=>{
         if(!detectModel) {
             console.log("detect model is not loaded")
             return};
@@ -363,97 +455,11 @@ const GameRoomPage = () => {
 
     }
 
-    const startFiltering = (video,ctx,compositeCanvas) => {
-        if(!detectModel) return;
-
-        let animationFrameID;
-            const estimateFacesLoop = () => {
-                    ctx.clearRect(
-                        0,
-                        0,
-                        compositeCanvas.width,
-                        compositeCanvas.height
-                    );
-
-                    ctx.drawImage(
-                        video,
-                        0,
-                        0,
-                        compositeCanvas.width,
-                        compositeCanvas.height
-                    );
-
-
-                    requestAnimationFrame(estimateFacesLoop);
-
-            };
-            requestAnimationFrame(estimateFacesLoop);
-
-        return () => {
-            if (animationFrameID) {
-                cancelAnimationFrame(animationFrameID);
-            }
-        };
-    };
+    
 
     
-    function removeUserData(connection) {
-        var dataNode = document.getElementById("data-" + connection.connectionId);
-        dataNode.parentNode.removeChild(dataNode);
-    }
-    
-    function removeAllUserData() {
-        var nicknameElements = document.getElementsByClassName("data-node");
-        while (nicknameElements[0]) {
-            nicknameElements[0].parentNode.removeChild(nicknameElements[0]);
-        }
-    }
-    
-    function getToken(mySessionId) {
-        return createSession(mySessionId).then((sessionId) =>
-            createToken(sessionId)
-        );
-    }
-    
-    function createSession(sessionId) {
-        return new Promise((resolve, reject) => {
-            axios.post(`${APPLICATION_SERVER_URL}api/sessions`, 
-                { customSessionId: sessionId }, 
-                {
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            )
-            .then((response) => {
-                resolve(response.data); // The sessionId
-            })
-            .catch((error) => {
-                reject(error);
-            });
-        });
-    }
 
-    
-    function createToken(sessionId) {
-        return new Promise((resolve, reject) => {
-            axios.post(`${APPLICATION_SERVER_URL}api/sessions/${sessionId}/connections`, {}, {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-            .then((response) => {
-                resolve(response.data); // The token
-            })
-            .catch((error) => {
-                reject(error);
-            });
-            
-        });
-    }
-    
-    // =========================== Join ========================
-    // =========================== Join ========================
+// ====================================================== 게임 소켓 서버 API ====================================================== 
     function connectToRoom() {
         const _socket = io('http://localhost:3002', {
             autoConnect: false,
@@ -547,7 +553,7 @@ const GameRoomPage = () => {
     // }
 
 
-    // ======================== 모델로드 ========================
+// ====================================================== detect model load ====================================================== 
     useEffect(()=>{
         loadDetectionModel().then((model) => {
             // console.log("model : ", model)
@@ -558,7 +564,7 @@ const GameRoomPage = () => {
         console.log("detectModel : ", detectModel);
     }, [detectModel]); // detectModel이 변경될 때마다 실행
 
-    // ======================== 음성인식시작 ========================
+// ====================================================== 음성인식 ====================================================== 
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
@@ -647,9 +653,7 @@ const GameRoomPage = () => {
             stopButton?.removeEventListener('click', handleStop);
         };
     }, [forbiddenWordlist, isStoppedManually, username, socket]);
-
-
-
+// ====================================================== return ====================================================== 
     return (
         <>
             <StatusBar />
@@ -693,7 +697,7 @@ const GameRoomPage = () => {
                                         {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
                                         <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                         <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
-                                        <button id="penaltyButton" onClick={beolFiltert}>벌칙 시작</button> 
+                                        <button id="penaltyButton" onClick={penaltySunglasses}>벌칙 시작</button> 
                                         <button id="bulchikonCanvas" onClick={clickbeol}>벌칙</button>
                                         <button id="nameCanvas" onClick={nameCanvas}>이름</button>
                                         <button id="wordonCanvas" onClick={wordonCanvas}>금칙어</button>
