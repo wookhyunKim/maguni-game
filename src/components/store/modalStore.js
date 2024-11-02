@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 export const useModalStore = create((set) => ({
     modals: {
-        forbiddenWordlist: false,
+        FW: false,
         settingForbiddenWord: false,
         gameResult: false,
         settings: false,
