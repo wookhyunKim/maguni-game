@@ -321,7 +321,7 @@ function createToken(sessionId) {
     });
 }
 // ====================================================== 비디오 스트림 ====================================================== 
- const startStreaming = async ( mediaStream) => {
+
     const startStreaming = async ( mediaStream) => {
         await new Promise((resolve) => setTimeout(resolve, 2000));
     
@@ -790,5 +790,5 @@ function createToken(sessionId) {
         </>
     );
 }
-  
+
 export default GameRoomPage
