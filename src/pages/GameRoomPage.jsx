@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client';
-import { joinSession } from '../../openvidu/app_openvidu.js';
 import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
 import Footer from '../components/layout/Footer.jsx';
@@ -8,6 +7,11 @@ import useRoomStore from '../components/store/roomStore.js';
 import { usePlayerStore } from '../components/store/playerStore.js';
 import IMG from "../../src/assets/images/dish.png"
 import axios from 'axios';
+
+import { OpenVidu } from "openvidu-browser";
+import { calculateFilterPosition } from "../../filter/calculate-filter-position.ts";
+import { loadDetectionModel } from "../../filter/load-detection-model.js";
+import SUNGLASS from "../assets/images/sunglasses.png";
 
 const GameRoomPage = () => {
     const videoSize = {
@@ -18,7 +22,7 @@ const GameRoomPage = () => {
     //username, roomcode를 가져옴
     const username = usePlayerStore(state => state.username)
     const roomcode = useRoomStore(state => state.roomcode)
-    const [count, setCount] = useState(0);
+
 
     //게임진행 소켓 상태관리
     const [socket, setSocket] = useState(null);
@@ -31,23 +35,15 @@ const GameRoomPage = () => {
     // 음성인식 관련 상태
     const [isStoppedManually, setIsStoppedManually] = useState(false); //수동 종료
 
-    useEffect(() => {
-        // ... existing code ...
+    // openvidu
+    let [OV,setOV] = useState(null);
+    let [session,setSession] = useState(null);
+    let subscribers = [];
+    const [detectModel,setDetectModel] = useState();
+    const FRAME_RATE = 30;
+    const APPLICATION_SERVER_URL = "https://mmyopenvidu.onrender.com/";
     
-        const penaltyButton = document.getElementById('penaltyButton');
-    
-        const handlePenalty = () => {
-            // Emit an event that the filter should display for 2 seconds
-            const event = new CustomEvent('startPenaltyFilter');
-            window.dispatchEvent(event);
-        };
-    
-        penaltyButton?.addEventListener('click', handlePenalty);
-    
-        return () => {
-            penaltyButton?.removeEventListener('click', handlePenalty);
-        };
-    }, [count, isStoppedManually]);
+    const [videoRef,setVideoRef] = useState(undefined);
 
 
     // ========================== 금칙어 설정 완료 ================
@@ -94,70 +90,20 @@ const GameRoomPage = () => {
         ctx.fillText(forbiddenWordlist.find(e => e.nickname === username)?.words, 400, 50);
         videoContainer.parentNode.insertBefore(canvas, videoContainer.nextSibling);
     }
-    function bulchikonCanvas() {
-        // video-container 요소를 찾음
-        const videoContainer = document.getElementById("video-container");
-
-        // video-container가 없으면 함수 종료
-        if (!videoContainer) return;
-
-        const canvas = document.createElement("canvas");
-        canvas.width = videoSize.width;
-        canvas.height = videoSize.height;
-        canvas.style.position = "absolute";
-        canvas.style.top = videoContainer.offsetTop + "px";
-        canvas.style.left = videoContainer.offsetLeft + "px";
-        canvas.style.zIndex = "10";
-
-        // 부모 요소에 canvas 추가
-        videoContainer.parentNode.insertBefore(canvas, videoContainer.nextSibling);
-
-        const img = new Image();
-        img.src = IMG; // 이미지 소스 설정
-        const WIDTH = 280;
-        const HEIGHT = 120;
-        let yPosition = -HEIGHT; // 시작 위치는 캔버스 위쪽 바깥
-        const targetY = videoSize.height / 2 - HEIGHT / 2; // 목표 위치 (중앙)
-
-        const ctx = canvas.getContext("2d");
-
-        img.onload = () => {
-            // 애니메이션 함수 정의
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화
-
-                // 현재 위치에 이미지 그리기
-                ctx.drawImage(img, WIDTH / 2, yPosition - 200, WIDTH, HEIGHT); // 수평 중앙 정렬
-
-                // 목표 위치까지 이동
-                if (yPosition < targetY) {
-                    yPosition += 5; // 속도 조절 (숫자가 커질수록 빨라짐)
-                    requestAnimationFrame(animate); // 다음 프레임 요청
-                } else {
-                    // 목표에 도달하면 멈춤
-                    setTimeout(() => {
-                        canvas.remove(); // 2초 후에 캔버스 제거
-                    }, 1500);
-                }
-            }
-
-            animate(); // 애니메이션 시작
-        };
-    }
 
     function beol(id) {
-        const Old = document.getElementById(id);
+        const Old = document.getElementById(`canvas_${id}`);
 
         // video-container가 없으면 함수 종료
         if (!Old) return;
 
         const canvas = document.createElement("canvas");
-        canvas.width = videoSize.width;
-        canvas.height = videoSize.height;
+        canvas.width = 640;
+        canvas.height = 480;
         canvas.style.position = "absolute";
         canvas.style.top = Old.offsetTop + "px";
         canvas.style.left = Old.offsetLeft + "px";
-        canvas.style.zIndex = "10";
+        canvas.style.zIndex = "1";
 
         // 부모 요소에 canvas 추가
         Old.parentNode.insertBefore(canvas, Old.nextSibling);
@@ -187,7 +133,7 @@ const GameRoomPage = () => {
                     // 목표에 도달하면 멈춤
                     setTimeout(() => {
                         canvas.remove(); // 2초 후에 캔버스 제거
-                    }, 1500);
+                    }, 3000);
                 }
             }
 
@@ -195,15 +141,248 @@ const GameRoomPage = () => {
         };
     }
 
-    function beolon() {
-        console.log("여기" + username);
-        beol(username);
+    // =========================== Join ========================
+    function joinSession() {
+        let mySessionId = document.getElementById("sessionId").value;
+        let myUserName = document.getElementById("userName").value;
+        OV = new OpenVidu();
+        setOV(OV);
+        session = OV.initSession();
+        setSession(session);
+    
+        session.on("streamCreated", (event) => {
+            let subscriber = session.subscribe(event.stream, "video-container");
+    
+            subscribers = [...subscribers, subscriber];
+            subscriber.on("videoElementCreated", (event) => {
+                // appendUserData(event.element, subscriber.stream.connection);
+            });
+        });
+    
+        session.on("streamDestroyed", (event) => {
+            removeUserData(event.stream.connection);
+            subscribers.filter((sub) => sub !== event.stream.streamManager);
+        });
+    
+
+        session.on("exception", (exception) => {
+            console.warn(exception);
+        });
+    
+        getToken(mySessionId).then((token) => {
+            session
+                .connect(token, { clientData: myUserName })
+                .then(() => {
+                    OV.getUserMedia({
+                        audioSource: false,
+                        videoSource: undefined,
+                        resolution: "640x480",
+                        frameRate: FRAME_RATE,
+                    }).then((mediaStream) => {
+                        startStreaming( mediaStream);
+                    });
+                    document.getElementById("session-title").innerText =
+                        mySessionId;
+                    document.getElementById("join").style.display = "none";
+                    document.getElementById("session").style.display = "block";
+                })
+                .catch((error) => {
+                    throw(error);
+                });
+        });
     }
+    
+
+    const startStreaming = async ( mediaStream) => {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+    
+        const video = document.createElement("video");
+        video.srcObject = mediaStream;
+        video.autoplay = false;
+        video.muted =true;
+        video.playsInline = true;
+    
+        const compositeCanvas = document.createElement("canvas");
+        compositeCanvas.width = 640;
+        compositeCanvas.height = 480;
+        compositeCanvas.id = `canvas_${username}`;
+        const ctx = compositeCanvas.getContext("2d");
+        
+        setVideoRef(video)
+
+    
+        // 비디오 메타데이터 로드 시 실행
+        await new Promise((resolve) => {
+            video.onloadedmetadata = () => {
+                video.play();
+                startFiltering(video,ctx,compositeCanvas);
+                resolve();
+            };
+        });
+    
+        // 캔버스에서 스트림 생성
+        const compositeStream = compositeCanvas.captureStream(FRAME_RATE);
+        const publisher = OV.initPublisher(undefined, {
+            audioSource: mediaStream.getAudioTracks()[0],
+            videoSource: compositeStream.getVideoTracks()[0],
+            frameRate: FRAME_RATE,
+            videoCodec: "H264",
+        });
+    
+        await session.publish(publisher);
+    
+        // 캔버스를 화면에 추가
+        const videoContainer = document.getElementById("video-container");
+        videoContainer.appendChild(compositeCanvas);
+    };
+
+const beolFiltert = ()=>{
+    if(!detectModel) {
+        console.log("detect model is not loaded")
+        return};
+
+        const originCanvas = document.getElementById(`canvas_${username}`);
+
+        const canvas = document.createElement("canvas");
+        // 크기를 originCanvas와 동일하게 설정
+        canvas.width = originCanvas.offsetWidth; 
+        canvas.height = originCanvas.offsetHeight; 
+        canvas.style.position = "absolute";
+        canvas.style.top = originCanvas.offsetTop + "px";
+        canvas.style.left = originCanvas.offsetLeft + "px";
+        canvas.style.zIndex = "1";
+        const ctx = canvas.getContext("2d");
+        
+        originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
 
 
+        const image = new Image();
+        image.src = SUNGLASS;
+
+        const startfi=()=>{
+            detectModel.estimateFaces(canvas).then((faces) => {
+                ctx.clearRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+
+                ctx.drawImage(
+                    videoRef,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+
+                if (faces[0]) {
+                    const { x, y, width, height } = calculateFilterPosition(
+                        "eyeFilter",
+                        faces[0].keypoints
+                    );
+                    ctx.drawImage(image, x, y, width, height);
+                }
+                requestAnimationFrame(startfi);
+            })
+        }
+        requestAnimationFrame(startfi);
+        setTimeout(() => {
+            canvas.remove(); 
+        }, 3000);
+
+}
+
+    const startFiltering = (video,ctx,compositeCanvas) => {
+        if(!detectModel) return;
+
+        let animationFrameID;
+            const estimateFacesLoop = () => {
+                    ctx.clearRect(
+                        0,
+                        0,
+                        compositeCanvas.width,
+                        compositeCanvas.height
+                    );
+
+                    ctx.drawImage(
+                        video,
+                        0,
+                        0,
+                        compositeCanvas.width,
+                        compositeCanvas.height
+                    );
 
 
+                    requestAnimationFrame(estimateFacesLoop);
 
+            };
+            requestAnimationFrame(estimateFacesLoop);
+
+        return () => {
+            if (animationFrameID) {
+                cancelAnimationFrame(animationFrameID);
+            }
+        };
+    };
+
+    
+    function removeUserData(connection) {
+        var dataNode = document.getElementById("data-" + connection.connectionId);
+        dataNode.parentNode.removeChild(dataNode);
+    }
+    
+    function removeAllUserData() {
+        var nicknameElements = document.getElementsByClassName("data-node");
+        while (nicknameElements[0]) {
+            nicknameElements[0].parentNode.removeChild(nicknameElements[0]);
+        }
+    }
+    
+    function getToken(mySessionId) {
+        return createSession(mySessionId).then((sessionId) =>
+            createToken(sessionId)
+        );
+    }
+    
+function createSession(sessionId) {
+    return new Promise((resolve, reject) => {
+        axios.post(`${APPLICATION_SERVER_URL}api/sessions`, 
+            { customSessionId: sessionId }, 
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        )
+        .then((response) => {
+            resolve(response.data); // The sessionId
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+    
+    function createToken(sessionId) {
+        return new Promise((resolve, reject) => {
+            axios.post(`${APPLICATION_SERVER_URL}api/sessions/${sessionId}/connections`, {}, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then((response) => {
+                resolve(response.data); // The token
+            })
+            .catch((error) => {
+                reject(error);
+            });
+            
+        });
+    }
+    
+    // =========================== Join ========================
     // =========================== Join ========================
     function connectToRoom() {
         const _socket = io('http://localhost:3002', {
@@ -250,6 +429,18 @@ const GameRoomPage = () => {
         setParticipantList([]);
         setForbiddenWordCount({});
     }
+
+
+    // ======================== 모델로드 ========================
+    useEffect(()=>{
+        loadDetectionModel().then((model) => {
+            // console.log("model : ", model)
+            setDetectModel(model);
+        });
+    },[])
+    useEffect(() => {
+        console.log("detectModel : ", detectModel);
+    }, [detectModel]); // detectModel이 변경될 때마다 실행
 
     // ======================== 음성인식시작 ========================
     useEffect(() => {
@@ -377,24 +568,16 @@ const GameRoomPage = () => {
                     </div>
                     <div id="session-body">
                         <div className="main-content">
-                            <div id="main-video" className="col-md-6">
-                                <p></p><div className="webcam-container" style={{ position: 'relative', height: videoSize.height, width: videoSize.width }}>
-                                    <div style={{ position: 'absolute', top: 0, left: 0 }}>
-                                        <video id="myVideo" autoPlay playsInline width={videoSize.width} height={videoSize.height}></video>
-                                    </div>
-                                    <div style={{ position: 'absolute', top: 0, left: 0 }}>
-                                        {/* <canvas ref={canvasRef} width={videoSize.width} height={videoSize.height} className="filter-canvas"></canvas> */}
-                                    </div>
-                                </div>
+    
                                 <div className="App">
                                     <h1>방 접속 페이지</h1>
                                     <>
-                                        <button id="penaltyButton">벌칙 시작</button> {/* New Penalty Button */}
+                                        <button id="penaltyButton" onClick={beolFiltert}>벌칙 시작</button> 
                                         <button onClick={getPlayersInfo}>금칙어 설정 완료</button>
                                         <button onClick={disconnectFromRoom}>방 나가기</button>
                                         <button id="startButton">음성인식시작</button>
                                         <button id="stopButton" disabled>음석 인식 종료</button>
-                                        <button id="bulchikonCanvas" onClick={beolon}>벌칙</button>
+                                        <button id="bulchikonCanvas" onClick={beol(username)}>벌칙</button>
                                         <button id="nameCanvas" onClick={nameCanvas}>이름</button>
                                         <button id="wordonCanvas" onClick={wordonCanvas}>금칙어</button>
                                         <div
@@ -416,7 +599,7 @@ const GameRoomPage = () => {
                                         </div>
                                     </>
                                 </div>
-                            </div>
+                        
                             <div id="video-container" className="col-md-6">
                             </div>
                         </div>
