@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { OpenVidu } from 'openvidu-browser';
 import {calculateFilterPosition} from '../filter/calculate-filter-position.ts';
 import { loadDetectionModel } from '../filter/load-detection-model.js';
-import SUNGLASS from "../public/img/sunglasses.png";
+import SUNGLASS from "../public/sunglasses.png";
 
 
 var OV;
@@ -203,20 +203,27 @@ const startStreaming = async (session, OV, mediaStream) => {
           window.addEventListener('startPenaltyFilter', handleStartPenaltyFilter);
   
           const estimateFacesLoop = () => {
-              model.estimateFaces(compositeCanvas).then((faces) => {
-                  ctx.clearRect(0, 0, compositeCanvas.width, compositeCanvas.height);
-  
-                  // Draw the video feed
-                  ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
-  
-                  if (showFilter && faces[0]) {
-                      const { x, y, width, height } = calculateFilterPosition("eyeFilter", faces[0].keypoints);
-                      ctx.drawImage(image, x, y, width, height);
-                  }
-  
-                  requestAnimationFrame(estimateFacesLoop);
-              });
-          };
+            model.estimateFaces(compositeCanvas).then((faces) => {
+                ctx.clearRect(0, 0, compositeCanvas.width, compositeCanvas.height);
+        
+                // Draw the video feed
+                ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
+        
+                if (showFilter && faces[0]) {
+                    // 얼굴 좌표에서 필터 위치와 각도를 계산
+                    const { x, y, width, height, angle } = calculateFilterPosition("eyeFilter", faces[0].keypoints);
+                    
+                    // 필터 이미지를 얼굴 각도에 맞춰 회전하여 그리기
+                    ctx.save(); // 현재 캔버스 상태 저장
+                    ctx.translate(x + width / 2, y + height / 2); // 필터 중심으로 이동
+                    ctx.rotate(angle); // 얼굴 각도에 맞춰 회전
+                    ctx.drawImage(image, -width / 2, -height / 2, width, height); // 중심을 기준으로 이미지 그리기
+                    ctx.restore(); // 원래 캔버스 상태로 복원
+                }
+        
+                requestAnimationFrame(estimateFacesLoop);
+            });
+        };
   
           // Start the face detection loop
           requestAnimationFrame(estimateFacesLoop);
