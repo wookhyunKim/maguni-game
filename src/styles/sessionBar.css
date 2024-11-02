@@ -1,21 +1,17 @@
-/* .container {
-    background-color: #00FF00;
-    opacity: 0.5;
-} */
 
-/*남은 시간표시 바*/
-.barRemainTime {
-    background-color: #00FF00;
-    position:relative;
+
+/* ProgressBar 컴포넌트의 스타일 오버라이드 */
+.custom-progress-bar {
+    border-radius: 15px !important;
+    overflow: visible !important; /* 이미지가 바깥으로 나갈 수 있도록 */
 }
-/*남은시간 바 옆에 폭탄 그림*/
-.barRemainTime::after {
+
+.character-image {
     position: absolute;
-    right:0;
     top: 50%;
-    transform: translate(50%,-50%);
-    background-image: url('/src/assets/images/bombImage.png');
+    transform: translateY(-50%);
+    height: 40px;
+    width: auto;
+    transition: left 1s linear;
+    z-index: 1;
 }
-/*남은 시간 글자*/
-/* .label {
-} */

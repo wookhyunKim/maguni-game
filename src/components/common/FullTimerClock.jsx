@@ -16,7 +16,9 @@ const timerStyles = {
         fontSize: '48px',
         fontWeight: 'bold',
         color: '#0066FF',
-        display: 'inline-block',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         textShadow: '-1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black'
     }
 };
@@ -52,7 +54,7 @@ const Timer = ({ isModalOpen }) => {
     const getSeconds = (time) => String(time % 60).padStart(2, '0');
 
     return (
-        <div className="timer-container" style={timerStyles.container}>
+        <div className="timer-container">
             <div className="timer-box">
                 <span className="timer-number">{parseInt(time / 60)}</span>
                 <span className="timer-colon">:</span>
