@@ -2,7 +2,8 @@ import $ from 'jquery';
 import { OpenVidu } from 'openvidu-browser';
 import {calculateFilterPosition} from '../filter/calculate-filter-position.ts';
 import { loadDetectionModel } from '../filter/load-detection-model.js';
-import SUNGLASS from "../public/sunglasses.png";
+import SUNGLASS from "../public/img/sunglasses.png";
+
 
 var OV;
 var session;
@@ -31,13 +32,25 @@ export function joinSession() {
    session.on('streamCreated', event => {
 
       // Subscribe to the Stream to receive it. HTML video will be appended to element with 'video-container' id
-      var subscriber = session.subscribe(event.stream, 'video-container');
+      //let subscriber = session.subscribe(event.stream, 'video-container');
+
+      //등록하되 생성하진 않음
+      let subscriber = session.subscribe(event.stream, 'video-container');
+
+      subscribers = [...subscribers,subscriber];
+
+      //const videoContainer = document.getElementById('video-container');
+
 
       // When the HTML video has been appended to DOM...
       subscriber.on('videoElementCreated', event => {
-         appendCanvas(event.element, subscriber.stream.connection);
+      //    // 비디오 element가 생성될 때 해당 element를 반환하여 GameRoomPage.jsx에서 필터링 처리
+      //   const videoElement = event.element;
+      //   // 이벤트 발생 시 videoElement를 콜백으로 호출
+      //   handleVideoElementCreated(videoElement, subscriber.stream.connection);
 
          // Add a new <p> element for the user's nickname just below its video
+         appendUserData(event.element, subscriber.stream.connection);
       });
    });
 
@@ -46,6 +59,9 @@ export function joinSession() {
 
       // Delete the HTML element with the user's nickname. HTML videos are automatically removed from DOM
       removeUserData(event.stream.connection);
+
+      subscribers.filter((sub) =>
+      sub !== event.stream.streamManager);
    });
 
    // On every asynchronous exception...
@@ -62,54 +78,54 @@ export function joinSession() {
       // First param is the token got from the OpenVidu deployment. Second param can be retrieved by every user on event
       // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
       session.connect(token, { clientData: myUserName })
-      .then(() => {
-         OV.getUserMedia({
-            audioSource: false,
-            videoSource: undefined,
-            // resolution: '1280x720',
-            resolution: '640x480',
-            frameRate: FRAME_RATE,
-         }).then((mediaStream) =>{
-            startStreaming(session,OV,mediaStream);
+         .then(() => {
+            OV.getUserMedia({
+               audioSource: false,
+               videoSource: undefined,
+               // resolution: '1280x720',
+               resolution: '640x480',
+               frameRate: FRAME_RATE,
+            }).then((mediaStream) =>{
+               startStreaming(session,OV,mediaStream);
+            });
+
+            // --- 5) Set page layout for active call ---
+
+            document.getElementById('session-title').innerText = mySessionId;
+            document.getElementById('join').style.display = 'none';
+            document.getElementById('session').style.display = 'block';
+
+            // --- 6) Get your own camera stream with the desired properties ---
+
+            // var publisher = OV.initPublisher('video-container', {
+            //    audioSource: undefined, // The source of audio. If undefined default microphone
+            //    videoSource: undefined, // The source of video. If undefined default webcam
+            //    publishAudio: true,     // Whether you want to start publishing with your audio unmuted or not
+            //    publishVideo: true,     // Whether you want to start publishing with your video enabled or not
+            //    resolution: '640x480',  // The resolution of your video
+            //    frameRate: 30,         // The frame rate of your video
+            //    insertMode: 'APPEND',   // How the video is inserted in the target element 'video-container'
+            //    mirror: false          // Whether to mirror your local video or not
+            // });
+
+            // --- 7) Specify the actions when events take place in our publisher ---
+
+            // // When our HTML video has been added to DOM...
+            // publisher.on('videoElementCreated', function (event) {
+            //    initMainVideo(event.element, myUserName);
+            //    appendUserData(event.element, myUserName);
+            //    event.element['muted'] = true;
+            // });
+
+            // // --- 8) Publish your stream ---
+
+            // session.publish(publisher);
+
+         })
+         .catch(error => {
+            console.log('There was an error connecting to the session:', error.code, error.message);
          });
-
-         // --- 5) Set page layout for active call ---
-
-         document.getElementById('session-title').innerText = mySessionId;
-         document.getElementById('join').style.display = 'none';
-         document.getElementById('session').style.display = 'block';
-
-         // --- 6) Get your own camera stream with the desired properties ---
-
-         // var publisher = OV.initPublisher('video-container', {
-         //    audioSource: undefined, // The source of audio. If undefined default microphone
-         //    videoSource: undefined, // The source of video. If undefined default webcam
-         //    publishAudio: true,     // Whether you want to start publishing with your audio unmuted or not
-         //    publishVideo: true,     // Whether you want to start publishing with your video enabled or not
-         //    resolution: '640x480',  // The resolution of your video
-         //    frameRate: 30,         // The frame rate of your video
-         //    insertMode: 'APPEND',   // How the video is inserted in the target element 'video-container'
-         //    mirror: false          // Whether to mirror your local video or not
-         // });
-
-         // --- 7) Specify the actions when events take place in our publisher ---
-
-         // // When our HTML video has been added to DOM...
-         // publisher.on('videoElementCreated', function (event) {
-         //    initMainVideo(event.element, myUserName);
-         //    appendUserData(event.element, myUserName);
-         //    event.element['muted'] = true;
-         // });
-
-         // // --- 8) Publish your stream ---
-
-         // session.publish(publisher);
-
-      })
-      .catch(error => {
-         console.log('There was an error connecting to the session:', error.code, error.message);
-      });
-});
+   });
 }
 
 const startStreaming = async (session, OV, mediaStream) => {
@@ -259,39 +275,6 @@ window.onbeforeunload = function () {
 };
 
 
-function appendCanvas(videoElement, connection) {
-   var userData;
-   var nodeId;
-   if (typeof connection === "string") {
-      userData = connection;
-      nodeId = connection;
-   } else {
-      userData = JSON.parse(connection.data).clientData;
-      nodeId = connection.connectionId;
-   }
-
-   // 공통 부모 요소를 생성합니다.
-   const container = document.createElement('div');
-   container.style.position = 'relative';
-   container.style.width = 640;
-   container.style.height = 480;
-
-   // 기존 비디오 요소를 부모 요소로 이동합니다.
-   videoElement.parentNode.insertBefore(container, videoElement);
-   container.appendChild(videoElement);
-
-   const canvas = document.createElement('canvas');
-   canvas.className = "canvas";
-   canvas.id = userData;
-   canvas.width = 640;
-   canvas.height = 480;
-   canvas.style.position = 'absolute';
-   canvas.style.top = '0';
-   canvas.style.left = '0';
-   canvas.style.zIndex = '1';
-
-   container.appendChild(canvas);
-}
 
 
 function appendUserData(videoElement, connection) {
@@ -309,7 +292,7 @@ function appendUserData(videoElement, connection) {
    dataNode.id = "data-" + nodeId;
    dataNode.innerHTML = "<p>" + userData + "</p>";
    videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
-   // addClickListener(videoElement, userData);
+   addClickListener(videoElement, userData);
 }
 
 function removeUserData(connection) {
@@ -337,11 +320,11 @@ function addClickListener(videoElement, userData) {
    });
 }
 
-// function initMainVideo(videoElement, userData) {
-//    document.querySelector('#main-video video').srcObject = videoElement.srcObject;
-//    document.querySelector('#main-video p').innerHTML = userData;
-//    document.querySelector('#main-video video')['muted'] = true;
-// }
+function initMainVideo(videoElement, userData) {
+   document.querySelector('#main-video video').srcObject = videoElement.srcObject;
+   document.querySelector('#main-video p').innerHTML = userData;
+   document.querySelector('#main-video video')['muted'] = true;
+}
 
 
 /**
