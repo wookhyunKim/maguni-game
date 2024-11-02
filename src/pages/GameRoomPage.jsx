@@ -86,12 +86,12 @@ const GameRoomPage = () => {
             // 먼저 플레이어 리스트 가져오기
             await getPlayersInfo();
             // 데이터를 가져온 후 모달 창 띄우기
-            setModal('forbiddenWordlist', true);
+            setModal('FW', true);
 
             // Promise를 사용하여 타이머 완료를 기다림
             await new Promise(resolve => {
                 setTimeout(() => {
-                    setModal('forbiddenWordlist', false);
+                    setModal('FW', false);
                     resolve(); // 타이머 완료 후 Promise 해결
                 }, 5000);
             });
@@ -517,6 +517,10 @@ const GameRoomPage = () => {
     const handleForbiddenWordUsed = (occurrences) => {
         socket.emit('forbidden word used', username, occurrences);
     };
+ 
+    const clickbeol = () => {
+        beol(username)    
+    };
 
     useEffect(() => {
         // 타이머 기능
@@ -687,7 +691,7 @@ const GameRoomPage = () => {
                                         <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                         <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
                                         <button id="penaltyButton" onClick={beolFiltert}>벌칙 시작</button> 
-                                        <button id="bulchikonCanvas" onClick={beol(username)}>벌칙</button>
+                                        <button id="bulchikonCanvas" onClick={clickbeol}>벌칙</button>
                                         <button id="nameCanvas" onClick={nameCanvas}>이름</button>
                                         <button id="wordonCanvas" onClick={wordonCanvas}>금칙어</button>
                                         <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>
@@ -764,11 +768,11 @@ const GameRoomPage = () => {
                     </div>
                 </div>
             </div>
-            {modals.forbiddenWordlist && (
+            {modals.FW && (
                 <ForbiddenWordlistModal
                     participantList={participantList}
                     forbiddenWordlist={forbiddenWordlist}
-                    onClose={() => setModal('forbiddenWordlist', false)}
+                    onClose={() => setModal('FW', false)}
                 />)}
             {modals.goongYeForbiddenWord && (
                 <GoongYeForbiddenWordModal
