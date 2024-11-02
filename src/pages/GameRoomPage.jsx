@@ -475,12 +475,15 @@ const GameRoomPage = () => {
             setForbiddenWordCount(countlist);
         });
 
-        _socket.on('hit user', (username, occurrences) => {
+        _socket.on('hit user', (user, occurrences) => {
             console.log(occurrences);
+            if(user == username) {
+                return;
+            }
             for (let i = 0; i < occurrences; i++) {
                 setTimeout(() => {
                     console.log('click');
-                    beol(username);
+                    beol(user);
                 }, i * 300); // 각 호출 사이에 300ms의 간격을 둡니다
             }
         });
