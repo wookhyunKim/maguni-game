@@ -18,6 +18,7 @@ const GameRoomPage = () => {
     //username, roomcode를 가져옴
     const username = usePlayerStore(state => state.username)
     const roomcode = useRoomStore(state => state.roomcode)
+    const [count, setCount] = useState(0);
 
     //게임진행 소켓 상태관리
     const [socket, setSocket] = useState(null);
@@ -29,6 +30,24 @@ const GameRoomPage = () => {
 
     // 음성인식 관련 상태
     const [isStoppedManually, setIsStoppedManually] = useState(false); //수동 종료
+
+    useEffect(() => {
+        // ... existing code ...
+    
+        const penaltyButton = document.getElementById('penaltyButton');
+    
+        const handlePenalty = () => {
+            // Emit an event that the filter should display for 2 seconds
+            const event = new CustomEvent('startPenaltyFilter');
+            window.dispatchEvent(event);
+        };
+    
+        penaltyButton?.addEventListener('click', handlePenalty);
+    
+        return () => {
+            penaltyButton?.removeEventListener('click', handlePenalty);
+        };
+    }, [count, isStoppedManually]);
 
 
     // ========================== 금칙어 설정 완료 ================
@@ -370,6 +389,7 @@ const GameRoomPage = () => {
                                 <div className="App">
                                     <h1>방 접속 페이지</h1>
                                     <>
+                                        <button id="penaltyButton">벌칙 시작</button> {/* New Penalty Button */}
                                         <button onClick={getPlayersInfo}>금칙어 설정 완료</button>
                                         <button onClick={disconnectFromRoom}>방 나가기</button>
                                         <button id="startButton">음성인식시작</button>

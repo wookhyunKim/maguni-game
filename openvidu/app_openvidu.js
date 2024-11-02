@@ -1,8 +1,13 @@
 import $ from 'jquery';
 import { OpenVidu } from 'openvidu-browser';
+import {calculateFilterPosition} from '../filter/calculate-filter-position.ts';
+import { loadDetectionModel } from '../filter/load-detection-model.js';
+import SUNGLASS from "../public/sunglasses.png";
 
 var OV;
 var session;
+export var subscribers = [];
+var FRAME_RATE = 30;
 
 
 /* OPENVIDU METHODS */
@@ -57,47 +62,182 @@ export function joinSession() {
       // First param is the token got from the OpenVidu deployment. Second param can be retrieved by every user on event
       // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
       session.connect(token, { clientData: myUserName })
-         .then(() => {
-
-            // --- 5) Set page layout for active call ---
-
-            document.getElementById('session-title').innerText = mySessionId;
-            document.getElementById('join').style.display = 'none';
-            document.getElementById('session').style.display = 'block';
-
-            // --- 6) Get your own camera stream with the desired properties ---
-
-            var publisher = OV.initPublisher('video-container', {
-               audioSource: undefined, // The source of audio. If undefined default microphone
-               videoSource: undefined, // The source of video. If undefined default webcam
-               publishAudio: true,     // Whether you want to start publishing with your audio unmuted or not
-               publishVideo: true,     // Whether you want to start publishing with your video enabled or not
-               resolution: '640x480',  // The resolution of your video
-               frameRate: 30,         // The frame rate of your video
-               insertMode: 'APPEND',   // How the video is inserted in the target element 'video-container'
-               mirror: false          // Whether to mirror your local video or not
-            });
-
-            // --- 7) Specify the actions when events take place in our publisher ---
-
-            // When our HTML video has been added to DOM...
-            publisher.on('videoElementCreated', function (event) {
-               appendCanvas(event.element, myUserName);
-
-               // initMainVideo(event.element, myUserName);
-               event.element['muted'] = true;
-            });
-
-            // --- 8) Publish your stream ---
-
-            session.publish(publisher);
-
-         })
-         .catch(error => {
-            console.log('There was an error connecting to the session:', error.code, error.message);
+      .then(() => {
+         OV.getUserMedia({
+            audioSource: false,
+            videoSource: undefined,
+            // resolution: '1280x720',
+            resolution: '640x480',
+            frameRate: FRAME_RATE,
+         }).then((mediaStream) =>{
+            startStreaming(session,OV,mediaStream);
          });
-   });
+
+         // --- 5) Set page layout for active call ---
+
+         document.getElementById('session-title').innerText = mySessionId;
+         document.getElementById('join').style.display = 'none';
+         document.getElementById('session').style.display = 'block';
+
+         // --- 6) Get your own camera stream with the desired properties ---
+
+         // var publisher = OV.initPublisher('video-container', {
+         //    audioSource: undefined, // The source of audio. If undefined default microphone
+         //    videoSource: undefined, // The source of video. If undefined default webcam
+         //    publishAudio: true,     // Whether you want to start publishing with your audio unmuted or not
+         //    publishVideo: true,     // Whether you want to start publishing with your video enabled or not
+         //    resolution: '640x480',  // The resolution of your video
+         //    frameRate: 30,         // The frame rate of your video
+         //    insertMode: 'APPEND',   // How the video is inserted in the target element 'video-container'
+         //    mirror: false          // Whether to mirror your local video or not
+         // });
+
+         // --- 7) Specify the actions when events take place in our publisher ---
+
+         // // When our HTML video has been added to DOM...
+         // publisher.on('videoElementCreated', function (event) {
+         //    initMainVideo(event.element, myUserName);
+         //    appendUserData(event.element, myUserName);
+         //    event.element['muted'] = true;
+         // });
+
+         // // --- 8) Publish your stream ---
+
+         // session.publish(publisher);
+
+      })
+      .catch(error => {
+         console.log('There was an error connecting to the session:', error.code, error.message);
+      });
+});
 }
+
+const startStreaming = async (session, OV, mediaStream) => {
+   // 2초 대기
+   await new Promise((resolve) => setTimeout(resolve, 2000));
+
+   const video = document.createElement('video');
+   video.srcObject = mediaStream;
+   video.autoplay = true;
+   video.playsInline = true;
+
+   const compositeCanvas = document.createElement('canvas');
+   compositeCanvas.width = 640;
+   compositeCanvas.height = 480;
+   const ctx = compositeCanvas.getContext('2d');
+   let animationFrameID;
+
+   // 얼굴 인식과 필터 적용
+   const estimateFacesLoop = (model, image, ctx) => {
+       model.estimateFaces(compositeCanvas).then((faces) => {
+           // 매 프레임마다 캔버스를 초기화
+           ctx.clearRect(0, 0, compositeCanvas.width, compositeCanvas.height);
+
+           if (faces[0]) {
+               const { x, y, width, height } = calculateFilterPosition("eyeFilter", faces[0].keypoints);
+               
+               const render = () => {
+                   // 원본 비디오를 먼저 캔버스에 그리기
+                   ctx.drawImage(
+                       video,
+                       0,
+                       0,
+                       compositeCanvas.width,
+                       compositeCanvas.height
+                   );
+
+                   // 필터 이미지를 계산된 위치에 그리기
+                   ctx.drawImage(image, x, y, width, height);
+
+                   // 다음 프레임 요청
+                   animationFrameID = requestAnimationFrame(render);
+               };
+
+               // 필터 적용을 위한 render 호출
+               render();
+           } else {
+               // 얼굴 인식되지 않으면 비디오만 렌더링
+               ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
+           }
+
+           // 얼굴 인식을 지속적으로 업데이트
+           requestAnimationFrame(() => estimateFacesLoop(model, image, ctx));
+       });
+   };
+
+   const startFiltering = () => {
+      const image = new Image();
+      image.src = SUNGLASS;
+  
+      loadDetectionModel().then((model) => {
+          let showFilter = false;
+          let timeoutId = null;
+  
+          const handleStartPenaltyFilter = () => {
+              showFilter = true;
+              if (timeoutId) {
+                  clearTimeout(timeoutId);
+              }
+              timeoutId = setTimeout(() => {
+                  showFilter = false;
+              }, 2000); // Display the filter for 2 seconds
+          };
+  
+          // Listen for the custom event to start the penalty filter
+          window.addEventListener('startPenaltyFilter', handleStartPenaltyFilter);
+  
+          const estimateFacesLoop = () => {
+              model.estimateFaces(compositeCanvas).then((faces) => {
+                  ctx.clearRect(0, 0, compositeCanvas.width, compositeCanvas.height);
+  
+                  // Draw the video feed
+                  ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
+  
+                  if (showFilter && faces[0]) {
+                      const { x, y, width, height } = calculateFilterPosition("eyeFilter", faces[0].keypoints);
+                      ctx.drawImage(image, x, y, width, height);
+                  }
+  
+                  requestAnimationFrame(estimateFacesLoop);
+              });
+          };
+  
+          // Start the face detection loop
+          requestAnimationFrame(estimateFacesLoop);
+      });
+  };
+
+   // 비디오 메타데이터 로드 시 실행
+   await new Promise((resolve) => {
+       video.onloadedmetadata = () => {
+           video.play();
+           startFiltering();
+           resolve();
+       };
+   });
+
+   // 캔버스에서 스트림 생성
+   const compositeStream = compositeCanvas.captureStream(FRAME_RATE);
+   const publisher = OV.initPublisher(undefined, {
+       audioSource: mediaStream.getAudioTracks()[0],
+       videoSource: compositeStream.getVideoTracks()[0],
+       frameRate: FRAME_RATE,
+       videoCodec: 'H264',
+   });
+
+   await session.publish(publisher);
+
+   // 캔버스를 화면에 추가
+   const videoContainer = document.getElementById('video-container');
+   videoContainer.appendChild(compositeCanvas);
+
+   // 컴포넌트 언마운트 시 정리 함수 반환
+   return () => {
+       if (animationFrameID) {
+           cancelAnimationFrame(animationFrameID);
+       }
+   };
+};
 
 export function leaveSession() {
 
