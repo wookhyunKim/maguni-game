@@ -3,7 +3,7 @@ import '../../styles/modals.css';
 import { useEffect, useState } from 'react';
 import useGameStageStore from '../store/gameStage.js';
 import Goon from "../../assets/images/goongYeImage.png"
-import { scriptData } from '../../assets/gameScripts.js';
+import { scriptData } from '../../assets/utils/gameScripts.js';
 
 // 이미지 미리 로딩
 const preloadImage = new Image();
