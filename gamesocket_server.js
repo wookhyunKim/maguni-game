@@ -76,6 +76,7 @@ io.on('connection', (client) => {
 
     // 모든 클라이언트에 카운트 업데이트
     io.emit('update forbidden word count', forbiddenWordCounts);
+    io.emit('hit user', username, occurrences);
   });
 
   /////////////////////시간 동기화 관련///////////////////////////////

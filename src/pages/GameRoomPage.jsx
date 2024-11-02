@@ -22,6 +22,7 @@ const GameRoomPage = () => {
     //username, roomcode를 가져옴
     const username = usePlayerStore(state => state.username)
     const roomcode = useRoomStore(state => state.roomcode)
+    const [count, setCount] = useState(0);
 
     //게임진행 소켓 상태관리
     const [socket, setSocket] = useState(null);
@@ -42,6 +43,23 @@ const GameRoomPage = () => {
 
     // 시간 관련 상태 추가
     const [isGameStarted, setIsGameStarted] = useState(false);
+    useEffect(() => {
+        // ... existing code ...
+    
+        const penaltyButton = document.getElementById('penaltyButton');
+    
+        const handlePenalty = () => {
+            // Emit an event that the filter should display for 2 seconds
+            const event = new CustomEvent('startPenaltyFilter');
+            window.dispatchEvent(event);
+        };
+    
+        penaltyButton?.addEventListener('click', handlePenalty);
+    
+        return () => {
+            penaltyButton?.removeEventListener('click', handlePenalty);
+        };
+    }, [count, isStoppedManually]);
 
 
     // ========================== 금칙어 설정 완료 ================
@@ -169,8 +187,65 @@ const GameRoomPage = () => {
 
             animate(); // 애니메이션 시작
         };
-
     }
+
+    function beol(id) {
+        const Old = document.getElementById(id);
+
+        // video-container가 없으면 함수 종료
+        if (!Old) return;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = videoSize.width;
+        canvas.height = videoSize.height;
+        canvas.style.position = "absolute";
+        canvas.style.top = Old.offsetTop + "px";
+        canvas.style.left = Old.offsetLeft + "px";
+        canvas.style.zIndex = "10";
+
+        // 부모 요소에 canvas 추가
+        Old.parentNode.insertBefore(canvas, Old.nextSibling);
+
+        const img = new Image();
+        img.src = IMG; // 이미지 소스 설정
+        const WIDTH = 280;
+        const HEIGHT = 120;
+        let yPosition = -HEIGHT; // 시작 위치는 캔버스 위쪽 바깥
+        const targetY = videoSize.height / 2 - HEIGHT / 2; // 목표 위치 (중앙)
+
+        const ctx = canvas.getContext("2d");
+
+        img.onload = () => {
+            // 애니메이션 함수 정의
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화
+
+                // 현재 위치에 이미지 그리기
+                ctx.drawImage(img, WIDTH / 2, yPosition - 100, WIDTH, HEIGHT); // 수평 중앙 정렬
+
+                // 목표 위치까지 이동
+                if (yPosition < targetY) {
+                    yPosition += 5; // 속도 조절 (숫자가 커질수록 빨라짐)
+                    requestAnimationFrame(animate); // 다음 프레임 요청
+                } else {
+                    // 목표에 도달하면 멈춤
+                    setTimeout(() => {
+                        canvas.remove(); // 2초 후에 캔버스 제거
+                    }, 1500);
+                }
+            }
+
+            animate(); // 애니메이션 시작
+        };
+    }
+
+    function beolon() {
+        console.log("여기" + username);
+        beol(username);
+    }
+
+
+
 
 
     // =========================== Join ========================
@@ -194,11 +269,24 @@ const GameRoomPage = () => {
         _socket.on('update forbidden word count', (countlist) => {
             setForbiddenWordCount(countlist);
         });
+
+        _socket.on('hit user', (username, occurrences) => {
+            console.log(occurrences);
+            for (let i = 0; i < occurrences; i++) {
+                setTimeout(() => {
+                    console.log('click');
+                    beol(username);
+                }, i * 300); // 각 호출 사이에 300ms의 간격을 둡니다
+            }
+        });
+
     }
 
     const handleForbiddenWordUsed = (occurrences) => {
         socket.emit('forbidden word used', username, occurrences);
     };
+
+
 
     // =========================== 방나가기 ========================
     function disconnectFromRoom() {
@@ -215,34 +303,34 @@ const GameRoomPage = () => {
         recognition.continuous = true;
         recognition.interimResults = true;
 
-        
+
         const handleStart = () => {
             console.log("시작");
             setIsStoppedManually(false);
             recognition.start();
         };
-        
+
         recognition.onstart = () => {
             console.log('녹음이 시작되었습니다.');
             document.getElementById('startButton').disabled = true;
             document.getElementById('stopButton').disabled = false;
         };
-        
+
         recognition.onresult = (event) => {
             let finalTranscript = '';
             let interimTranscript = '';
-            
+
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 const result = event.results[i];
                 const transcript = result[0].transcript.trim();
-                
+
                 if (result.isFinal) {
                     finalTranscript += transcript + ' ';
                     // 금칙어 카운트 수정
                     const word = forbiddenWordlist.find(e => e.nickname === username)?.words;
                     console.log(forbiddenWordlist);
                     console.log(word);
-                    
+
                     if (word) {
                         const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
                         console.log('금칙어 발생 횟수:', occurrences);
@@ -254,20 +342,20 @@ const GameRoomPage = () => {
                     interimTranscript += transcript + ' ';
                 }
             }
-            
+
             const transcriptElement = document.getElementById('subtitles');
             if (transcriptElement) {
                 transcriptElement.innerText = finalTranscript + interimTranscript;
             }
         };
-        
+
         const handleStop = () => {
             setIsStoppedManually(true);
             startButton.disabled = false;
             stopButton.disabled = true;
             recognition.stop();
         };
-        
+
         recognition.onend = () => {
             console.log('녹음이 종료되었습니다.');
             if (!isStoppedManually) {
@@ -281,7 +369,7 @@ const GameRoomPage = () => {
         const stopButton = document.getElementById('stopButton');
         startButton?.addEventListener('click', handleStart);
         stopButton?.addEventListener('click', handleStop);
-        
+
         recognition.onerror = (event) => {
             console.error('음성 인식 오류:', event.error);
             if (event.error !== 'no-speech') {
@@ -289,7 +377,7 @@ const GameRoomPage = () => {
                 recognition.start();
             }
         };
-        
+
         // Clean up
         return () => {
             recognition.stop();
@@ -382,6 +470,7 @@ const GameRoomPage = () => {
                                 <div className="App">
                                     <h1>방 접속 페이지</h1>
                                     <>
+                                        <button id="penaltyButton">벌칙 시작</button> {/* New Penalty Button */}
                                         <button onClick={forbiddenwordAnouncement}>금칙어 설정 완료2</button>
                                         <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
                                         <button onClick={disconnectFromRoom}>방 나가기</button>

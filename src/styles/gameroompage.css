@@ -21,6 +21,13 @@
     object-fit: cover;
 }
 
+#video-container canvas {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
 #session-body {
     display: flex;
     gap: 20px;
@@ -77,11 +84,11 @@
     width: 40%;
 }
 
-.data-node {
+/* .data-node {
     display:block;
     height:20;
     width:60;
-}
+} */
 
 .subtitles {
     position: 'absolute';
