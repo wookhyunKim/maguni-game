@@ -140,17 +140,19 @@ const GameRoomPage = () => {
     //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
     const startSettingForbiddenWord = () => {
 
-        const penaltyFunctions = [
-            () => penaltySunglasses(videoRef), 
-            () => penaltyMustache(videoRef), 
-            () =>penaltyExpansion(videoRef), 
-            () => penaltyBald(videoRef),beol];
-
             socket.on('hit user', (user, occurrences) => {
                 console.log(occurrences);
-                if(user == username) {
-                     return;
-                }
+                // if(user == username) {
+                //      return;
+                // }
+
+                const penaltyFunctions = [
+                    () => penaltySunglasses(videoRef,user), 
+                    () => penaltyMustache(videoRef,user), 
+                    () =>penaltyExpansion(videoRef,user), 
+                    () => penaltyBald(videoRef,user),beol];
+
+                    
                 for (let i = 0; i < occurrences; i++) {
                     setTimeout(() => {
                         console.log('click');
@@ -485,12 +487,12 @@ function createToken(sessionId) {
         };
     };
 // ====================================================== 선글라스 벌칙 ====================================================== 
- const penaltySunglasses = (videoElement)=>{
+ const penaltySunglasses = (videoElement,user)=>{
         if(!detectModel) {
             console.log("detect model is not loaded")
             return};
 
-            const originCanvas = document.getElementById(`canvas_${username}`);
+            const originCanvas = document.getElementById(`canvas_${user}`);
 
             // const canvas = document.createElement("canvas");
             // // 크기를 originCanvas와 동일하게 설정
@@ -569,12 +571,12 @@ function createToken(sessionId) {
             }, 3000);
 
     }
- const penaltyMustache = (videoElement)=>{
+ const penaltyMustache = (videoElement,user)=>{
         if(!detectModel) {
             console.log("detect model is not loaded")
             return};
 
-            const originCanvas = document.getElementById(`canvas_${username}`);
+            const originCanvas = document.getElementById(`canvas_${user}`);
             const canvas = document.createElement("canvas");
             canvas.width = originCanvas.width;    // 픽셀 단위 캔버스 너비
             canvas.height = originCanvas.height;  // 픽셀 단위 캔버스 높이
@@ -641,12 +643,12 @@ function createToken(sessionId) {
             }, 3000);
 
     }
- const penaltyExpansion = (videoElement)=>{
+ const penaltyExpansion = (videoElement,user)=>{
         if(!detectModel) {
             console.log("detect model is not loaded")
             return};
 
-            const originCanvas = document.getElementById(`canvas_${username}`);
+            const originCanvas = document.getElementById(`canvas_${user}`);
             const canvas = document.createElement("canvas");
             canvas.width = originCanvas.width;    // 픽셀 단위 캔버스 너비
             canvas.height = originCanvas.height;  // 픽셀 단위 캔버스 높이
@@ -703,12 +705,12 @@ function createToken(sessionId) {
             }, 3000);
     }
 
-    const penaltyBald = (videoElement)=>{
+    const penaltyBald = (videoElement,user)=>{
         if(!detectModel) {
             console.log("detect model is not loaded")
             return};
 
-            const originCanvas = document.getElementById(`canvas_${username}`);
+            const originCanvas = document.getElementById(`canvas_${user}`);
             const canvas = document.createElement("canvas");
             canvas.width = originCanvas.width;    // 픽셀 단위 캔버스 너비
             canvas.height = originCanvas.height;  // 픽셀 단위 캔버스 높이
