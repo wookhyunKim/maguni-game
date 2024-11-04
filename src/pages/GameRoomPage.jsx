@@ -15,10 +15,10 @@ import GoongYeAnouncingEndModal from '../components/modals/goongYeAnouncingEndMo
 import Goon from "../assets/images/goongYeImage.png";
 import { OpenVidu } from "openvidu-browser";
 import { calculateFilterPosition } from "../../filter/calculate-filter-position.ts";
-import { loadDetectionModel } from "../../filter/load-detection-model.js";
 import SUNGLASS from "../assets/images/sunglasses.png";
 import MUSTACHE from "../assets/images/mustache.png";
 import BALD from "../assets/images/mumuri.png";
+import detectModelStore from '../components/store/faceDetectModel.js';
 
 const GameRoomPage = () => {
     const videoSize = {
@@ -47,7 +47,8 @@ const GameRoomPage = () => {
     let [OV,setOV] = useState(null);
     let [session,setSession] = useState(null);
     let subscribers = [];
-    const [detectModel,setDetectModel] = useState();
+    // const [detectModel,setDetectModel] = useState();
+    const detectModel = detectModelStore((state)=>state.detectModel)
     const FRAME_RATE = 30;
     const APPLICATION_SERVER_URL = "https://mmyopenvidu.onrender.com/";
     //모달 관련 상태
@@ -822,15 +823,12 @@ function createToken(sessionId) {
 
 // ====================================================== detect model load ====================================================== 
     useEffect(()=>{
-        loadDetectionModel().then((model) => {
-            // console.log("model : ", model)
-            setDetectModel(model);
-        });
-    },[])
-    useEffect(() => {
         console.log("detectModel : ", detectModel);
-    }, [detectModel]); // detectModel이 변경될 때마다 실행
-
+        // loadDetectionModel().then((model) => {
+        //     // console.log("model : ", model)
+        //     setDetectModel(model);
+        // });
+    })
 // ====================================================== 음성인식 ====================================================== 
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
