@@ -658,7 +658,7 @@ function createToken(sessionId) {
             }, 3000);
     }
 
-    const penaltyMustache = ()=>{
+    const penaltyBald = ()=>{
         if(!detectModel) {
             console.log("detect model is not loaded")
             return};

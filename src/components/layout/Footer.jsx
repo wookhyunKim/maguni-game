@@ -1,12 +1,17 @@
-import { leaveSession } from '../../../openvidu/app_openvidu';
+// import { leaveSession } from '../../../openvidu/app_openvidu';
 import PropTypes from 'prop-types'; 
 import Input from '../common/Input'
+import { useNavigate } from "react-router-dom";
 import '../../styles/footer.css'
 import soundOnIcon from '../../assets/images/SoundOnIcon.png';
 import soundOffIcon from '../../assets/images/SoundOffIcon.png';
 import treasureCardsIcon from '../../assets/images/treasureCardsIcon.png';
 
 const Footer = ({username, roomcode, participantList, setParticipantList}) => {
+  const navigate = useNavigate();
+  function quitGame(){
+    navigate('/');
+  }
   return (
     <div className="footer">
         <div className="footer-tip">
@@ -22,7 +27,7 @@ const Footer = ({username, roomcode, participantList, setParticipantList}) => {
           <input className="btn btn-large btn-danger"
                             type="button"
                             id="buttonLeaveSession"
-                            onClick={() => leaveSession()}
+                            onClick={() => quitGame()}
                             value="게임 종료" />
         </div>
         <div className="footer-input">
