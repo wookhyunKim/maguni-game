@@ -11,6 +11,8 @@ const Footer = ({username, roomcode, participantList, setParticipantList}) => {
   const navigate = useNavigate();
   function quitGame(){
     navigate('/');
+    window.location.reload();
+    // window.location.href("/"); // error
   }
   return (
     <div className="footer">
