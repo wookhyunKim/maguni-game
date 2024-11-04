@@ -116,9 +116,9 @@ function calculateNoseFilterPosition(keypoints){
   const height = noseLeft.y - noseCenter.y + yPadding * 2;
 
   // 회전 각도 계산
-  // const angle = Math.atan2(rightEyeTop.y - leftEyeTop.y, rightEyeTop.x - leftEyeTop.x);
+  const angle = Math.atan2(noseRight.y - noseLeft.y, noseRight.x - noseLeft.x);
 
-  return { x, y, width, height };
+  return { x, y, width, height,angle };
 }
 
 function calculateFaceFilterPosition(keypoints) {

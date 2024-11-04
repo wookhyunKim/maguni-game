@@ -4,6 +4,7 @@ import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
 import ForbiddenWordlistModal from '../components/modals/forbiddenWordlistModal.jsx';
 import GoongYeForbiddenWordModal from '../components/modals/goongYeForbiddenwordModal.jsx';
+import GoongYeAnouncingEndModal from '../components/modals/goongYeAnouncingEndModal.jsx';
 import Footer from '../components/layout/Footer.jsx';
 import useRoomStore from '../components/store/roomStore.js';
 import { usePlayerStore } from '../components/store/playerStore.js';
@@ -11,7 +12,6 @@ import { useModalStore } from '../components/store/modalStore.js';
 import IMG from "../../src/assets/images/dish.png"
 import axios from 'axios';
 import { useStoreTime } from '../components/store/gameInfoStore.js';
-import GoongYeAnouncingEndModal from '../components/modals/goongYeAnouncingEndModal.jsx';
 import Goon from "../assets/images/goongYeImage.png";
 import { OpenVidu } from "openvidu-browser";
 import { calculateFilterPosition } from "../../filter/calculate-filter-position.ts";
@@ -19,6 +19,7 @@ import { loadDetectionModel } from "../../filter/load-detection-model.js";
 import SUNGLASS from "../assets/images/sunglasses.png";
 import MUSTACHE from "../assets/images/mustache.png";
 import BALD from "../assets/images/mumuri.png";
+import Timer from '../components/common/FullTimerClock.jsx';
 
 const GameRoomPage = () => {
     const videoSize = {
@@ -59,11 +60,30 @@ const GameRoomPage = () => {
     const [timer, setTimer] = useState(20); // 타이머 상태
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
- 
-
     
     
     const [videoRef,setVideoRef] = useState(undefined);
+
+    const globalTime = useStoreTime((state) => state.time);
+    const decrementTime = useStoreTime((state) => state.decrementTime);
+
+    // 타이머 로직
+    useEffect(() => {
+        // 시간이 0이 되면 타이머 종료
+        if (globalTime === 0) {
+            setModal('goongYeAnouncingEnd', true); // 모달 표시
+            return;
+        }
+
+        // 1초마다 시간 감소
+        const timer = setInterval(() => {
+            // 모달이 열려있지 않을 때만 시간 감소
+            decrementTime();
+        }, 1000);
+
+        // 컴포넌트 언마운트 시 타이머 정리
+        return () => clearInterval(timer);
+    }, [globalTime, decrementTime]);
 
     // ========================== 금칙어 설정 완료 ================
     // DB에서 유저별 금칙어 리스트 가져오기 => forbiddenWordlist
@@ -109,9 +129,6 @@ const GameRoomPage = () => {
                 // setGameActive(true);
                 // setTimer(20); // 타이머 초기화
                 document.getElementById('startgame').click();
-
-
-
             }, 1000);
 
         } catch (error) {
@@ -121,6 +138,26 @@ const GameRoomPage = () => {
 
     //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
     const startSettingForbiddenWord = () => {
+
+        const penaltyFunctions = [
+            () => penaltySunglasses(videoRef), 
+            () => penaltyMustache(videoRef), 
+            () =>penaltyExpansion(videoRef), 
+            () => penaltyBald(videoRef),beol];
+
+            socket.on('hit user', (user, occurrences) => {
+                console.log(occurrences);
+                if(user == username) {
+                     return;
+                }
+                for (let i = 0; i < occurrences; i++) {
+                    setTimeout(() => {
+                        console.log('click');
+                        const randomFunction = penaltyFunctions[Math.floor(Math.random() * penaltyFunctions.length)];
+                        randomFunction();
+                    }, i * 300); // 각 호출 사이에 300ms의 간격을 둡니다
+                }
+            });
 
         // setModal('goongYeForbiddenWord', true);
 
@@ -384,8 +421,8 @@ function createToken(sessionId) {
         compositeCanvas.id = `canvas_${username}`;
         const ctx = compositeCanvas.getContext("2d");
         
-        setVideoRef(video)
-
+        // videoRef 설정 및 대기
+        setVideoRef(video);
     
         // 비디오 메타데이터 로드 시 실행
         await new Promise((resolve) => {
@@ -447,7 +484,7 @@ function createToken(sessionId) {
         };
     };
 // ====================================================== 선글라스 벌칙 ====================================================== 
- const penaltySunglasses = ()=>{
+ const penaltySunglasses = (videoElement)=>{
         if(!detectModel) {
             console.log("detect model is not loaded")
             return};
@@ -499,9 +536,8 @@ function createToken(sessionId) {
                     ctx.save();
                     ctx.scale(-1, 1); // X축 반전
                     ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-
                     ctx.drawImage(
-                        videoRef,
+                        videoElement,
                         0,
                         0,
                         canvas.width,
@@ -509,13 +545,17 @@ function createToken(sessionId) {
                     );
 
                     if (faces[0]) {
-                        const { x, y, width, height } = calculateFilterPosition(
+                        const { x, y, width, height,angle } = calculateFilterPosition(
                             "eyeFilter",
                             faces[0].keypoints
                         );
                         ctx.scale(-1, 1); // X축 반전
                         ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                        ctx.drawImage(image, x, y, width, height);
+                        ctx.save(); // 현재 캔버스 상태 저장
+                        ctx.translate(x + width / 2, y + height / 2); // 필터 중심으로 이동
+                        ctx.rotate(angle); // 얼굴 각도에 맞춰 회전
+                        ctx.drawImage(image, -width / 2, -height / 2, width, height); // 중심을 기준으로 이미지 그리기
+                        ctx.restore(); // 원래 캔버스 상태로 복원
                     }
                     ctx.restore();
                     requestAnimationFrame(drawing);
@@ -528,7 +568,7 @@ function createToken(sessionId) {
             }, 3000);
 
     }
- const penaltyMustache = ()=>{
+ const penaltyMustache = (videoElement)=>{
         if(!detectModel) {
             console.log("detect model is not loaded")
             return};
@@ -570,7 +610,7 @@ function createToken(sessionId) {
                     ctx.scale(-1, 1); // X축 반전
                     ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
                     ctx.drawImage(
-                        videoRef,
+                        videoElement,
                         0,
                         0,
                         canvas.width,
@@ -578,13 +618,17 @@ function createToken(sessionId) {
                     );
 
                     if (faces[0]) {
-                        const { x, y, width, height } = calculateFilterPosition(
+                        const { x, y, width, height,angle } = calculateFilterPosition(
                             "mustacheFilter",
                             faces[0].keypoints
                         );
                         ctx.scale(-1, 1); // X축 반전
                         ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                        ctx.drawImage(image, x-40, y, width, height);
+                        ctx.save(); // 현재 캔버스 상태 저장
+                        ctx.translate(x + width / 2, y + height / 2); // 필터 중심으로 이동
+                        ctx.rotate(angle); // 얼굴 각도에 맞춰 회전
+                        ctx.drawImage(image, -width / 2 - 45, -height / 2, width, height); // 중심을 기준으로 이미지 그리기
+                        ctx.restore(); // 원래 캔버스 상태로 복원
                     }
                     ctx.restore();
                     requestAnimationFrame(drawing);
@@ -596,7 +640,7 @@ function createToken(sessionId) {
             }, 3000);
 
     }
- const penaltyExpansion = ()=>{
+ const penaltyExpansion = (videoElement)=>{
         if(!detectModel) {
             console.log("detect model is not loaded")
             return};
@@ -632,7 +676,7 @@ function createToken(sessionId) {
                     ctx.scale(-1, 1); // X축 반전
                     ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
                     ctx.drawImage(
-                        videoRef,
+                        videoElement,
                         0,
                         0,
                         canvas.width,
@@ -658,7 +702,7 @@ function createToken(sessionId) {
             }, 3000);
     }
 
-    const penaltyBald = ()=>{
+    const penaltyBald = (videoElement)=>{
         if(!detectModel) {
             console.log("detect model is not loaded")
             return};
@@ -700,7 +744,7 @@ function createToken(sessionId) {
                     ctx.scale(-1, 1); // X축 반전
                     ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
                     ctx.drawImage(
-                        videoRef,
+                        videoElement,
                         0,
                         0,
                         canvas.width,
@@ -728,6 +772,7 @@ function createToken(sessionId) {
     }
 // ====================================================== 게임 소켓 서버 API ====================================================== 
     function connectToRoom() {
+
         const _socket = io('http://localhost:3002', {
             autoConnect: false,
             query: {
@@ -748,18 +793,6 @@ function createToken(sessionId) {
             setForbiddenWordCount(countlist);
         });
 
-        _socket.on('hit user', (user, occurrences) => {
-            console.log(occurrences);
-            if(user == username) {
-                return;
-            }
-            for (let i = 0; i < occurrences; i++) {
-                setTimeout(() => {
-                    console.log('click');
-                    beol(user);
-                }, i * 300); // 각 호출 사이에 300ms의 간격을 둡니다
-            }
-        });
         // 타이머 업데이트
         _socket.on('timer update', (time) => {
             setTimer(time);
@@ -783,7 +816,7 @@ function createToken(sessionId) {
 
             setTimeout(() => {
                 setModal('goongYeForbiddenWord', false);
-            }, 3000);
+            }, 4000);
         });
 
     }
@@ -964,13 +997,6 @@ function createToken(sessionId) {
                                         {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
                                         <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                         <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
-                                        <button id="penaltyButton1" onClick={penaltySunglasses}>벌칙 시작</button> 
-                                        <button id="penaltyButton2" onClick={penaltyMustache}>벌칙 시작2</button> 
-                                        <button id="penaltyButton3" onClick={penaltyExpansion}>벌칙 시작3</button> 
-                                        <button id="penaltyButton4" onClick={penaltyBald}>벌칙 시작3</button> 
-                                        <button id="bulchikonCanvas" onClick={clickbeol}>벌칙</button>
-                                        <button id="nameCanvas" onClick={nameCanvas}>이름</button>
-                                        <button id="wordonCanvas" onClick={wordonCanvas}>금칙어</button>
                                         <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>
                                         <div>
                                             남은 시간: {timer}초
@@ -1055,6 +1081,9 @@ function createToken(sessionId) {
                 <GoongYeForbiddenWordModal
                     onClose={() => setModal('goongYeForbiddenWord', false)}
                 />
+            )}
+            {modals.goongYeAnouncingEnd && (
+                <GoongYeAnouncingEndModal onClose={() => setModal('goongYeAnouncingEnd', false)} />
             )}
             <Footer username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList} />
         </>

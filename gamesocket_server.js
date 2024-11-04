@@ -67,7 +67,7 @@ io.on('connection', (client) => {
     const countdownInterval = setInterval(() => {
       io.to(roomcode).emit('timer update', timer);
       timer--;
-      if(timer === 13) {
+      if(timer === 14) {
         io.to(roomcode).emit('open modal'); 
       }
 
