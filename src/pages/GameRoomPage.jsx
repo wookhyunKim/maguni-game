@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import io from 'socket.io-client';
 import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
-import ForbiddenWordlistModal from '../components/modals/forbiddenWordlistModal.jsx';
+import ForbiddenWordlistModal from '../components/modals/ForbiddenWordlistModal.jsx';
 import GoongYeForbiddenWordModal from '../components/modals/goongYeForbiddenwordModal.jsx';
 import GoongYeAnouncingEndModal from '../components/modals/goongYeAnouncingEndModal.jsx';
 import Footer from '../components/layout/Footer.jsx';
@@ -12,38 +12,29 @@ import { useModalStore } from '../components/store/modalStore.js';
 import IMG from "../../src/assets/images/dish.png"
 import axios from 'axios';
 import { useStoreTime } from '../components/store/gameInfoStore.js';
-import Goon from "../assets/images/goongYeImage.png";
 import { OpenVidu } from "openvidu-browser";
 import { calculateFilterPosition } from "../../filter/calculate-filter-position.ts";
 import SUNGLASS from "../assets/images/sunglasses.png";
 import MUSTACHE from "../assets/images/mustache.png";
 import BALD from "../assets/images/mumuri.png";
 import detectModelStore from '../components/store/faceDetectModel.js';
-import Timer from '../components/common/FullTimerClock.jsx';
 
 const GameRoomPage = () => {
     const videoSize = {
         width: 640,
         height: 480
     }
-
     //username, roomcode를 가져옴
     const username = usePlayerStore(state => state.username)
     const roomcode = useRoomStore(state => state.roomcode)
-
-
     //게임진행 소켓 상태관리
     const [socket, setSocket] = useState(null);
     const [participantList, setParticipantList] = useState([]); //유저네임 리스트
     const [forbiddenWordCount, setForbiddenWordCount] = useState({}); //유저별 금칙어 사용횟수
-
     //DB에서 가져온 유저별 금칙어 리스트
     const [forbiddenWordlist, setForbiddenWordlist] = useState([]);
-
     // 음성인식 관련 상태
     const [isStoppedManually, setIsStoppedManually] = useState(false); //수동 종료
-
-
     // openvidu
     let [OV, setOV] = useState(null);
     let [session, setSession] = useState(null);
@@ -54,17 +45,11 @@ const GameRoomPage = () => {
     const APPLICATION_SERVER_URL = "https://mmyopenvidu.onrender.com/";
     //모달 관련 상태
     const { modals, setModal } = useModalStore();
-
     //사이드바에 금칙어 보이는 여부
     const [isWordsShown, setIsWordsShown] = useState(false);
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
-
-
-
-    // const [videoRef, setVideoRef] = useState(undefined);
-
     const globalTime = useStoreTime((state) => state.time);
     const decrementTime = useStoreTime((state) => state.decrementTime);
 
@@ -126,9 +111,6 @@ const GameRoomPage = () => {
 
             // 금칙어 안내가 끝난 후 1초 뒤에 자동으로 게임 시작
             setTimeout(() => {
-                // socket.emit('start game', roomcode); // 게임 시작 요청
-                // setGameActive(true);
-                // setTimer(20); // 타이머 초기화
                 document.getElementById('startgame').click();
             }, 1000);
 
@@ -139,51 +121,22 @@ const GameRoomPage = () => {
 
     //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
     const startSettingForbiddenWord = () => {
-
-        socket.on('hit user', (user, occurrences) => {
-            console.log(occurrences);
-            if(user == username) {
-                 return;
-            }
-
-            const penaltyFunctions = [
-                () => penaltySunglasses(user),
-                () => penaltyMustache(user),
-                () => penaltyExpansion(user),
-                () => penaltyBald(user), beol(user)];
-
-
-            for (let i = 0; i < occurrences; i++) {
-                setTimeout(() => {
-                    console.log('click');
-                    const randomFunction = penaltyFunctions[Math.floor(Math.random() * penaltyFunctions.length)];
-                    randomFunction();
-                }, i * 300); // 각 호출 사이에 300ms의 간격을 둡니다
-            }
-        });
-
-        // setModal('goongYeForbiddenWord', true);
-
-        // setTimeout(() => {
-        //     setModal('goongYeForbiddenWord', false);
-        // }, 3000);
-
         socket.emit('start setting word', roomcode);
     };
 
-    const testPenalty = () => {
+    const testPenalty = (id) => {
         const testPenaltyFunctions = [
-            () => penaltySunglasses(user),
-            () => penaltyMustache(user),
-            () => penaltyExpansion(user),
-            () => penaltyBald(user), () => beol(user)];
+
+            () => penaltySunglasses(id),
+            () => penaltyMustache(id),
+            () => penaltyExpansion(id),
+            () => penaltyBald(id), 
+            () => beol(id)];
 
         const randomFunction = testPenaltyFunctions[Math.floor(Math.random() * testPenaltyFunctions.length)];
         randomFunction();
 
     }
-
-
 
     // ====================================================== 캔버스에 그리기 ====================================================== 
     function nameCanvas() {
@@ -267,9 +220,6 @@ const GameRoomPage = () => {
         };
     }
 
-
-
-
     // ====================================================== Join ====================================================== 
     function joinSession() {
         let mySessionId = document.getElementById("sessionId").value;
@@ -324,20 +274,6 @@ const GameRoomPage = () => {
         });
     }
 
-
-
-    function removeUserData(connection) {
-        let dataNode = document.getElementById("data-" + connection.connectionId);
-        dataNode.parentNode.removeChild(dataNode);
-    }
-
-    function removeAllUserData() {
-        let nicknameElements = document.getElementsByClassName("data-node");
-        while (nicknameElements[0]) {
-            nicknameElements[0].parentNode.removeChild(nicknameElements[0]);
-        }
-    }
-
     function appendCanvas(videoElement, connection) {
         let userData;
         if (typeof connection === "string") {
@@ -365,11 +301,14 @@ const GameRoomPage = () => {
         canvas.style.top = '0';
         canvas.style.left = '0';
         canvas.style.zIndex = '1';
-
         container.appendChild(canvas);
     }
 
 
+    function removeUserData(connection) {
+        let dataNode = document.getElementById("data-" + connection.connectionId);
+        dataNode.parentNode.removeChild(dataNode);
+    }
     // ====================================================== OPENVIDU API ====================================================== 
     function getToken(mySessionId) {
         return createSession(mySessionId).then((sessionId) =>
@@ -432,9 +371,6 @@ const GameRoomPage = () => {
         compositeCanvas.id = `canvas_${username}`;
         const ctx = compositeCanvas.getContext("2d");
 
-        // videoRef 설정 및 대기
-        // setVideoRef(video);
-
         // 비디오 메타데이터 로드 시 실행
         await new Promise((resolve) => {
             video.onloadedmetadata = () => {
@@ -463,6 +399,9 @@ const GameRoomPage = () => {
     const videoStreamStart = (video, ctx, compositeCanvas) => {
         if (!detectModel) return;
 
+        console.log("username : ", username)
+ 
+
         let animationFrameID;
         const estimateFacesLoop = () => {
             ctx.clearRect(
@@ -474,6 +413,7 @@ const GameRoomPage = () => {
             ctx.save();
             ctx.scale(-1, 1); // X축 반전
             ctx.translate(-compositeCanvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
+
             ctx.drawImage(
                 video,
                 0,
@@ -487,7 +427,6 @@ const GameRoomPage = () => {
 
         };
         requestAnimationFrame(estimateFacesLoop);
-
         return () => {
             if (animationFrameID) {
                 cancelAnimationFrame(animationFrameID);
@@ -520,8 +459,6 @@ const GameRoomPage = () => {
         const ctx = canvas.getContext("2d");
 
         const videoElement = document.getElementById(`video_${id}`);
-        console.log(videoElement);
-
         const drawing = () => {
             detectModel.estimateFaces(canvas).then((faces) => {
                 ctx.clearRect(
@@ -558,7 +495,6 @@ const GameRoomPage = () => {
                 requestAnimationFrame(drawing);
             })
         }
-        // ctx.restore();
         requestAnimationFrame(drawing);
         setTimeout(() => {
             canvas.remove();
@@ -583,17 +519,11 @@ const GameRoomPage = () => {
 
         originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
         
-
-
         const image = new Image();
         image.src = MUSTACHE;
 
         const ctx = canvas.getContext("2d");
         const videoElement = document.getElementById(`video_${id}`);
-        console.log(videoElement);
-
-
-
 
         const drawing = () => {
             detectModel.estimateFaces(canvas).then((faces) => {
@@ -636,7 +566,6 @@ const GameRoomPage = () => {
             canvas.remove();
         }, 3000);
     }
-
     const penaltyExpansion = (id) => {
         if (!detectModel) {
             console.log("detect model is not loaded")
@@ -657,9 +586,6 @@ const GameRoomPage = () => {
         
         const ctx = canvas.getContext("2d");
         const videoElement = document.getElementById(`video_${id}`);
-        console.log(videoElement);
-
-
 
         const drawing = () => {
             detectModel.estimateFaces(canvas).then((faces) => {
@@ -717,17 +643,13 @@ const GameRoomPage = () => {
 
         originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
         
-
         const image = new Image();
         image.src = BALD;
-
 
         const ctx = canvas.getContext("2d");
         const videoElement = document.getElementById(`video_${id}`);
         console.log(videoElement);
-
-
-
+      
         const drawing = () => {
             detectModel.estimateFaces(canvas).then((faces) => {
                 ctx.clearRect(
@@ -814,17 +736,18 @@ const GameRoomPage = () => {
                 setModal('goongYeForbiddenWord', false);
             }, 4000);
         });
+        _socket.on('hit user', (user, occurrences) => {
+            console.log(occurrences);
+            if(user == username) {
+                 return;
+            }
+            testPenalty(user);
+        });
 
     }
 
-
-
     const handleForbiddenWordUsed = (occurrences) => {
         socket.emit('forbidden word used', username, occurrences);
-    };
-
-    const clickbeol = () => {
-        beol(username)
     };
 
     useEffect(() => {
@@ -847,16 +770,6 @@ const GameRoomPage = () => {
     //     setParticipantList([]);
     //     setForbiddenWordCount({});
     // }
-
-
-    // ====================================================== detect model load ====================================================== 
-    // useEffect(()=>{
-    //     // console.log("detectModel : ", detectModel);
-    //     // loadDetectionModel().then((model) => {
-    //     //     // console.log("model : ", model)
-    //     //     setDetectModel(model);
-    //     // });
-    // })
     // ====================================================== 음성인식 ====================================================== 
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
