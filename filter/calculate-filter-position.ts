@@ -11,6 +11,14 @@ const facePoint = {
   rightSideBottom: 234 // 오른쪽 귀 아랫부분에 해당하는 인덱스
 }
 
+
+const baldPoint = {
+  left:162,
+  right:389,
+  top:10,
+  down:197
+};
+
 const mustachePoint = {
   noseBelowCenterPoint : 164,
   noseBelowLeftPoint : 216,
@@ -35,6 +43,8 @@ export function calculateFilterPosition(type,keypoints) {
       return calculateNoseFilterPosition(keypoints);
     case "lefteyeFilter":
       return calculateLeftEyeFilterPosition(keypoints);
+    case "baldFilter":
+      return calculateBaldFilterPosition(keypoints);
   }
 }
 
@@ -57,6 +67,20 @@ function calculateLeftEyeFilterPosition(keypoints){
 
   return { x, y, width, height };
 }
+
+function calculateBaldFilterPosition(keypoints){
+  const x = keypoints[baldPoint.left].x -30;
+  const y = keypoints[baldPoint.right].y +40;
+  const width =
+    (keypoints[baldPoint.right].x -
+    keypoints[baldPoint.left].x)*1.5 - 10
+  const height =
+    (keypoints[baldPoint.top].y -
+    keypoints[baldPoint.down].y) * 2 - 30
+
+  return { x, y, width, height };
+}
+
 function calculateEyeFilterPosition(keypoints){
   const xPadding = 40;
   const yPadding = 20;

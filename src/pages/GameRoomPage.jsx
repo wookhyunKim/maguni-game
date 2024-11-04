@@ -280,26 +280,23 @@ const GameRoomPage = () => {
 
     
     function removeUserData(connection) {
-        var dataNode = document.getElementById("data-" + connection.connectionId);
+        let dataNode = document.getElementById("data-" + connection.connectionId);
         dataNode.parentNode.removeChild(dataNode);
     }
     
     function removeAllUserData() {
-        var nicknameElements = document.getElementsByClassName("data-node");
+        let nicknameElements = document.getElementsByClassName("data-node");
         while (nicknameElements[0]) {
             nicknameElements[0].parentNode.removeChild(nicknameElements[0]);
         }
     }
     
     function appendCanvas(videoElement, connection) {
-        var userData;
-        var nodeId;
+        let userData;
         if (typeof connection === "string") {
            userData = connection;
-           nodeId = connection;
         } else {
            userData = JSON.parse(connection.data).clientData;
-           nodeId = connection.connectionId;
         }
       
         // 공통 부모 요소를 생성합니다.
@@ -659,9 +656,76 @@ function createToken(sessionId) {
             setTimeout(() => {
                 canvas.remove(); 
             }, 3000);
-
     }
 
+    const penaltyMustache = ()=>{
+        if(!detectModel) {
+            console.log("detect model is not loaded")
+            return};
+
+            const originCanvas = document.getElementById(`canvas_${username}`);
+            const canvas = document.createElement("canvas");
+            canvas.width = originCanvas.width;    // 픽셀 단위 캔버스 너비
+            canvas.height = originCanvas.height;  // 픽셀 단위 캔버스 높이
+        
+            // CSS 스타일 크기를 Old와 동일하게 설정
+            canvas.style.width = `${originCanvas.width}px`;
+            canvas.style.height = `${originCanvas.height}px`;
+            canvas.style.position = "absolute";
+        
+            // Old의 위치를 기반으로 top, left 설정
+            const rect = originCanvas.getBoundingClientRect();
+            canvas.style.top = `${rect.top}px`;
+            canvas.style.left = `${rect.left}px`;
+            canvas.style.zIndex = "10";
+            const ctx = canvas.getContext("2d");
+            
+            originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
+
+
+            const image = new Image();
+            image.src = BALD;
+
+
+
+            const drawing=()=>{
+                detectModel.estimateFaces(canvas).then((faces) => {
+                    ctx.clearRect(
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
+                    ctx.save();
+                    ctx.scale(-1, 1); // X축 반전
+                    ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
+                    ctx.drawImage(
+                        videoRef,
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
+
+                    if (faces[0]) {
+                        const { x, y, width, height } = calculateFilterPosition(
+                            "baldFilter",
+                            faces[0].keypoints
+                        );
+                        ctx.scale(-1, 1); // X축 반전
+                        ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
+                        ctx.drawImage(image, x, y, width, height);
+                    }
+                    ctx.restore();
+                    requestAnimationFrame(drawing);
+                })
+            }
+            requestAnimationFrame(drawing);
+            setTimeout(() => {
+                canvas.remove(); 
+            }, 3000);
+
+    }
 // ====================================================== 게임 소켓 서버 API ====================================================== 
     function connectToRoom() {
         const _socket = io('http://localhost:3002', {
@@ -900,9 +964,10 @@ function createToken(sessionId) {
                                         {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
                                         <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                         <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
-                                        <button id="penaltyButton" onClick={penaltySunglasses}>벌칙 시작</button> 
-                                        <button id="penaltyButton" onClick={penaltyMustache}>벌칙 시작2</button> 
-                                        <button id="penaltyButton" onClick={penaltyExpansion}>벌칙 시작3</button> 
+                                        <button id="penaltyButton1" onClick={penaltySunglasses}>벌칙 시작</button> 
+                                        <button id="penaltyButton2" onClick={penaltyMustache}>벌칙 시작2</button> 
+                                        <button id="penaltyButton3" onClick={penaltyExpansion}>벌칙 시작3</button> 
+                                        <button id="penaltyButton4" onClick={penaltyBald}>벌칙 시작3</button> 
                                         <button id="bulchikonCanvas" onClick={clickbeol}>벌칙</button>
                                         <button id="nameCanvas" onClick={nameCanvas}>이름</button>
                                         <button id="wordonCanvas" onClick={wordonCanvas}>금칙어</button>
