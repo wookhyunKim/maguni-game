@@ -50,7 +50,6 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
-
     const globalTime = useStoreTime((state) => state.time);
     const decrementTime = useStoreTime((state) => state.decrementTime);
 
@@ -127,6 +126,7 @@ const GameRoomPage = () => {
 
     const testPenalty = (id) => {
         const testPenaltyFunctions = [
+
             () => penaltySunglasses(id),
             () => penaltyMustache(id),
             () => penaltyExpansion(id),
@@ -459,7 +459,6 @@ const GameRoomPage = () => {
         const ctx = canvas.getContext("2d");
 
         const videoElement = document.getElementById(`video_${id}`);
-
         const drawing = () => {
             detectModel.estimateFaces(canvas).then((faces) => {
                 ctx.clearRect(
@@ -650,7 +649,7 @@ const GameRoomPage = () => {
         const ctx = canvas.getContext("2d");
         const videoElement = document.getElementById(`video_${id}`);
         console.log(videoElement);
-
+      
         const drawing = () => {
             detectModel.estimateFaces(canvas).then((faces) => {
                 ctx.clearRect(
