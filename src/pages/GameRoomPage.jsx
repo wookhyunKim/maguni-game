@@ -45,11 +45,11 @@ const GameRoomPage = () => {
 
 
     // openvidu
-    let [OV,setOV] = useState(null);
-    let [session,setSession] = useState(null);
+    let [OV, setOV] = useState(null);
+    let [session, setSession] = useState(null);
     let subscribers = [];
     // const [detectModel,setDetectModel] = useState();
-    const detectModel = detectModelStore((state)=>state.detectModel)
+    const detectModel = detectModelStore((state) => state.detectModel)
     const FRAME_RATE = 30;
     const APPLICATION_SERVER_URL = "https://mmyopenvidu.onrender.com/";
     //모달 관련 상태
@@ -61,9 +61,9 @@ const GameRoomPage = () => {
     const [timer, setTimer] = useState(20); // 타이머 상태
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
-    
-    
-    const [videoRef,setVideoRef] = useState(undefined);
+
+
+    const [videoRef, setVideoRef] = useState(undefined);
 
     const globalTime = useStoreTime((state) => state.time);
     const decrementTime = useStoreTime((state) => state.decrementTime);
@@ -140,27 +140,27 @@ const GameRoomPage = () => {
     //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
     const startSettingForbiddenWord = () => {
 
-            socket.on('hit user', (user, occurrences) => {
-                console.log(occurrences);
-                // if(user == username) {
-                //      return;
-                // }
+        socket.on('hit user', (user, occurrences) => {
+            console.log(occurrences);
+            // if(user == username) {
+            //      return;
+            // }
 
-                const penaltyFunctions = [
-                    () => penaltySunglasses(videoRef,user), 
-                    () => penaltyMustache(videoRef,user), 
-                    () =>penaltyExpansion(videoRef,user), 
-                    () => penaltyBald(videoRef,user),beol(user)];
+            const penaltyFunctions = [
+                () => penaltySunglasses(videoRef, user),
+                () => penaltyMustache(videoRef, user),
+                () => penaltyExpansion(videoRef, user),
+                () => penaltyBald(videoRef, user), beol(user)];
 
-                    
-                for (let i = 0; i < occurrences; i++) {
-                    setTimeout(() => {
-                        console.log('click');
-                        const randomFunction = penaltyFunctions[Math.floor(Math.random() * penaltyFunctions.length)];
-                        randomFunction();
-                    }, i * 300); // 각 호출 사이에 300ms의 간격을 둡니다
-                }
-            });
+
+            for (let i = 0; i < occurrences; i++) {
+                setTimeout(() => {
+                    console.log('click');
+                    const randomFunction = penaltyFunctions[Math.floor(Math.random() * penaltyFunctions.length)];
+                    randomFunction();
+                }, i * 300); // 각 호출 사이에 300ms의 간격을 둡니다
+            }
+        });
 
         // setModal('goongYeForbiddenWord', true);
 
@@ -173,19 +173,19 @@ const GameRoomPage = () => {
 
     const testPenalty = () => {
         const testPenaltyFunctions = [
-            () => penaltySunglasses(videoRef,username), 
-            () => penaltyMustache(videoRef,username), 
-            () =>penaltyExpansion(videoRef,username), 
-            () => penaltyBald(videoRef,username),() => beol(username)];
+            () => penaltySunglasses(videoRef, username),
+            () => penaltyMustache(videoRef, username),
+            () => penaltyExpansion(videoRef, username),
+            () => penaltyBald(videoRef, username), () => beol(username)];
 
-            const randomFunction = testPenaltyFunctions[Math.floor(Math.random() * testPenaltyFunctions.length)];
-            randomFunction();
+        const randomFunction = testPenaltyFunctions[Math.floor(Math.random() * testPenaltyFunctions.length)];
+        randomFunction();
 
     }
 
 
 
-// ====================================================== 캔버스에 그리기 ====================================================== 
+    // ====================================================== 캔버스에 그리기 ====================================================== 
     function nameCanvas() {
         const videoContainer = document.getElementById("video-container");
         if (!videoContainer) return;
@@ -219,46 +219,38 @@ const GameRoomPage = () => {
 
     function beol(id) {
         const Old = document.getElementById(`canvas_${id}`);
-    
+
         // video-container가 없으면 함수 종료
         if (!Old) return;
-    
+
         const canvas = document.createElement("canvas");
-        canvas.width = Old.width;    // 픽셀 단위 캔버스 너비
-        canvas.height = Old.height;  // 픽셀 단위 캔버스 높이
-    
-        // CSS 스타일 크기를 Old와 동일하게 설정
-        canvas.style.width = `${Old.width}px`;
-        canvas.style.height = `${Old.height}px`;
+        canvas.width = 640;
+        canvas.height = 480;
         canvas.style.position = "absolute";
-    
-        // Old의 위치를 기반으로 top, left 설정
-        const rect = Old.getBoundingClientRect();
-        canvas.style.top = `${rect.top}px`;
-        canvas.style.left = `${rect.left}px`;
-        canvas.style.zIndex = "10";
-    
+        canvas.style.top = Old.offsetTop + "px";
+        canvas.style.left = Old.offsetLeft + "px";
+        canvas.style.zIndex = "1";
+
         // 부모 요소에 canvas 추가
         Old.parentNode.insertBefore(canvas, Old.nextSibling);
-    
+
         const img = new Image();
         img.src = IMG; // 이미지 소스 설정
-    
-        const IMG_WIDTH = 200;
-        const IMG_HEIGHT = 120;
-        let yPosition = -IMG_HEIGHT; // 시작 위치는 캔버스 위쪽 바깥
-        const targetY = canvas.height / 2 - IMG_HEIGHT / 2; // 목표 위치 (중앙)
-    
+        const WIDTH = 280;
+        const HEIGHT = 120;
+        let yPosition = -HEIGHT; // 시작 위치는 캔버스 위쪽 바깥
+        const targetY = videoSize.height / 2 - HEIGHT / 2; // 목표 위치 (중앙)
+
         const ctx = canvas.getContext("2d");
-    
+
         img.onload = () => {
             // 애니메이션 함수 정의
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화
-    
+
                 // 현재 위치에 이미지 그리기
-                ctx.drawImage(img, canvas.width / 2 - 200, yPosition -200, IMG_WIDTH, IMG_HEIGHT); // 수평 중앙 정렬
-    
+                ctx.drawImage(img, WIDTH / 2, yPosition - 100, WIDTH, HEIGHT); // 수평 중앙 정렬
+
                 // 목표 위치까지 이동
                 if (yPosition < targetY) {
                     yPosition += 5; // 속도 조절 (숫자가 커질수록 빨라짐)
@@ -266,18 +258,19 @@ const GameRoomPage = () => {
                 } else {
                     // 목표에 도달하면 멈춤
                     setTimeout(() => {
-                        canvas.remove(); // 3초 후에 캔버스 제거
-                    }, 1500);
+                        canvas.remove(); // 2초 후에 캔버스 제거
+                    }, 3000);
                 }
             }
-    
+
             animate(); // 애니메이션 시작
         };
     }
-    
-    
 
-// ====================================================== Join ====================================================== 
+
+
+
+    // ====================================================== Join ====================================================== 
     function joinSession() {
         let mySessionId = document.getElementById("sessionId").value;
         let myUserName = document.getElementById("userName").value;
@@ -285,27 +278,27 @@ const GameRoomPage = () => {
         setOV(OV);
         session = OV.initSession();
         setSession(session);
-    
+
         session.on("streamCreated", (event) => {
             let subscriber = session.subscribe(event.stream, "video-container");
-    
+
             subscribers = [...subscribers, subscriber];
             subscriber.on("videoElementCreated", (event) => {
                 // appendUserData(event.element, subscriber.stream.connection);
                 appendCanvas(event.element, subscriber.stream.connection)
             });
         });
-    
+
         session.on("streamDestroyed", (event) => {
             removeUserData(event.stream.connection);
             subscribers.filter((sub) => sub !== event.stream.streamManager);
         });
-    
+
 
         session.on("exception", (exception) => {
             console.warn(exception);
         });
-    
+
         getToken(mySessionId).then((token) => {
             session
                 .connect(token, { clientData: myUserName })
@@ -316,7 +309,7 @@ const GameRoomPage = () => {
                         resolution: "640x480",
                         frameRate: FRAME_RATE,
                     }).then((mediaStream) => {
-                        startStreaming( mediaStream);
+                        startStreaming(mediaStream);
                     });
                     document.getElementById("session-title").innerText =
                         mySessionId;
@@ -324,43 +317,43 @@ const GameRoomPage = () => {
                     document.getElementById("session").style.display = "block";
                 })
                 .catch((error) => {
-                    throw(error);
+                    throw (error);
                 });
         });
     }
 
 
-    
+
     function removeUserData(connection) {
         let dataNode = document.getElementById("data-" + connection.connectionId);
         dataNode.parentNode.removeChild(dataNode);
     }
-    
+
     function removeAllUserData() {
         let nicknameElements = document.getElementsByClassName("data-node");
         while (nicknameElements[0]) {
             nicknameElements[0].parentNode.removeChild(nicknameElements[0]);
         }
     }
-    
+
     function appendCanvas(videoElement, connection) {
         let userData;
         if (typeof connection === "string") {
-           userData = connection;
+            userData = connection;
         } else {
-           userData = JSON.parse(connection.data).clientData;
+            userData = JSON.parse(connection.data).clientData;
         }
-      
+
         // 공통 부모 요소를 생성합니다.
         const container = document.createElement('div');
         container.style.position = "relative";
         container.style.width = 640;
         container.style.height = 480;
-     
+
         // 기존 비디오 요소를 부모 요소로 이동합니다.
         videoElement.parentNode.insertBefore(container, videoElement);
         container.appendChild(videoElement);
-     
+
         const canvas = document.createElement('canvas');
         canvas.className = "canvas";
         canvas.id = "canvas_" + userData;
@@ -370,84 +363,84 @@ const GameRoomPage = () => {
         canvas.style.top = '0';
         canvas.style.left = '0';
         canvas.style.zIndex = '1';
-     
-        container.appendChild(canvas);
-     }
-     
-    
-// ====================================================== OPENVIDU API ====================================================== 
-function getToken(mySessionId) {
-    return createSession(mySessionId).then((sessionId) =>
-        createToken(sessionId)
-    );
-}
 
-function createSession(sessionId) {
-    return new Promise((resolve, reject) => {
-        axios.post(`${APPLICATION_SERVER_URL}api/sessions`, 
-            { customSessionId: sessionId }, 
-            {
+        container.appendChild(canvas);
+    }
+
+
+    // ====================================================== OPENVIDU API ====================================================== 
+    function getToken(mySessionId) {
+        return createSession(mySessionId).then((sessionId) =>
+            createToken(sessionId)
+        );
+    }
+
+    function createSession(sessionId) {
+        return new Promise((resolve, reject) => {
+            axios.post(`${APPLICATION_SERVER_URL}api/sessions`,
+                { customSessionId: sessionId },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            )
+                .then((response) => {
+                    resolve(response.data); // The sessionId
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
+
+
+    function createToken(sessionId) {
+        return new Promise((resolve, reject) => {
+            axios.post(`${APPLICATION_SERVER_URL}api/sessions/${sessionId}/connections`, {}, {
                 headers: {
                     "Content-Type": "application/json"
                 }
-            }
-        )
-        .then((response) => {
-            resolve(response.data); // The sessionId
-        })
-        .catch((error) => {
-            reject(error);
+            })
+                .then((response) => {
+                    resolve(response.data); // The token
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+
         });
-    });
-}
+    }
+    // ====================================================== 비디오 스트림 ====================================================== 
 
-
-function createToken(sessionId) {
-    return new Promise((resolve, reject) => {
-        axios.post(`${APPLICATION_SERVER_URL}api/sessions/${sessionId}/connections`, {}, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        .then((response) => {
-            resolve(response.data); // The token
-        })
-        .catch((error) => {
-            reject(error);
-        });
-        
-    });
-}
-// ====================================================== 비디오 스트림 ====================================================== 
-
-    const startStreaming = async ( mediaStream) => {
+    const startStreaming = async (mediaStream) => {
         await new Promise((resolve) => setTimeout(resolve, 2000));
-    
+
         const video = document.createElement("video");
         video.srcObject = mediaStream;
         video.autoplay = false;
-        video.muted =true;
+        video.muted = true;
         video.playsInline = true;
-    
+
         const compositeCanvas = document.createElement("canvas");
         compositeCanvas.style.position = "relative";
         compositeCanvas.width = 640;
         compositeCanvas.height = 480;
         compositeCanvas.id = `canvas_${username}`;
         const ctx = compositeCanvas.getContext("2d");
-        
+
         // videoRef 설정 및 대기
         setVideoRef(video);
-    
+
         // 비디오 메타데이터 로드 시 실행
         await new Promise((resolve) => {
             video.onloadedmetadata = () => {
                 video.play();
-                videoStreamStart(video,ctx,compositeCanvas);
+                videoStreamStart(video, ctx, compositeCanvas);
                 resolve();
             };
         });
-    
+
         // 캔버스에서 스트림 생성
         const compositeStream = compositeCanvas.captureStream(FRAME_RATE);
         const publisher = OV.initPublisher(undefined, {
@@ -456,41 +449,41 @@ function createToken(sessionId) {
             frameRate: FRAME_RATE,
             videoCodec: "H264",
         });
-    
+
         await session.publish(publisher);
-    
+
         // 캔버스를 화면에 추가
         const videoContainer = document.getElementById("video-container");
         videoContainer.appendChild(compositeCanvas);
     };
 
-    const videoStreamStart = (video,ctx,compositeCanvas) => {
-        if(!detectModel) return;
+    const videoStreamStart = (video, ctx, compositeCanvas) => {
+        if (!detectModel) return;
 
         let animationFrameID;
-            const estimateFacesLoop = () => {
-                    ctx.clearRect(
-                        0,
-                        0,
-                        compositeCanvas.width,
-                        compositeCanvas.height
-                    );
-                    ctx.save();
-                    ctx.scale(-1, 1); // X축 반전
-                    ctx.translate(-compositeCanvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                    ctx.drawImage(
-                        video,
-                        0,
-                        0,
-                        compositeCanvas.width,
-                        compositeCanvas.height
-                    );
+        const estimateFacesLoop = () => {
+            ctx.clearRect(
+                0,
+                0,
+                compositeCanvas.width,
+                compositeCanvas.height
+            );
+            ctx.save();
+            ctx.scale(-1, 1); // X축 반전
+            ctx.translate(-compositeCanvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
+            ctx.drawImage(
+                video,
+                0,
+                0,
+                compositeCanvas.width,
+                compositeCanvas.height
+            );
 
-                    ctx.restore();
-                    requestAnimationFrame(estimateFacesLoop);
-
-            };
+            ctx.restore();
             requestAnimationFrame(estimateFacesLoop);
+
+        };
+        requestAnimationFrame(estimateFacesLoop);
 
         return () => {
             if (animationFrameID) {
@@ -498,294 +491,265 @@ function createToken(sessionId) {
             }
         };
     };
-// ====================================================== 선글라스 벌칙 ====================================================== 
- const penaltySunglasses = (videoElement,user)=>{
-        if(!detectModel) {
+    // ====================================================== 선글라스 벌칙 ====================================================== 
+    const penaltySunglasses = (videoElement, user) => {
+        if (!detectModel) {
             console.log("detect model is not loaded")
-            return};
+            return
+        };
 
-            const originCanvas = document.getElementById(`canvas_${user}`);
+        const originCanvas = document.getElementById(`canvas_${id}`);
 
-            // const canvas = document.createElement("canvas");
-            // // 크기를 originCanvas와 동일하게 설정
-            // canvas.width = originCanvas.offsetWidth; 
-            // canvas.height = originCanvas.offsetHeight; 
-            // canvas.style.position = "absolute";
-            // canvas.style.top = originCanvas.offsetTop + "px";
-            // canvas.style.left = originCanvas.offsetLeft + "px";
-            // canvas.style.zIndex = "10";
-            // const ctx = canvas.getContext("2d");
+        const canvas = document.createElement("canvas");
+        canvas.width = 640;
+        canvas.height = 480;
+        canvas.style.position = "absolute";
+        canvas.style.top = originCanvas.offsetTop + "px";
+        canvas.style.left = originCanvas.offsetLeft + "px";
+        canvas.style.zIndex = "1";
 
-            const canvas = document.createElement("canvas");
-            canvas.width = originCanvas.width;    // 픽셀 단위 캔버스 너비
-            canvas.height = originCanvas.height;  // 픽셀 단위 캔버스 높이
+        originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
         
-            // CSS 스타일 크기를 Old와 동일하게 설정
-            canvas.style.width = `${originCanvas.width}px`;
-            canvas.style.height = `${originCanvas.height}px`;
-            canvas.style.position = "absolute";
         
-            // Old의 위치를 기반으로 top, left 설정
-            const rect = originCanvas.getBoundingClientRect();
-            canvas.style.top = `${rect.top}px`;
-            canvas.style.left = `${rect.left}px`;
-            canvas.style.zIndex = "10";
-            const ctx = canvas.getContext("2d");
-            
-            originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
+        const image = new Image();
+        image.src = SUNGLASS;
+        
+        const ctx = canvas.getContext("2d");
 
 
-            const image = new Image();
-            image.src = SUNGLASS;
+        const drawing = () => {
+            detectModel.estimateFaces(canvas).then((faces) => {
+                ctx.clearRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+                ctx.save();
+                ctx.scale(-1, 1); // X축 반전
+                ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
+                ctx.drawImage(
+                    videoElement,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
 
-
-
-            const drawing=()=>{
-                detectModel.estimateFaces(canvas).then((faces) => {
-                    ctx.clearRect(
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
+                if (faces[0]) {
+                    const { x, y, width, height, angle } = calculateFilterPosition(
+                        "eyeFilter",
+                        faces[0].keypoints
                     );
-                    ctx.save();
                     ctx.scale(-1, 1); // X축 반전
                     ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                    ctx.drawImage(
-                        videoElement,
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
-                    );
-
-                    if (faces[0]) {
-                        const { x, y, width, height,angle } = calculateFilterPosition(
-                            "eyeFilter",
-                            faces[0].keypoints
-                        );
-                        ctx.scale(-1, 1); // X축 반전
-                        ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                        ctx.save(); // 현재 캔버스 상태 저장
-                        ctx.translate(x + width / 2, y + height / 2); // 필터 중심으로 이동
-                        ctx.rotate(angle); // 얼굴 각도에 맞춰 회전
-                        ctx.drawImage(image, -width / 2, -height / 2, width, height); // 중심을 기준으로 이미지 그리기
-                        ctx.restore(); // 원래 캔버스 상태로 복원
-                    }
-                    ctx.restore();
-                    requestAnimationFrame(drawing);
-                })
-            }
-            // ctx.restore();
-            requestAnimationFrame(drawing);
-            setTimeout(() => {
-                canvas.remove(); 
-            }, 3000);
+                    ctx.save(); // 현재 캔버스 상태 저장
+                    ctx.translate(x + width / 2, y + height / 2); // 필터 중심으로 이동
+                    ctx.rotate(angle); // 얼굴 각도에 맞춰 회전
+                    ctx.drawImage(image, -width / 2, -height / 2, width, height); // 중심을 기준으로 이미지 그리기
+                    ctx.restore(); // 원래 캔버스 상태로 복원
+                }
+                ctx.restore();
+                requestAnimationFrame(drawing);
+            })
+        }
+        // ctx.restore();
+        requestAnimationFrame(drawing);
+        setTimeout(() => {
+            canvas.remove();
+        }, 3000);
 
     }
- const penaltyMustache = (videoElement,user)=>{
-        if(!detectModel) {
+    const penaltyMustache = (videoElement, user) => {
+        if (!detectModel) {
             console.log("detect model is not loaded")
-            return};
+            return
+        };
 
-            const originCanvas = document.getElementById(`canvas_${user}`);
-            const canvas = document.createElement("canvas");
-            canvas.width = originCanvas.width;    // 픽셀 단위 캔버스 너비
-            canvas.height = originCanvas.height;  // 픽셀 단위 캔버스 높이
+        const originCanvas = document.getElementById(`canvas_${id}`);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = 640;
+        canvas.height = 480;
+        canvas.style.position = "absolute";
+        canvas.style.top = originCanvas.offsetTop + "px";
+        canvas.style.left = originCanvas.offsetLeft + "px";
+        canvas.style.zIndex = "1";
+
+        originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
         
-            // CSS 스타일 크기를 Old와 동일하게 설정
-            canvas.style.width = `${originCanvas.width}px`;
-            canvas.style.height = `${originCanvas.height}px`;
-            canvas.style.position = "absolute";
-        
-            // Old의 위치를 기반으로 top, left 설정
-            const rect = originCanvas.getBoundingClientRect();
-            canvas.style.top = `${rect.top}px`;
-            canvas.style.left = `${rect.left}px`;
-            canvas.style.zIndex = "10";
-            const ctx = canvas.getContext("2d");
-            
-            originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
 
 
-            const image = new Image();
-            image.src = MUSTACHE;
+        const image = new Image();
+        image.src = MUSTACHE;
+
+        const ctx = canvas.getContext("2d");
 
 
+        const drawing = () => {
+            detectModel.estimateFaces(canvas).then((faces) => {
+                ctx.clearRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+                ctx.save();
+                ctx.scale(-1, 1); // X축 반전
+                ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
+                ctx.drawImage(
+                    videoElement,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
 
-            const drawing=()=>{
-                detectModel.estimateFaces(canvas).then((faces) => {
-                    ctx.clearRect(
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
+                if (faces[0]) {
+                    const { x, y, width, height, angle } = calculateFilterPosition(
+                        "mustacheFilter",
+                        faces[0].keypoints
                     );
-                    ctx.save();
                     ctx.scale(-1, 1); // X축 반전
                     ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                    ctx.drawImage(
-                        videoElement,
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
-                    );
-
-                    if (faces[0]) {
-                        const { x, y, width, height,angle } = calculateFilterPosition(
-                            "mustacheFilter",
-                            faces[0].keypoints
-                        );
-                        ctx.scale(-1, 1); // X축 반전
-                        ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                        ctx.save(); // 현재 캔버스 상태 저장
-                        ctx.translate(x + width / 2, y + height / 2); // 필터 중심으로 이동
-                        ctx.rotate(angle); // 얼굴 각도에 맞춰 회전
-                        ctx.drawImage(image, -width / 2 - 45, -height / 2, width, height); // 중심을 기준으로 이미지 그리기
-                        ctx.restore(); // 원래 캔버스 상태로 복원
-                    }
-                    ctx.restore();
-                    requestAnimationFrame(drawing);
-                })
-            }
-            requestAnimationFrame(drawing);
-            setTimeout(() => {
-                canvas.remove(); 
-            }, 3000);
+                    ctx.save(); // 현재 캔버스 상태 저장
+                    ctx.translate(x + width / 2, y + height / 2); // 필터 중심으로 이동
+                    ctx.rotate(angle); // 얼굴 각도에 맞춰 회전
+                    ctx.drawImage(image, -width / 2 - 45, -height / 2, width, height); // 중심을 기준으로 이미지 그리기
+                    ctx.restore(); // 원래 캔버스 상태로 복원
+                }
+                ctx.restore();
+                requestAnimationFrame(drawing);
+            })
+        }
+        requestAnimationFrame(drawing);
+        setTimeout(() => {
+            canvas.remove();
+        }, 3000);
 
     }
- const penaltyExpansion = (videoElement,user)=>{
-        if(!detectModel) {
+    const penaltyExpansion = (videoElement, user) => {
+        if (!detectModel) {
             console.log("detect model is not loaded")
-            return};
+            return
+        };
 
-            const originCanvas = document.getElementById(`canvas_${user}`);
-            const canvas = document.createElement("canvas");
-            canvas.width = originCanvas.width;    // 픽셀 단위 캔버스 너비
-            canvas.height = originCanvas.height;  // 픽셀 단위 캔버스 높이
-        
-            // CSS 스타일 크기를 Old와 동일하게 설정
-            canvas.style.width = `${originCanvas.width}px`;
-            canvas.style.height = `${originCanvas.height}px`;
-            canvas.style.position = "absolute";
-        
-            // Old의 위치를 기반으로 top, left 설정
-            const rect = originCanvas.getBoundingClientRect();
-            canvas.style.top = `${rect.top}px`;
-            canvas.style.left = `${rect.left}px`;
-            canvas.style.zIndex = "10";
-            const ctx = canvas.getContext("2d");
-            
-            originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
+        const originCanvas = document.getElementById(`canvas_${id}`);
 
-            const drawing=()=>{
-                detectModel.estimateFaces(canvas).then((faces) => {
-                    ctx.clearRect(
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
+        const canvas = document.createElement("canvas");
+        canvas.width = 640;
+        canvas.height = 480;
+        canvas.style.position = "absolute";
+        canvas.style.top = originCanvas.offsetTop + "px";
+        canvas.style.left = originCanvas.offsetLeft + "px";
+        canvas.style.zIndex = "1";
+
+        originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
+        
+        const ctx = canvas.getContext("2d");
+
+        const drawing = () => {
+            detectModel.estimateFaces(canvas).then((faces) => {
+                ctx.clearRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+                ctx.save();
+                ctx.scale(-1, 1); // X축 반전
+                ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
+                ctx.drawImage(
+                    videoElement,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+
+                if (faces[0]) {
+                    const { x, y, width, height } = calculateFilterPosition(
+                        "lefteyeFilter",
+                        faces[0].keypoints
                     );
-                    ctx.save();
                     ctx.scale(-1, 1); // X축 반전
                     ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                    ctx.drawImage(
-                        videoElement,
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
-                    );
-
-                    if (faces[0]) {
-                        const { x, y, width, height } = calculateFilterPosition(
-                            "lefteyeFilter",
-                            faces[0].keypoints
-                        );
-                        ctx.scale(-1, 1); // X축 반전
-                        ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                        ctx.drawImage(canvas, x+10, y, width, height, x-30, y, width * 3, height * 3);
-                    }
-                    ctx.restore();
-                    requestAnimationFrame(drawing);
-                })
-            }
-            requestAnimationFrame(drawing);
-            setTimeout(() => {
-                canvas.remove(); 
-            }, 3000);
+                    ctx.drawImage(canvas, x + 10, y, width, height, x - 30, y, width * 3, height * 3);
+                }
+                ctx.restore();
+                requestAnimationFrame(drawing);
+            })
+        }
+        requestAnimationFrame(drawing);
+        setTimeout(() => {
+            canvas.remove();
+        }, 3000);
     }
 
-    const penaltyBald = (videoElement,user)=>{
-        if(!detectModel) {
+    const penaltyBald = (videoElement, user) => {
+        if (!detectModel) {
             console.log("detect model is not loaded")
-            return};
+            return
+        };
 
-            const originCanvas = document.getElementById(`canvas_${user}`);
-            const canvas = document.createElement("canvas");
-            canvas.width = originCanvas.width;    // 픽셀 단위 캔버스 너비
-            canvas.height = originCanvas.height;  // 픽셀 단위 캔버스 높이
+        const originCanvas = document.getElementById(`canvas_${id}`);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = 640;
+        canvas.height = 480;
+        canvas.style.position = "absolute";
+        canvas.style.top = originCanvas.offsetTop + "px";
+        canvas.style.left = originCanvas.offsetLeft + "px";
+        canvas.style.zIndex = "1";
+
+        originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
         
-            // CSS 스타일 크기를 Old와 동일하게 설정
-            canvas.style.width = `${originCanvas.width}px`;
-            canvas.style.height = `${originCanvas.height}px`;
-            canvas.style.position = "absolute";
-        
-            // Old의 위치를 기반으로 top, left 설정
-            const rect = originCanvas.getBoundingClientRect();
-            canvas.style.top = `${rect.top}px`;
-            canvas.style.left = `${rect.left}px`;
-            canvas.style.zIndex = "10";
-            const ctx = canvas.getContext("2d");
-            
-            originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
+
+        const image = new Image();
+        image.src = BALD;
 
 
-            const image = new Image();
-            image.src = BALD;
+        const ctx = canvas.getContext("2d");
 
+        const drawing = () => {
+            detectModel.estimateFaces(canvas).then((faces) => {
+                ctx.clearRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+                ctx.save();
+                ctx.scale(-1, 1); // X축 반전
+                ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
+                ctx.drawImage(
+                    videoElement,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
 
-
-            const drawing=()=>{
-                detectModel.estimateFaces(canvas).then((faces) => {
-                    ctx.clearRect(
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
+                if (faces[0]) {
+                    const { x, y, width, height } = calculateFilterPosition(
+                        "baldFilter",
+                        faces[0].keypoints
                     );
-                    ctx.save();
                     ctx.scale(-1, 1); // X축 반전
                     ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                    ctx.drawImage(
-                        videoElement,
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
-                    );
-
-                    if (faces[0]) {
-                        const { x, y, width, height } = calculateFilterPosition(
-                            "baldFilter",
-                            faces[0].keypoints
-                        );
-                        ctx.scale(-1, 1); // X축 반전
-                        ctx.translate(-canvas.width, 0); // 캔버스의 왼쪽 끝으로 이동
-                        ctx.drawImage(image, x, y, width, height);
-                    }
-                    ctx.restore();
-                    requestAnimationFrame(drawing);
-                })
-            }
-            requestAnimationFrame(drawing);
-            setTimeout(() => {
-                canvas.remove(); 
-            }, 3000);
+                    ctx.drawImage(image, x, y, width, height);
+                }
+                ctx.restore();
+                requestAnimationFrame(drawing);
+            })
+        }
+        requestAnimationFrame(drawing);
+        setTimeout(() => {
+            canvas.remove();
+        }, 3000);
 
     }
-// ====================================================== 게임 소켓 서버 API ====================================================== 
+    // ====================================================== 게임 소켓 서버 API ====================================================== 
     function connectToRoom() {
 
         const _socket = io('http://localhost:3002', {
@@ -825,7 +789,7 @@ function createToken(sessionId) {
             console.log('금칙어 설정이 끝났습니다.');
             forbiddenwordAnouncement();
         });
-    
+
         _socket.on('open modal', () => {
             setModal('goongYeForbiddenWord', true);
 
@@ -841,9 +805,9 @@ function createToken(sessionId) {
     const handleForbiddenWordUsed = (occurrences) => {
         socket.emit('forbidden word used', username, occurrences);
     };
- 
+
     const clickbeol = () => {
-        beol(username)    
+        beol(username)
     };
 
     useEffect(() => {
@@ -868,15 +832,15 @@ function createToken(sessionId) {
     // }
 
 
-// ====================================================== detect model load ====================================================== 
-    useEffect(()=>{
-        console.log("detectModel : ", detectModel);
-        // loadDetectionModel().then((model) => {
-        //     // console.log("model : ", model)
-        //     setDetectModel(model);
-        // });
-    })
-// ====================================================== 음성인식 ====================================================== 
+    // ====================================================== detect model load ====================================================== 
+    // useEffect(()=>{
+    //     // console.log("detectModel : ", detectModel);
+    //     // loadDetectionModel().then((model) => {
+    //     //     // console.log("model : ", model)
+    //     //     setDetectModel(model);
+    //     // });
+    // })
+    // ====================================================== 음성인식 ====================================================== 
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
@@ -965,7 +929,7 @@ function createToken(sessionId) {
             stopButton?.removeEventListener('click', handleStop);
         };
     }, [forbiddenWordlist, isStoppedManually, username, socket]);
-// ====================================================== return ====================================================== 
+    // ====================================================== return ====================================================== 
     return (
         <>
             <StatusBar username={username} />
@@ -1000,40 +964,40 @@ function createToken(sessionId) {
                     </div>
                     <div id="session-body">
                         <div className="main-content">
-    
-                                <div className="App">
 
-                                    <>
+                            <div className="App">
 
-                                        <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
-                                        <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
-                                        {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
-                                        <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
-                                        <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
-                                        <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>
-                                        <div>
-                                            남은 시간: {timer}초
-                                        </div>
-                                        <div
-                                            id="subtitles"
-                                            style={{
-                                                position: 'absolute',
-                                                bottom: '10px',
-                                                left: '50%',
-                                                transform: 'translateX(-50%)',
-                                                color: 'white',
-                                                background: 'rgba(0, 0, 0, 0.7)',
-                                                padding: '10px',
-                                                borderRadius: '5px',
-                                                fontSize: '18px',
-                                                zIndex: 1000,
-                                            }}
-                                        >
-                                            자막
-                                        </div>
-                                    </>
-                                </div>
-                        
+                                <>
+
+                                    <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
+                                    <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
+                                    {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
+                                    <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
+                                    <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
+                                    <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>
+                                    <div>
+                                        남은 시간: {timer}초
+                                    </div>
+                                    <div
+                                        id="subtitles"
+                                        style={{
+                                            position: 'absolute',
+                                            bottom: '10px',
+                                            left: '50%',
+                                            transform: 'translateX(-50%)',
+                                            color: 'white',
+                                            background: 'rgba(0, 0, 0, 0.7)',
+                                            padding: '10px',
+                                            borderRadius: '5px',
+                                            fontSize: '18px',
+                                            zIndex: 1000,
+                                        }}
+                                    >
+                                        자막
+                                    </div>
+                                </>
+                            </div>
+
                             <div id="video-container" className="col-md-6">
                             </div>
                         </div>
