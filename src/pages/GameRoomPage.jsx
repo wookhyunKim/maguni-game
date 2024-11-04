@@ -63,7 +63,7 @@ const GameRoomPage = () => {
 
 
 
-    const [videoRef, setVideoRef] = useState(undefined);
+    // const [videoRef, setVideoRef] = useState(undefined);
 
     const globalTime = useStoreTime((state) => state.time);
     const decrementTime = useStoreTime((state) => state.decrementTime);
@@ -147,10 +147,10 @@ const GameRoomPage = () => {
             }
 
             const penaltyFunctions = [
-                () => penaltySunglasses(videoRef, user),
-                () => penaltyMustache(videoRef, user),
-                () => penaltyExpansion(videoRef, user),
-                () => penaltyBald(videoRef, user), beol(user)];
+                () => penaltySunglasses(user),
+                () => penaltyMustache(user),
+                () => penaltyExpansion(user),
+                () => penaltyBald(user), beol(user)];
 
 
             for (let i = 0; i < occurrences; i++) {
@@ -173,10 +173,10 @@ const GameRoomPage = () => {
 
     const testPenalty = () => {
         const testPenaltyFunctions = [
-            () => penaltySunglasses(videoRef, username),
-            () => penaltyMustache(videoRef, username),
-            () => penaltyExpansion(videoRef, username),
-            () => penaltyBald(videoRef, username), () => beol(username)];
+            () => penaltySunglasses(user),
+            () => penaltyMustache(user),
+            () => penaltyExpansion(user),
+            () => penaltyBald(user), () => beol(user)];
 
         const randomFunction = testPenaltyFunctions[Math.floor(Math.random() * testPenaltyFunctions.length)];
         randomFunction();
@@ -285,8 +285,10 @@ const GameRoomPage = () => {
             subscribers = [...subscribers, subscriber];
             subscriber.on("videoElementCreated", (event) => {
                 // appendUserData(event.element, subscriber.stream.connection);
-                appendCanvas(event.element, subscriber.stream.connection)
-            });
+                const userData = JSON.parse(subscriber.stream.connection.data).clientData
+                event.element.id = 'video_' + userData;  // 예: connectionId 기반 ID
+                appendCanvas(event.element, subscriber.stream.connection);
+            })
         });
 
         session.on("streamDestroyed", (event) => {
@@ -420,6 +422,7 @@ const GameRoomPage = () => {
         video.srcObject = mediaStream;
         video.autoplay = false;
         video.muted = true;
+        video.id = `video_${username}`;
         video.playsInline = true;
 
         const compositeCanvas = document.createElement("canvas");
@@ -430,7 +433,7 @@ const GameRoomPage = () => {
         const ctx = compositeCanvas.getContext("2d");
 
         // videoRef 설정 및 대기
-        setVideoRef(video);
+        // setVideoRef(video);
 
         // 비디오 메타데이터 로드 시 실행
         await new Promise((resolve) => {
@@ -492,7 +495,7 @@ const GameRoomPage = () => {
         };
     };
     // ====================================================== 선글라스 벌칙 ====================================================== 
-    const penaltySunglasses = (videoElement, user) => {
+    const penaltySunglasses = (id) => {
         if (!detectModel) {
             console.log("detect model is not loaded")
             return
@@ -516,6 +519,8 @@ const GameRoomPage = () => {
         
         const ctx = canvas.getContext("2d");
 
+        const videoElement = document.getElementById(`video_${id}`);
+        console.log(videoElement);
 
         const drawing = () => {
             detectModel.estimateFaces(canvas).then((faces) => {
@@ -560,7 +565,7 @@ const GameRoomPage = () => {
         }, 3000);
 
     }
-    const penaltyMustache = (videoElement, user) => {
+    const penaltyMustache = (id) => {
         if (!detectModel) {
             console.log("detect model is not loaded")
             return
@@ -584,6 +589,10 @@ const GameRoomPage = () => {
         image.src = MUSTACHE;
 
         const ctx = canvas.getContext("2d");
+        const videoElement = document.getElementById(`video_${id}`);
+        console.log(videoElement);
+
+
 
 
         const drawing = () => {
@@ -626,9 +635,9 @@ const GameRoomPage = () => {
         setTimeout(() => {
             canvas.remove();
         }, 3000);
-
     }
-    const penaltyExpansion = (videoElement, user) => {
+
+    const penaltyExpansion = (id) => {
         if (!detectModel) {
             console.log("detect model is not loaded")
             return
@@ -647,6 +656,10 @@ const GameRoomPage = () => {
         originCanvas.parentNode.insertBefore(canvas, originCanvas.nextSibling);
         
         const ctx = canvas.getContext("2d");
+        const videoElement = document.getElementById(`video_${id}`);
+        console.log(videoElement);
+
+
 
         const drawing = () => {
             detectModel.estimateFaces(canvas).then((faces) => {
@@ -686,7 +699,7 @@ const GameRoomPage = () => {
         }, 3000);
     }
 
-    const penaltyBald = (videoElement, user) => {
+    const penaltyBald = (id) => {
         if (!detectModel) {
             console.log("detect model is not loaded")
             return
@@ -710,6 +723,10 @@ const GameRoomPage = () => {
 
 
         const ctx = canvas.getContext("2d");
+        const videoElement = document.getElementById(`video_${id}`);
+        console.log(videoElement);
+
+
 
         const drawing = () => {
             detectModel.estimateFaces(canvas).then((faces) => {
