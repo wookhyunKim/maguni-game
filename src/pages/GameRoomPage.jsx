@@ -142,9 +142,9 @@ const GameRoomPage = () => {
 
         socket.on('hit user', (user, occurrences) => {
             console.log(occurrences);
-            // if(user == username) {
-            //      return;
-            // }
+            if(user == username) {
+                 return;
+            }
 
             const penaltyFunctions = [
                 () => penaltySunglasses(videoRef, user),
