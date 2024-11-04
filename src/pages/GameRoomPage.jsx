@@ -150,7 +150,7 @@ const GameRoomPage = () => {
                     () => penaltySunglasses(videoRef,user), 
                     () => penaltyMustache(videoRef,user), 
                     () =>penaltyExpansion(videoRef,user), 
-                    () => penaltyBald(videoRef,user),beol];
+                    () => penaltyBald(videoRef,user),beol(user)];
 
                     
                 for (let i = 0; i < occurrences; i++) {
@@ -170,6 +170,18 @@ const GameRoomPage = () => {
 
         socket.emit('start setting word', roomcode);
     };
+
+    const testPenalty = () => {
+        const testPenaltyFunctions = [
+            () => penaltySunglasses(videoRef,username), 
+            () => penaltyMustache(videoRef,username), 
+            () =>penaltyExpansion(videoRef,username), 
+            () => penaltyBald(videoRef,username),() => beol(username)];
+
+            const randomFunction = testPenaltyFunctions[Math.floor(Math.random() * testPenaltyFunctions.length)];
+            randomFunction();
+
+    }
 
 
 
@@ -994,6 +1006,7 @@ function createToken(sessionId) {
                                     <>
 
                                         <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
+                                        <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
                                         {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
                                         <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                         <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
