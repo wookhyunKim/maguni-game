@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 const HomePage = () => {
     const navigate = useNavigate();
     const  gotonickname = () => {
-        navigate('http://localhost:5173');
+        navigate('/nickname');
         }
     return (
     <div className="game-container">
