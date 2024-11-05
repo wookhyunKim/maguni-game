@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState,useRef } from 'react'
 import io from 'socket.io-client';
 import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
@@ -11,8 +11,6 @@ import useRoomStore from '../components/store/roomStore.js';
 import { usePlayerStore } from '../components/store/playerStore.js';
 import { useModalStore } from '../components/store/modalStore.js';
 import axios from 'axios';
-import { useStoreTime } from '../components/store/gameInfoStore.js';
-import detectModelStore from '../components/store/faceDetectModel.js';
 import { joinSession } from '../../openvidu/app_openvidu.js';
 
 const GameRoomPage = () => {
@@ -36,6 +34,8 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
+
+    const hasJoinedSession = useRef(false);
 
     const handlePenalty = () => {
         // Emit an event that the filter should display for 2 seconds
@@ -155,10 +155,12 @@ const GameRoomPage = () => {
         });
         _socket.on('hit user', (user, occurrences) => {
             console.log(occurrences);
-            if(user == username) {
-                 return;
+            // if(user == username) {
+            //      return;
+            // }
+            for (let i = 0; i < occurrences; i++) {
+                handlePenalty();
             }
-            testPenalty(user);
         });
 
     }
@@ -181,10 +183,13 @@ const GameRoomPage = () => {
 
     
 // ====================================================== detect model load ====================================================== 
-    useEffect(() => {
+useEffect(() => {
+    if(!hasJoinedSession.current){
         joinSession(roomcode,username);
         connectToRoom();
-    },[roomcode,username])
+        hasJoinedSession.current = true;
+    }
+},[])
 
 
 
