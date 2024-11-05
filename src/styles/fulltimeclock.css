@@ -1,24 +1,36 @@
 .timer-container {
     height: 60px;
     width: 200px;
-    border: 1px solid black;
-    background: white;
-    padding: 10px 30px;
-    font-size: 48px;
+    background: #2C3340;
+    border: 1px solid #363C4A;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 32px;
     font-weight: bold;
-    color: #0066FF;
+    color: #E4E6EB;
     display: flex;
+    font-size:48px;
     align-items: center;
     justify-content: center;
-    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+    text-shadow: none;
 }
 
 .timer-box {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 4px;
+}
+
+.timer-number {
+    color: #E4E6EB;
+}
+
+.timer-colon {
+    color: #A0A0A0;
+    margin: 0 2px;
 }
 
 .timer-number, .timer-colon {
-    line-height: 1;
+    color: #AC2F2F;
 }

@@ -1,4 +1,5 @@
-import { useEffect, useState,useRef } from 'react'
+import {useEffect, useState,useRef} from 'react';
+import {useNavigate} from 'react-router-dom';
 import io from 'socket.io-client';
 import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
@@ -11,6 +12,9 @@ import useRoomStore from '../components/store/roomStore.js';
 import { usePlayerStore } from '../components/store/playerStore.js';
 import { useModalStore } from '../components/store/modalStore.js';
 import axios from 'axios';
+import { useStoreTime } from '../components/store/gameInfoStore.js';
+import detectModelStore from '../components/store/faceDetectModel.js';
+import Input from '../components/common/Input.jsx';
 import { joinSession } from '../../openvidu/app_openvidu.js';
 
 const GameRoomPage = () => {
@@ -298,16 +302,10 @@ useEffect(() => {
                 </div>
                 {/* ---------- Join - 게임 ----------*/}
                 <div id="session" style={{ display: 'none' }}>
-                    <div id="session-header">
-                        <h1 id="session-title"></h1>
-                    </div>
                     <div id="session-body">
                         <div className="main-content">
-
                             <div className="App">
-
                                 <>
-
                                     <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
                                     <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
                                     {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
@@ -317,31 +315,21 @@ useEffect(() => {
                                     <div>
                                         남은 시간: {timer}초
                                     </div>
-                                    <div
-                                        id="subtitles"
-                                        style={{
-                                            position: 'absolute',
-                                            bottom: '10px',
-                                            left: '50%',
-                                            transform: 'translateX(-50%)',
-                                            color: 'white',
-                                            background: 'rgba(0, 0, 0, 0.7)',
-                                            padding: '10px',
-                                            borderRadius: '5px',
-                                            fontSize: '18px',
-                                            zIndex: 1000,
-                                        }}
-                                    >
-                                        자막
-                                    </div>
+                                    <div id="subtitles">자막</div>
                                 </>
                             </div>
-
                             <div id="video-container" className="col-md-6">
                             </div>
                         </div>
-
                         <div className="gameroom-sidebar">
+                            <div className="sidebar-btn">
+                                {/*여기에 onclick으로 leaveSession하면서 방 나가기 해야될듯*/}
+                                <input className="btn btn-large btn-danger"
+                                                    type="button"
+                                                    id="buttonLeaveSession"
+                                                    onClick={() => quitGame()}
+                                                    value="게임 종료" />
+                            </div>
                             <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
@@ -361,17 +349,18 @@ useEffect(() => {
                             </div>
                             <div className="sidebar_mymission">
                                 <div className="sidebar_index">나의 미션</div>
-                                <div className="sidebar_content">
-                                    <table className="user-wordlist-table">
-                                        <tbody>
-                                            <tr>
-                                                <td>미션 내용</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div className="sidebar_content">
+                                    <div className="footer-input">
+                                    <Input 
+                                        username={username} 
+                                        roomcode={roomcode} 
+                                        participantList={participantList} 
+                                        setParticipantList={setParticipantList}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div className="sidebar_goongye">
+                            {/* <div className="sidebar_goongye">
                                 <div className="sidebar_index">진행자</div>
                                 <div className="sidebar_content">
                                     <table className="user-wordlist-table">
@@ -382,29 +371,26 @@ useEffect(() => {
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
+                {modals.FW && (
+                    <ForbiddenWordlistModal
+                        participantList={participantList}
+                        forbiddenWordlist={forbiddenWordlist}
+                        onClose={() => setModal('FW', false)}
+                    />)}
+                {modals.goongYeForbiddenWord && (
+                    <GoongYeForbiddenWordModal
+                        onClose={() => setModal('goongYeForbiddenWord', false)}
+                    />
+                )}
+                {modals.goongYeAnouncingEnd && (
+                    <GoongYeAnouncingEndModal onClose={() => setModal('goongYeAnouncingEnd', false)} />
+                )}
             </div>
-            {modals.FW && (
-                <ForbiddenWordlistModal
-                    participantList={participantList}
-                    forbiddenWordlist={forbiddenWordlist}
-                    onClose={() => setModal('FW', false)}
-                />)}
-            {modals.goongYeForbiddenWord && (
-                <GoongYeForbiddenWordModal
-                    onClose={() => setModal('goongYeForbiddenWord', false)}
-                />
-            )}
-            {modals.goongYeAnouncingEnd && (
-                <GoongYeAnouncingEndModal onClose={() => setModal('goongYeAnouncingEnd', false)} />
-            )}
-             {modals.goongYeAnnouncingResult && (
-                <GoongYeAnouncingGameEndModal finalCounts={finalCountList} onClose={() => setModal('goongYeAnnouncingResult', false)} />
-            )}
-            <Footer username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList} />
+            <Footer />
         </>
     );
 }

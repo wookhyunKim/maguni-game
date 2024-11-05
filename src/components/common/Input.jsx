@@ -5,13 +5,14 @@ import PropTypes from 'prop-types';
 import { usePlayerStore } from '../store/playerStore';
 
 
+// function Input({username, roomcode, participantList, setParticipantList}) {
 function Input({username, roomcode}) {
 
 //상태관리: inputvlaue, getcode
 const [inputValue, setInputValue] = useState('');
 const [getCode,setGetCode] = useState('');
-const players = usePlayerStore(state=>state.players);
-const setPlayers = usePlayerStore(state=>state.setPlayers)
+// const players = usePlayerStore(state=>state.players);
+// const setPlayers = usePlayerStore(state=>state.setPlayers)
 
 const [gamers,setGamers] = useState([]);
 const [playerlist,setPlayerlist] = useState([]);
@@ -65,7 +66,7 @@ const getPlayersInfo = ()=>{
         url: `http://localhost:3001/member/api/v1/word/${roomcode}`,
     }).then((res)=>{
         // console.log("players  :", res.data[0].words[0])
-        setPlayers(res.data);
+        // setPlayers(res.data);
         setGamers(res.data);
     }).catch((err)=>{
         console.log(err)
@@ -95,9 +96,8 @@ return (
                 placeholder="메시지를 입력하세요"
                 />
             <button 
-                className="btn btn-primary"
+                className="sendBtn btn btn-primary"
                 onClick={insertWord}
-                style={{ marginLeft: '5px' }}
             >
                 전송
             </button>

@@ -6,10 +6,10 @@ button {
     height:40px;
     padding: 10px 0;
     width: 100%;
-    /* transition: background-color 0.3s ease; */
+    transition: all 0.3s ease;
 }
 
 button:hover {
-    background-color: #fff;
-    color: #AC2F2F;
+    background-color: #8B2424;
+    color: white;
 }
