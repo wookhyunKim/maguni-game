@@ -1,0 +1,14 @@
+.nicknameInputContainer {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+img {
+    padding: 0 10px;
+    width: 48px;
+}
