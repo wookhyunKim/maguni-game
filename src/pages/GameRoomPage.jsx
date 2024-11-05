@@ -47,6 +47,13 @@ const GameRoomPage = () => {
         window.dispatchEvent(event);
     };
 
+    const navigate = useNavigate();
+    function quitGame(){
+      navigate('/');
+      window.location.reload();
+      // window.location.href("/"); // error
+    }
+
     // ========================== 금칙어 설정 완료 ================
     // DB에서 유저별 금칙어 리스트 가져오기 => forbiddenWordlist
     const getPlayersInfo = () => {
