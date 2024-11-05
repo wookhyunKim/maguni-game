@@ -6,6 +6,7 @@ import HostGuestPage from './pages/HostGuestPage.jsx';
 import HostPage from './pages/HostPage.jsx';
 import GuestPage from './pages/GuestPage.jsx';
 import GameRoomPage from './pages/GameRoomPage.jsx'
+import TakePhotos from './pages/TakePhotos.jsx';
 function App() {
   
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path='/host' element={<HostPage/>}/>
         <Route path='/guest' element={<GuestPage/>}/>
         <Route path='/gameroom' element={<GameRoomPage/>}/>
+        <Route path='/gameroom' element={<TakePhotos/>}/>
         {/* <Route path="/" element={<Test/>}/> */}
     </Routes>
 </BrowserRouter>
