@@ -7,6 +7,8 @@ export const useModalStore = create((set) => ({
         //게임 결과 안내 모달
         gameResult: false,
         goongYeAnouncingEnd: false,
+        goongYeAnnouncingResult: false,
+
     },
     setModal: (modalName, isOpen) => 
         set((state) => ({
