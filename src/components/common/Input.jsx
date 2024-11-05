@@ -86,7 +86,7 @@ useEffect(() => {
 
 return (
     <>
-        <p>{index !=0? playerlist[index-1]: playerlist[playerlist.length-1]} 님의 금칙어를 입력해주세요</p>
+        <p>{index !=0? playerlist[index-1]: playerlist[playerlist.length-1]} 마구니의 금칙어를 입력하거라!</p>
         <div className="input-group" style={{ margin: '10px 0' }}>
             <input 
                 type="text"

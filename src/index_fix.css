@@ -32,3 +32,8 @@ input {
   width:300px
 
 }
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}

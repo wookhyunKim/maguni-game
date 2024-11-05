@@ -43,14 +43,14 @@ const SessionBar = ({sessionTime}) => {
                     className="custom-progress-bar"
                     barContainerClassName="completed-bar"
                 />
-                <img 
-                    src={bombImage} 
-                    alt="character" 
-                    className="bomb-image"
-                    style={{
-                        left: `${(progress / initalTime) * 100}%`
-                    }}
-                />
+                <div className="bomb-image-container" style={{ width: `${progressPercentage}%`, position: 'absolute', top: 0, left: 0, height: '100%' }}>
+                    <img 
+                        src={bombImage} 
+                        alt="character" 
+                        className="bomb-image"
+                    />
+                </div>
+
             </div>
         </div>
     );

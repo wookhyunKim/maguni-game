@@ -1,45 +1,56 @@
+
+
+.session-bar-container {
+    width: 100%;
+}
+
+
+/*폭탄이미지와 보라색바가 같이 움직이게 하기 위한 설정들*/
+
+/*줄어드는 보라색 바*/
 .custom-progress-bar {
     border-radius: 15px !important;
     overflow: visible !important;
+    background-color:#AC2F2F;
+    transition: all 1s linear;
 }
 
-.character-image {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+/*폭탄 이미지 컨테이너*/
+.bomb-image-container {
+    position: relative;
+    height: 100%;
+    transition: all 1s linear;
+}
+
+/*폭탄 이미지*/
+.bomb-image {
+    position: absolute !important;
+    top: 30%;
+    right: -30px !important;
+    transform: translateY(-50%) !important;
     height: 40px;
     width: auto;
-    transition: left 1s linear;
-    z-index: 1;
+    z-index: 2 !important;
+    transition: all 1s linear;
 }
 
-.custom-progress-bar {
-    background-color:#AC2F2F;
-}
-
+/*완료된 바*/
 .completed-bar {
     border-radius:15px;
 }
 
-.session-bar-container {
-    position: relative;
-    width: 100%;
-}
 
+/*남은 시간 텍스트가, progress-wrapper 안에 있기 위한 설정*/
+/*progress-wrapper css 내용 위로 올리면 안됨!!!!!!*/
+.progress-wrapper {
+    position: relative;
+}
+/*남은 시간 텍스트*/
 .timeRemainedText {
     position: absolute !important;
     right: 20px !important; /* 오른쪽 여백 조정 */
     transform: translateY(-50%) !important;
     top: 50% !important;
+    color: white;
 }
 
-.completed-bar > div {
-    position: relative !important;
-    z-index: 1 !important;
-}
-
-.bomb-image {
-    position: absolute !important;
-    right: 0 !important;
-    z-index: 0 !important;
-}
