@@ -25,9 +25,6 @@ function ProfileCard({ nickname, playerNumber, imageUrl }) {
          <span className="profile-number">player {playerNumber}</span>
        </div>
      </div>
-
-     {/* 메뉴 버튼 */}
-     <Button className="menu-button">⋮</Button>
    </div>
  );
 }

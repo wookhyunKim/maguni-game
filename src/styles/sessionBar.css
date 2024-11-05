@@ -1,7 +1,6 @@
-/* ProgressBar 컴포넌트의 스타일 오버라이드 */
 .custom-progress-bar {
     border-radius: 15px !important;
-    overflow: visible !important; /* 이미지가 바깥으로 나갈 수 있도록 */
+    overflow: visible !important;
 }
 
 .character-image {
@@ -15,7 +14,7 @@
 }
 
 .custom-progress-bar {
-    background-color:red;
+    background-color:#AC2F2F;
 }
 
 .completed-bar {
@@ -32,4 +31,15 @@
     right: 20px !important; /* 오른쪽 여백 조정 */
     transform: translateY(-50%) !important;
     top: 50% !important;
+}
+
+.completed-bar > div {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.bomb-image {
+    position: absolute !important;
+    right: 0 !important;
+    z-index: 0 !important;
 }
