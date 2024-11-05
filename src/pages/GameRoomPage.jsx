@@ -61,9 +61,10 @@ const GameRoomPage = () => {
     };
 
     function startGame() {
-        socket.emit('start game', roomcode); // 게임 시작 요청
+        let startTime = 0;
+        socket.emit('start game', roomcode,startTime); // 게임 시작 요청
         setGameActive(true);
-        setTimer(20); // 타이머 초기화
+        setTimer(startTime); // 타이머 초기화
         document.getElementById('startButton').click();
     }
     //===========================금칙어 안내 모달 창 띄우기===========================
@@ -88,6 +89,7 @@ const GameRoomPage = () => {
             // 금칙어 안내가 끝난 후 1초 뒤에 자동으로 게임 시작
             setTimeout(() => {
                 document.getElementById('startgame').click();
+                //startGame();
             }, 1000);
 
         } catch (error) {
@@ -389,6 +391,9 @@ useEffect(() => {
                 {modals.goongYeAnouncingEnd && (
                     <GoongYeAnouncingEndModal onClose={() => setModal('goongYeAnouncingEnd', false)} />
                 )}
+                {modals.goongYeAnnouncingResult && (
+                <GoongYeAnouncingGameEndModal finalCounts={finalCountList} onClose={() => setModal('goongYeAnnouncingResult', false)} />
+            )}
             </div>
             <Footer />
         </>

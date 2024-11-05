@@ -47,8 +47,9 @@ io.on('connection', (client) => {
     io.emit('hit user', username, occurrences);
   });
 
-  client.on('start game', (roomcode) => {
-    let timer = 20;
+  client.on('start game', (roomcode,startTime) => {
+    console.log("게임 시작, roomcode:", roomcode, "startTime:", startTime);
+    let timer = startTime;
     const countdownInterval = setInterval(() => {
       io.to(roomcode).emit('timer update', timer);
       timer--;

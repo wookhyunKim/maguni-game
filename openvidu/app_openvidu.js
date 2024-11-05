@@ -6,6 +6,7 @@ import SUNGLASS from "../src/assets/images/sunglasses.png";
 import MUSTACHE from "../src/assets/images/mustache.png";
 import MUMURI from "../src/assets/images/mumuri.png";
 import DISH from "../src/assets/images/dish.png";
+import GOONGYE from "../src/assets/images/goongYe.png";
 
 
 var OV;
@@ -122,12 +123,14 @@ const filters = [
    { image: new Image(), type: "eyeFilter" },
    { image: new Image(), type: "mustacheFilter" },
    { image: new Image(), type: "baldFilter" },
-   { image: new Image(), type: "fallingImage" }
+   { image: new Image(), type: "fallingImage" },
+   { image: new Image(), type: "goongYe" }
  ];
  filters[0].image.src = SUNGLASS;
  filters[1].image.src = MUSTACHE;
  filters[2].image.src = MUMURI;
  filters[3].image.src = DISH;
+ filters[4].image.src = GOONGYE;
  
  let activeFilters = [];
 
@@ -169,25 +172,41 @@ function animateImage(ctx, x, yPosition) {
          ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
  
          if (faces[0]) {
-           activeFilters.forEach((filter) => {
-            if(filter.type !== "fallingImage"){
-               const { x, y, width, height, angle } = calculateFilterPosition(filter.type, faces[0].keypoints);
- 
-               ctx.save();
-               ctx.translate(x + width / 2, y + height / 2);
-               ctx.rotate(angle);
-               ctx.drawImage(filter.image, -width / 2, -height / 2, width, height);
-               ctx.restore();
-            }
-            else{
-               const {x,y} = calculateFilterPosition(filter.type,faces[0].keypoints);
-               if (filter.yPosition < y) {
-                  filter.yPosition += 5; // 떨어지는 속도 조절
-            }
-            animateImage(ctx, x, filter.yPosition);
-            }
-           });
-         }
+            activeFilters.forEach((filter) => {
+              const { x, y, width, height, angle } = calculateFilterPosition(filter.type, faces[0].keypoints);
+          
+              switch (filter.type) {
+                case "eyeFilter":
+                case "mustacheFilter":
+                case "baldFilter":
+                  // 기존 필터의 위치 계산
+                  ctx.save();
+                  ctx.translate(x + width / 2, y + height / 2);
+                  ctx.rotate(angle);
+                  ctx.drawImage(filter.image, -width / 2, -height / 2, width, height);
+                  ctx.restore();
+                  break;
+          
+                case "fallingImage":{
+                  // 떨어지는 이미지 애니메이션
+                  const fallPosition = calculateFilterPosition(filter.type, faces[0].keypoints);
+                  if (filter.yPosition < fallPosition.y) {
+                    filter.yPosition += 5; // 떨어지는 속도 조절
+                  }
+                  animateImage(ctx, fallPosition.x, filter.yPosition);
+                  break;
+                }
+          
+                case "goongYe":
+                  // GOONGYE 이미지를 캔버스 전체에 그리기
+                  ctx.drawImage(filter.image, 0, 0, compositeCanvas.width, compositeCanvas.height);
+                  break;
+          
+                default:
+                  console.warn(`Unknown filter type: ${filter.type}`);
+              }
+            });
+          }
  
          requestAnimationFrame(estimateFacesLoop);
        });
