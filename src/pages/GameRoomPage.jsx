@@ -312,7 +312,7 @@ useEffect(() => {
                                     <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                     <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
                                     <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>
-                                    <div>
+                                    <div className="time-remained">
                                         남은 시간: {timer}초
                                     </div>
                                     <div id="subtitles">자막</div>
@@ -338,8 +338,11 @@ useEffect(() => {
                                             <ul>
                                                 {isWordsShown && participantList.map(user => (
                                                     <li key={user}>
-                                                        {user} - {forbiddenWordlist.find(e => e.nickname === user)?.words || '금칙어 없음'}
-                                                        - 금칙어 카운트: {forbiddenWordCount[user] || 0}
+                                                        <div>
+                                                            {user} - {forbiddenWordlist.find(e => e.nickname === user)?.words || '금칙어 없음'}
+                                                            - 금칙어 카운트: {forbiddenWordCount[user] || 0}
+                                                        </div>
+
                                                     </li>
                                                 ))}
                                             </ul>
