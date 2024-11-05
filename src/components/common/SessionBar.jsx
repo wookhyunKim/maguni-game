@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useStoreTime } from '../store/gameInfoStore';
+// import { useStoreTime } from '../store/gameInfoStore';
 import ProgressBar from "@ramonak/react-progress-bar";
 import '../../styles/sessionBar.css';
 // import characterImage from '../../assets/images/bombImage.png';
 
 const SessionBar = ({sessionTime}) => {
-    const time = useStoreTime((state) => state.time);
+    const time = sessionTime;
     const [progress, setProgress] = useState(sessionTime);
 
     useEffect(() => {
@@ -13,12 +13,15 @@ const SessionBar = ({sessionTime}) => {
         setProgress(time);
     }, [time]); // time이 변경될 때마다 실행
 
+    //progressPercentage 계산
+    const progressPercentage = (time / sessionTime) * 100;
+
     return (
         <div className="session-bar-container">
             <div className="progress-wrapper">
                 <ProgressBar 
-                    completed={progress}
-                    maxCompleted={sessionTime}
+                    completed={progressPercentage}
+                    maxCompleted={100}
                     customLabel={`${progress}초`}
                     height="30px"
                     width="100%"

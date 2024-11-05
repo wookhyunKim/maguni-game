@@ -1,6 +1,7 @@
 .timer-container {
-    height: 48px;
-    border: 2px solid black;
+    height: 60px;
+    width: 200px;
+    border: 1px solid black;
     background: white;
     padding: 10px 30px;
     font-size: 48px;

@@ -862,7 +862,7 @@ const GameRoomPage = () => {
     // ====================================================== return ====================================================== 
     return (
         <>
-            <StatusBar username={username} />
+            <StatusBar username={username} sessionTime={timer} />
             <div id="main-container" className="container">
                 {/* ---------- 대기실 2 ----------*/}
                 <div id="join">

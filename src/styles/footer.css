@@ -14,3 +14,17 @@
 .footer > *:nth-child(3)  {
     grid-column: 3/4;
 }
+.footer-tip {
+    height:100%;
+}
+
+.footer-icons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-icon {
+    padding: 0 4px;
+}

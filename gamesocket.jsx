@@ -189,12 +189,12 @@ function GameSocket() {
           <input
             value={username}
             onChange={e => setUsername(e.target.value)}
-            placeholder="사용자 이름"
+            placeholder="사용자 이름을 입력하세요"
           />
           <input
             value={roomcode}
             onChange={e => setRoomCode(e.target.value)}
-            placeholder="방 코드"
+            placeholder="방 코드를 입력하세요"
           />
           <button onClick={connectToRoom}>방에 접속하기</button>
         </>
