@@ -5,13 +5,13 @@ import { loadDetectionModel } from '../filter/load-detection-model.js';
 import SUNGLASS from "../src/assets/images/sunglasses.png";
 import MUSTACHE from "../src/assets/images/mustache.png";
 import MUMURI from "../src/assets/images/mumuri.png";
+import DISH from "../src/assets/images/dish.png";
 
 
 var OV;
 var session;
 export var subscribers = [];
 var FRAME_RATE = 30;
-var images = [SUNGLASS,MUSTACHE,MUMURI];
 
 
 /* OPENVIDU METHODS */
@@ -121,18 +121,32 @@ const startStreaming = async (session, OV, mediaStream) => {
 const filters = [
    { image: new Image(), type: "eyeFilter" },
    { image: new Image(), type: "mustacheFilter" },
-   { image: new Image(), type: "baldFilter" }
+   { image: new Image(), type: "baldFilter" },
+   { image: new Image(), type: "fallingImage" }
  ];
  filters[0].image.src = SUNGLASS;
  filters[1].image.src = MUSTACHE;
  filters[2].image.src = MUMURI;
+ filters[3].image.src = DISH;
  
  let activeFilters = [];
+
+ // 얼굴 위치와 함께 이미지 애니메이션 추가
+const IMG_WIDTH = 200;
+const IMG_HEIGHT = 120;
+let yPosition = -IMG_HEIGHT; // 초기 y 위치 설정
+const targetY = 100; // 목표 위치 (적절히 조정 필요)
+
+
+ // 기존 필터 함수와 별개로 애니메이션을 위한 함수
+function animateImage(ctx, x, yPosition) {
+   ctx.drawImage(filters[3].image, x - IMG_WIDTH / 2, yPosition, IMG_WIDTH, IMG_HEIGHT);
+}
  
  const startFiltering = () => {
    loadDetectionModel().then((model) => {
      const addFilter = (filter) => {
-       const newFilter = { ...filter, timeoutId: null };
+       const newFilter = { ...filter, yPosition: -IMG_HEIGHT, timeoutId: null };
  
        // 타이머가 만료되면 필터를 제거
        newFilter.timeoutId = setTimeout(() => {
@@ -155,14 +169,23 @@ const filters = [
          ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
  
          if (faces[0]) {
-           activeFilters.forEach(({ image, type }) => {
-             const { x, y, width, height, angle } = calculateFilterPosition(type, faces[0].keypoints);
+           activeFilters.forEach((filter) => {
+            if(filter.type !== "fallingImage"){
+               const { x, y, width, height, angle } = calculateFilterPosition(filter.type, faces[0].keypoints);
  
-             ctx.save();
-             ctx.translate(x + width / 2, y + height / 2);
-             ctx.rotate(angle);
-             ctx.drawImage(image, -width / 2, -height / 2, width, height);
-             ctx.restore();
+               ctx.save();
+               ctx.translate(x + width / 2, y + height / 2);
+               ctx.rotate(angle);
+               ctx.drawImage(filter.image, -width / 2, -height / 2, width, height);
+               ctx.restore();
+            }
+            else{
+               const {x,y} = calculateFilterPosition(filter.type,faces[0].keypoints);
+               if (filter.yPosition < y) {
+                  filter.yPosition += 5; // 떨어지는 속도 조절
+            }
+            animateImage(ctx, x, filter.yPosition);
+            }
            });
          }
  

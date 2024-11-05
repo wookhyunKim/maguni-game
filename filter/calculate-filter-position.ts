@@ -45,6 +45,8 @@ export function calculateFilterPosition(type,keypoints) {
       return calculateLeftEyeFilterPosition(keypoints);
     case "baldFilter":
       return calculateBaldFilterPosition(keypoints);
+    default:
+      return calculateLeftEyeFilterPosition(keypoints);
   }
 }
 

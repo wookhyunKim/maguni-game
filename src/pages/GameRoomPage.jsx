@@ -5,6 +5,7 @@ import StatusBar from '../components/layout/StatusBar.jsx';
 import ForbiddenWordlistModal from '../components/modals/forbiddenWordlistModal.jsx';
 import GoongYeForbiddenWordModal from '../components/modals/goongYeForbiddenwordModal.jsx';
 import GoongYeAnouncingEndModal from '../components/modals/goongYeAnouncingEndModal.jsx';
+import GoongYeAnouncingGameEndModal from '../components/modals/GoongYeAnouncingGameEndModal.jsx';
 import Footer from '../components/layout/Footer.jsx';
 import useRoomStore from '../components/store/roomStore.js';
 import { usePlayerStore } from '../components/store/playerStore.js';
@@ -35,6 +36,9 @@ const GameRoomPage = () => {
 
     // 음성인식 관련 상태
     const [isStoppedManually, setIsStoppedManually] = useState(false); //수동 종료
+
+    //소켓에서 받아온 금칙어 횟수 리스트
+    const [finalCountList,setFinalCountList] = useState([]);
 
 
 
@@ -153,13 +157,12 @@ const GameRoomPage = () => {
         _socket.on('game ended', (finalCounts) => {
             console.log(finalCounts);
             setGameActive(false);
-            setModal('goongYeAnouncingEnd', true);
-            console.log('게임이 종료되었습니다. 최종 결과:', finalCounts);
-            alert(`게임이 종료되었습니다. 최종 결과: ${JSON.stringify(finalCounts)}`);
+            setModal('goongYeAnnouncingResult', true);
+            setFinalCountList(finalCounts);
             document.getElementById('stopButton').click();
         });
 
-        socket.on('hit user', (user, occurrences) => {
+        _socket.on('hit user', (user, occurrences) => {
             console.log("hit: ",occurrences);
   
             for (let i = 0; i < occurrences; i++) {
@@ -207,6 +210,11 @@ const GameRoomPage = () => {
         //     setDetectModel(model);
         // });
     })
+
+    useEffect(() => {
+        joinSession(roomcode,username);
+        connectToRoom();
+    },[roomcode,username])
 // ====================================================== 음성인식 ====================================================== 
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -303,26 +311,6 @@ const GameRoomPage = () => {
             <div id="main-container" className="container">
                 {/* ---------- 대기실 2 ----------*/}
                 <div id="join">
-                    <div id="join-dialog" className="jumbotron vertical-center">
-                        <h1>Join a video session</h1>
-                        <form className="form-group" onSubmit={(e) => {
-                            e.preventDefault();  // 기본 제출 동작 방지
-                            joinSession(roomcode,username);
-                            connectToRoom();
-                        }}>
-                            <p>
-                                <label>Participant</label>
-                                <input className="form-control" type="text" id="userName" required defaultValue={username} />
-                            </p>
-                            <p>
-                                <label>Session</label>
-                                <input className="form-control" type="text" id="sessionId" required defaultValue={roomcode} />
-                            </p>
-                            <p className="text-center">
-                                <input className="btn btn-lg btn-success" type="submit" name="commit" value="Join!" />
-                            </p>
-                        </form>
-                    </div>
                 </div>
                 {/* ---------- Join - 게임 ----------*/}
                 <div id="session" style={{ display: 'none' }}>
@@ -428,6 +416,9 @@ const GameRoomPage = () => {
             )}
             {modals.goongYeAnouncingEnd && (
                 <GoongYeAnouncingEndModal onClose={() => setModal('goongYeAnouncingEnd', false)} />
+            )}
+            {modals.goongYeAnnouncingResult && (
+                <GoongYeAnouncingGameEndModal finalCounts={finalCountList} onClose={() => setModal('goongYeAnnouncingResult', false)} />
             )}
             <Footer username={username} roomcode={roomcode} participantList={participantList} setParticipantList={setParticipantList} />
         </>

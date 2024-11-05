@@ -5,18 +5,27 @@ import useGameStageStore from '../store/gameStage.js';
 import Goon from "../../assets/images/goongYeImage.png"
 import { scriptData } from '../../assets/utils/gameScripts.js';
 
+var ANNOUNCE_RESULT = 0;
+var ANNOUNCE_VICTIM = 1;
+
 // 이미지 미리 로딩
 const preloadImage = new Image();
 preloadImage.src = Goon;
 
-const GoongYeAnouncingGameEndModal = ({onClose}) => {
-    const { goongYeAnouncingEnd } = useGameStageStore();
+const GoongYeAnouncingGameEndModal = ({finalCounts={},onClose}) => {
     const [currentScript, setCurrentScript] = useState('');
     const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * scriptData.goongYeAnouncingEnd.length);
-        setCurrentScript(scriptData.goongYeAnouncingEnd[randomIndex]);
+        // finalCounts에서 가장 높은 occurrences의 username 찾기
+        const highestUser = Object.entries(finalCounts).reduce(
+            (max, [username, occurrences]) => occurrences > max.occurrences ? { username, occurrences } : max,
+            { username: null, occurrences: -1 }
+        );
+
+        let selectedScript = scriptData.goongYeAnnouncingResult[ANNOUNCE_RESULT] + "\n";
+        selectedScript += scriptData.goongYeAnnouncingResult[ANNOUNCE_VICTIM].replace("username", highestUser.username);
+        setCurrentScript(selectedScript);
 
         // 이미지가 이미 캐시되어 있는지 확인
         if (preloadImage.complete) {
@@ -33,7 +42,7 @@ const GoongYeAnouncingGameEndModal = ({onClose}) => {
         }, 5000); // 직접 5000ms 지정
 
         return () => clearTimeout(timer);
-    }, [onClose]);
+    }, [finalCounts,onClose]);
 
     return (
         <div className="modal-overlay">
@@ -62,6 +71,7 @@ const GoongYeAnouncingGameEndModal = ({onClose}) => {
 };
 
 GoongYeAnouncingGameEndModal.propTypes = {
+    finalCounts: PropTypes.array,
     onClose: PropTypes.func.isRequired,
 };
 
