@@ -103,14 +103,13 @@ function calculateNoseFilterPosition(keypoints){
   const xPadding = 20;
   const yPadding = 20;
 
+  const xOffset = -45;
+
   const noseCenter = keypoints[mustachePoint.noseBelowCenterPoint];
   const noseLeft = keypoints[mustachePoint.noseBelowLeftPoint];
   const noseRight = keypoints[mustachePoint.noseBelowRightPoint];
 
-
-
-
-  const x = noseCenter.x - xPadding;
+  const x = noseCenter.x + xOffset - xPadding;
   const y = noseCenter.y - yPadding;
   const width = noseRight.x - noseLeft.x + xPadding * 2;
   const height = noseLeft.y - noseCenter.y + yPadding * 2;

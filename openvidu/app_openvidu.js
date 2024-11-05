@@ -117,54 +117,62 @@ const startStreaming = async (session, OV, mediaStream) => {
    const ctx = compositeCanvas.getContext('2d');
    let animationFrameID;
 
-   const startFiltering = () => {
-      const image = new Image();
-      image.src = SUNGLASS;
-  
-      loadDetectionModel().then((model) => {
-          let showFilter = false;
-          let timeoutId = null;
-  
-          const handleStartPenaltyFilter = () => {
-              showFilter = true;
-              if (timeoutId) {
-                  clearTimeout(timeoutId);
-              }
-              timeoutId = setTimeout(() => {
-                  showFilter = false;
-              }, 2000); // Display the filter for 2 seconds
-          };
-  
-          // Listen for the custom event to start the penalty filter
-          window.addEventListener('startPenaltyFilter', handleStartPenaltyFilter);
-  
-          const estimateFacesLoop = () => {
-              model.estimateFaces(compositeCanvas).then((faces) => {
-                  ctx.clearRect(0, 0, compositeCanvas.width, compositeCanvas.height);
-  
-                  // Draw the video feed
-                  ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
-  
-                  if (showFilter && faces[0]) {
-                    const { x, y, width, height,angle } = calculateFilterPosition(
-                        "eyeFilter",
-                        faces[0].keypoints
-                    );
-                    ctx.save(); // 현재 캔버스 상태 저장
-                    ctx.translate(x + width / 2, y + height / 2); // 필터 중심으로 이동
-                    ctx.rotate(angle); // 얼굴 각도에 맞춰 회전
-                    ctx.drawImage(image, -width / 2, -height / 2, width, height); // 중심을 기준으로 이미지 그리기
-                    ctx.restore(); // 원래 캔버스 상태로 복원
-                  }
-  
-                  requestAnimationFrame(estimateFacesLoop);
-              });
-          };
-  
-          // Start the face detection loop
-          requestAnimationFrame(estimateFacesLoop);
-      });
-  };
+// 이미지와 필터 타입 배열
+const filters = [
+   { image: new Image(), type: "eyeFilter" },
+   { image: new Image(), type: "mustacheFilter" },
+   { image: new Image(), type: "baldFilter" }
+ ];
+ filters[0].image.src = SUNGLASS;
+ filters[1].image.src = MUSTACHE;
+ filters[2].image.src = MUMURI;
+ 
+ let activeFilters = [];
+ 
+ const startFiltering = () => {
+   loadDetectionModel().then((model) => {
+     const addFilter = (filter) => {
+       const newFilter = { ...filter, timeoutId: null };
+ 
+       // 타이머가 만료되면 필터를 제거
+       newFilter.timeoutId = setTimeout(() => {
+         activeFilters = activeFilters.filter((f) => f !== newFilter);
+       }, 2000);
+ 
+       activeFilters.push(newFilter);
+     };
+ 
+     const handleStartPenaltyFilter = () => {
+       const nextFilter = filters[activeFilters.length % filters.length];
+       addFilter(nextFilter);
+     };
+ 
+     window.addEventListener('startPenaltyFilter', handleStartPenaltyFilter);
+ 
+     const estimateFacesLoop = () => {
+       model.estimateFaces(compositeCanvas).then((faces) => {
+         ctx.clearRect(0, 0, compositeCanvas.width, compositeCanvas.height);
+         ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
+ 
+         if (faces[0]) {
+           activeFilters.forEach(({ image, type }) => {
+             const { x, y, width, height, angle } = calculateFilterPosition(type, faces[0].keypoints);
+ 
+             ctx.save();
+             ctx.translate(x + width / 2, y + height / 2);
+             ctx.rotate(angle);
+             ctx.drawImage(image, -width / 2, -height / 2, width, height);
+             ctx.restore();
+           });
+         }
+ 
+         requestAnimationFrame(estimateFacesLoop);
+       });
+     };
+ 
+     requestAnimationFrame(estimateFacesLoop);
+   });
+ };
 
    // 비디오 메타데이터 로드 시 실행
    await new Promise((resolve) => {
