@@ -18,7 +18,7 @@ const TakePhotos = () => {
             html2canvas(divRef.current).then(canvas => {
                 const imageData = canvas.toDataURL("image/png",0.7);
                 // 서버에 이미지 데이터 전송
-                axios.post("http://localhost:3001/upload/api/v1", 
+                axios.post("https://main.maguni-game.com/upload/api/v1", 
                     {
                         image: imageData,
                         filename : `SNT2SS_${nowtime}.png`
@@ -36,7 +36,7 @@ const TakePhotos = () => {
         const roomCode = "SNT2SS"
         return axios({
             method: "GET",
-            url: `http://localhost:3001/upload/api/v1/${roomCode}`,
+            url: `https://main.maguni-game.com/upload/api/v1/${roomCode}`,
         }).then((res)=>{
             setImageList(res.data)
         }).catch((err)=>{
@@ -152,7 +152,7 @@ const TakePhotos = () => {
                 {imageList.map((image, index) => (
                     <img
                         key={index}
-                        src={`http://localhost:3001/images/${image}`}
+                        src={`https://main.maguni-game.com/images/${image}`}
                         alt={`이미지 ${index + 1}`}
                         style={{ width: "150px", height: "150px", margin: "10px" }}
                     />

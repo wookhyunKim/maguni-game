@@ -59,7 +59,7 @@ const GameRoomPage = () => {
     const getPlayersInfo = () => {
         return axios({
             method: "GET",
-            url: `http://localhost:3001/member/api/v1/word/${roomcode}`,
+            url: `https://main.maguni-game.com/member/api/v1/word/${roomcode}`,
         }).then((res) => {
             setForbiddenWordlist(res.data)
         }).catch((err) => {
