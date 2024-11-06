@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import '../styles/endGame.css'
 import WallImage from '../assets/images/endPage_bgImage.jpg'
@@ -7,11 +7,11 @@ import MontageConatainer from '../components/common/montageConatainer';
 const EndGamepage = () => {
     const location = useLocation();
     const { result, words, roomCode } = location.state || {};
-    console.log('location state:', location.state);
-    // console.log('result:', result);
-    // console.log('words:', words);
-    // console.log('roomCode:', roomCode);
-    // result가 객체이므로 적절히 처리
+
+    const gotoPhoto = ()=>{
+      navigate('/photo',{state : {roomCode:roomCode}})
+    }
+
 
 
     //유저별로 금칙어 단어, 그리고 위반 횟수 표시
@@ -46,7 +46,7 @@ const EndGamepage = () => {
             </div>
           </div>
           <div className="endPageFooter">
-            <button onClick={() => navigate('/photo',state={roomCode:roomCode})}>추억 남기기</button>
+            <button onClick={gotoPhoto}>추억 남기기</button>
           </div>
         </div>
       </div>
