@@ -177,9 +177,9 @@ const GameRoomPage = () => {
         });
         _socket.on('hit user', (user, occurrences) => {
             console.log(occurrences);
-            // if(user == username) {
-            //      return;
-            // }
+             if(user !== username) {
+                  return;
+             }
             for (let i = 0; i < occurrences; i++) {
                 handlePenalty();
             }

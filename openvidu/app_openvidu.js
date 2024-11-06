@@ -103,26 +103,6 @@ export function joinSession(mySessionId,myUserName) {
    });
 }
 
-function applyNoseEnlargeEffect(ctx, keypoints,canvas) {
-   const { x, y, width, height } = calculateFilterPosition("mustacheFilter",keypoints);
-
-   // 코 영역만 확대
-   ctx.save();
-   ctx.translate(x + width / 2, y + height / 2); // 코 중앙으로 이동
-   ctx.scale(1.5, 1.5); // 확대 비율 설정
-   ctx.translate(-x - width / 2, -y - height / 2); // 원래 위치로 돌아오기
-
-   // 코 영역 그리기
-   ctx.beginPath();
-   ctx.rect(x, y, width, height);
-   ctx.clip();
-   ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
-
-   console.log("apply nose enlarge");
-
-   ctx.restore();
-}
-
 function applyEnhancedMouthDistortion(ctx, keypoints) {
    const mouthCenter = keypoints[13]; // 입 중심 좌표 (입을 나타내는 키포인트)
    const radius = 50; // 입 주변의 효과 범위 조정 반경
@@ -242,19 +222,26 @@ function applyEnhancedLensDistortion(ctx, keypoints) {
 }
 
 const startStreaming = async (session, OV, mediaStream) => {
-   // 2초 대기
-   await new Promise((resolve) => setTimeout(resolve, 2000));
+   // Publisher 화면에 원본 비디오 표시용 `publisherCanvas`
+   const publisherCanvas = document.createElement('canvas');
+   publisherCanvas.width = 640;
+   publisherCanvas.height = 480;
+   const publisherCtx = publisherCanvas.getContext('2d');
 
+   // 필터 적용 후 Subscriber에게 전송할 `compositeCanvas`
+   const compositeCanvas = document.createElement('canvas');
+   compositeCanvas.width = 640;
+   compositeCanvas.height = 480;
+   const ctx = compositeCanvas.getContext('2d');
+   
+   // 비디오 요소 생성 및 원본 비디오 스트림 할당
    const video = document.createElement('video');
    video.srcObject = mediaStream;
    video.autoplay = true;
    video.playsInline = true;
 
-   const compositeCanvas = document.createElement('canvas');
-   compositeCanvas.width = 640;
-   compositeCanvas.height = 480;
-   const ctx = compositeCanvas.getContext('2d');
-   let animationFrameID;
+   // Publisher 화면에 원본 비디오 표시
+   document.getElementById('video-container').appendChild(publisherCanvas);
 
 // 이미지와 필터 타입 배열
 const filters = [
@@ -277,8 +264,6 @@ const filters = [
  // 얼굴 위치와 함께 이미지 애니메이션 추가
 const IMG_WIDTH = 200;
 const IMG_HEIGHT = 120;
-let yPosition = -IMG_HEIGHT; // 초기 y 위치 설정
-const targetY = 100; // 목표 위치 (적절히 조정 필요)
 
 
  // 기존 필터 함수와 별개로 애니메이션을 위한 함수
@@ -340,9 +325,15 @@ function animateImage(ctx, x, yPosition) {
      window.addEventListener('startPenaltyFilter', handleStartPenaltyFilter);
  
      const estimateFacesLoop = () => {
-       model.estimateFaces(compositeCanvas).then((faces) => {
+       model.estimateFaces(publisherCanvas).then((faces) => {
+         // Publisher 화면에는 원본 비디오 표시
+         publisherCtx.clearRect(0, 0, publisherCanvas.width, publisherCanvas.height);
+         publisherCtx.drawImage(video, 0, 0, publisherCanvas.width, publisherCanvas.height);
+
+         // 필터가 적용된 영상은 `compositeCanvas`에 그리기
          ctx.clearRect(0, 0, compositeCanvas.width, compositeCanvas.height);
          ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
+
  
          if (faces[0]) {
             activeFilters.forEach((filter) => {
@@ -420,16 +411,6 @@ function animateImage(ctx, x, yPosition) {
 
    await session.publish(publisher);
 
-   // 캔버스를 화면에 추가
-   const videoContainer = document.getElementById('video-container');
-   videoContainer.appendChild(compositeCanvas);
-
-   // 컴포넌트 언마운트 시 정리 함수 반환
-   return () => {
-       if (animationFrameID) {
-           cancelAnimationFrame(animationFrameID);
-       }
-   };
 };
 
 export function leaveSession() {
