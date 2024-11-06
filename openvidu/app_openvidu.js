@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { OpenVidu } from 'openvidu-browser';
 import {calculateFilterPosition} from '../filter/calculate-filter-position.ts';
 import { loadDetectionModel } from '../filter/load-detection-model.js';
-import SUNGLASS from "../src/assets/images/sunglasses.png";
+//import SUNGLASS from "../src/assets/images/sunglasses.png";
 import MUSTACHE from "../src/assets/images/mustache.png";
 import MUMURI from "../src/assets/images/mumuri.png";
 import DISH from "../src/assets/images/dish.png";
@@ -123,6 +123,65 @@ function applyNoseEnlargeEffect(ctx, keypoints,canvas) {
    ctx.restore();
 }
 
+function applyEnhancedMouthDistortion(ctx, keypoints) {
+   const mouthCenter = keypoints[13]; // 입 중심 좌표 (입을 나타내는 키포인트)
+   const radius = 50; // 입 주변의 효과 범위 조정 반경
+   const strength = 0.5; // 왜곡 강도 (값을 높일수록 왜곡이 강해짐)
+
+   // 입 주변의 픽셀 데이터를 가져옵니다.
+   const imageData = ctx.getImageData(
+       mouthCenter.x - radius,
+       mouthCenter.y - radius,
+       radius * 2,
+       radius * 2
+   );
+
+   const data = imageData.data;
+   const width = imageData.width;
+   const height = imageData.height;
+   const centerX = radius;
+   const centerY = radius;
+
+   // 왜곡된 픽셀 데이터를 저장할 새로운 버퍼 생성
+   const outputData = new Uint8ClampedArray(data);
+
+   // 왜곡 효과 적용
+   for (let y = 0; y < height; y++) {
+       for (let x = 0; x < width; x++) {
+           const dx = x - centerX;
+           const dy = y - centerY;
+           const dist = Math.sqrt(dx * dx + dy * dy);
+
+           if (dist < radius) {
+               // 중심에서의 거리에 따라 왜곡 강도 계산
+               const factor = 1 + strength * (1 - dist / radius);
+               const newX = Math.floor(centerX + dx * factor);
+               const newY = Math.floor(centerY + dy * factor);
+
+               // 새 좌표가 이미지 경계를 벗어나지 않도록 제한
+               if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
+                   const idx = (y * width + x) * 4;
+                   const newIdx = (newY * width + newX) * 4;
+
+                   // 왜곡된 위치로 색상 값을 이동 (outputData에 저장)
+                   outputData[newIdx] = data[idx];
+                   outputData[newIdx + 1] = data[idx + 1];
+                   outputData[newIdx + 2] = data[idx + 2];
+                   outputData[newIdx + 3] = data[idx + 3];
+               }
+           }
+       }
+   }
+
+   // 왜곡된 데이터를 원본 imageData에 복사
+   for (let i = 0; i < data.length; i++) {
+       data[i] = outputData[i];
+   }
+
+   // 왜곡된 이미지 데이터를 캔버스에 다시 그립니다.
+   ctx.putImageData(imageData, mouthCenter.x - radius, mouthCenter.y - radius);
+}
+
 function applyEnhancedLensDistortion(ctx, keypoints) {
    const noseCenter = keypoints[4]; // 코 중심 좌표
    const radius = 80; // 효과 범위를 조정하는 반경
@@ -199,18 +258,19 @@ const startStreaming = async (session, OV, mediaStream) => {
 
 // 이미지와 필터 타입 배열
 const filters = [
-   { image: new Image(), type: "eyeFilter" },
+   //{ image: new Image(), type: "eyeFilter" },
    { image: new Image(), type: "mustacheFilter" },
    { image: new Image(), type: "baldFilter" },
    { image: new Image(), type: "fallingImage" },
    { image: new Image(), type: "goongYe" },
    { type: "noseEnlarge" },
+   {type:"smile"},
  ];
- filters[0].image.src = SUNGLASS;
- filters[1].image.src = MUSTACHE;
- filters[2].image.src = MUMURI;
- filters[3].image.src = DISH;
- filters[4].image.src = GOONGYE;
+ //filters[0].image.src = SUNGLASS;
+ filters[0].image.src = MUSTACHE;
+ filters[1].image.src = MUMURI;
+ filters[2].image.src = DISH;
+ filters[3].image.src = GOONGYE;
  
  let activeFilters = [];
 
@@ -230,23 +290,45 @@ function animateImage(ctx, x, yPosition) {
    loadDetectionModel().then((model) => {
      const addFilter = (filter) => {
        const newFilter = { ...filter, yPosition: -IMG_HEIGHT, timeoutId: null };
+
+       switch(filter.type){
+         case "eyeFilter":
+         case "mustacheFilter":
+         case "baldFilter":
+         case "fallingImage":
+         case "goongYe":
+            newFilter.timeoutId = setTimeout(() => {
+               activeFilters = activeFilters.filter((f) => f !== newFilter);
+            }, 3000);
+            activeFilters.push(newFilter);
+         break;
+         case "noseEnlarge":
+         case "smile":
+                              // 타이머가 만료되면 필터를 제거
+         newFilter.timeoutId = setTimeout(() => {
+            activeFilters = activeFilters.filter((f) => f !== newFilter);
+         }, 9000);
+
+         activeFilters.push(newFilter);
+         break;
+       }
        
-       if(filter.type !== "noseEnlarge"){
-         // 타이머가 만료되면 필터를 제거
-         newFilter.timeoutId = setTimeout(() => {
-            activeFilters = activeFilters.filter((f) => f !== newFilter);
-         }, 2000);
+      //  if(filter.type !== "noseEnlarge"){
+      //    // 타이머가 만료되면 필터를 제거
+      //    newFilter.timeoutId = setTimeout(() => {
+      //       activeFilters = activeFilters.filter((f) => f !== newFilter);
+      //    }, 2000);
 
-         activeFilters.push(newFilter);
-       }
-       else{
-                  // 타이머가 만료되면 필터를 제거
-         newFilter.timeoutId = setTimeout(() => {
-            activeFilters = activeFilters.filter((f) => f !== newFilter);
-         }, 7000);
+      //    activeFilters.push(newFilter);
+      //  }
+      //  else{
+      //             // 타이머가 만료되면 필터를 제거
+      //    newFilter.timeoutId = setTimeout(() => {
+      //       activeFilters = activeFilters.filter((f) => f !== newFilter);
+      //    }, 10000);
 
-         activeFilters.push(newFilter);
-       }
+      //    activeFilters.push(newFilter);
+      //  }
        
      };
  
@@ -298,6 +380,11 @@ function animateImage(ctx, x, yPosition) {
                      //applyNoseEnlargeEffect(ctx, faces[0].keypoints,compositeCanvas); // 코 확대 필터 호출
                      applyEnhancedLensDistortion(ctx,faces[0].keypoints);
                      break;
+
+               case "smile":
+                  console.log("start smile distortion");
+                  applyEnhancedMouthDistortion(ctx,faces[0].keypoints);
+                  break;
           
                 default:
                   console.warn(`Unknown filter type: ${filter.type}`);
