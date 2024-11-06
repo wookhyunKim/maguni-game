@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import io from 'socket.io-client';
 import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
-import ForbiddenWordlistModal from '../components/modals/forbiddenWordlistModal.jsx';
+import ForbiddenWordlistModal from '../components/modals/ForbiddenWordlistModal.jsx';
 import GoongYeForbiddenWordModal from '../components/modals/goongYeForbiddenwordModal.jsx';
 import GoongYeAnouncingEndModal from '../components/modals/goongYeAnouncingEndModal.jsx';
 import GoongYeAnouncingGameEndModal from '../components/modals/GoongYeAnouncingGameEndModal.jsx';
