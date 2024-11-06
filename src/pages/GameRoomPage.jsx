@@ -68,7 +68,7 @@ const GameRoomPage = () => {
     };
 
     function startGame() {
-        let startTime = 0;
+        let startTime = 60;
         socket.emit('start game', roomcode,startTime); // 게임 시작 요청
         setGameActive(true);
         setTimer(startTime); // 타이머 초기화
@@ -152,6 +152,7 @@ const GameRoomPage = () => {
             setModal('goongYeAnnouncingResult', true);
             setFinalCountList(finalCounts);
             document.getElementById('stopButton').click();
+            // navigate('/end', { state: { result: finalCounts, roomCode :roomcode }});
         });
 
         _socket.on('setting word ended', () => {
@@ -195,7 +196,7 @@ const GameRoomPage = () => {
     }, [gameActive, timer]);
 
     
-// ====================================================== detect model load ====================================================== 
+    // ====================================================== detect model load ====================================================== 
 useEffect(() => {
     if(!hasJoinedSession.current){
         joinSession(roomcode,username);
