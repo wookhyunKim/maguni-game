@@ -1,18 +1,56 @@
-import React from 'react'
 import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import '../styles/endGame.css'
+import WallImage from '../assets/images/endPage_bgImage.jpg'
+import MontageConatainer from '../components/common/montageConatainer';
 
 const EndGamepage = () => {
     const location = useLocation();
-    const { result, roomCode } = location.state || {}; // state가 있을 때만 받도록 처리
-  
+    const { result, words, roomCode } = location.state || {};
+    console.log('location state:', location.state);
+    // console.log('result:', result);
+    // console.log('words:', words);
+    // console.log('roomCode:', roomCode);
+    // result가 객체이므로 적절히 처리
+
+
+    //유저별로 금칙어 단어, 그리고 위반 횟수 표시
+    const displayResults = () => {
+      if (!result || !words) return "데이터 없음";
+      
+      return words.map(userInfo => {
+          const nickname = userInfo.nickname;
+          const forbiddenWord = userInfo.words[0]; // 금칙어 배열의 첫 번째 항목
+          const violationCount = result[nickname] || 0; // 해당 유저의 위반 횟수
+
+          return (
+              <MontageConatainer key={nickname} className="user-result">
+                <div >
+                    <p>닉네임: {nickname}</p>
+                    <p>금칙어: {forbiddenWord}</p>
+                    <p>위반 횟수: {violationCount}회</p>
+                </div>
+              </MontageConatainer>
+          );
+      });
+  };
+
     return (
-        <div>
-        <h1>Game Results</h1>
-        {console.log("result : ",result)}
-        <p>Room Code: {roomCode}</p>
+      <div className="endGame-container">
+        <div className="wallImage" style={{backgroundImage: `url(${WallImage})`}}>
+          <div className="result-container">
+            <div className="result-title">금칙어 위반 역적</div>
+            <div className="hanji-container">
+              {/* 여기안에 한지 몽타주들 옴 */}
+              {displayResults()}
+            </div>
+          </div>
+          <div className="endPageFooter">
+            <button onClick={() => navigate('/photo',state={roomCode:roomCode})}>추억 남기기</button>
+          </div>
+        </div>
       </div>
     );
   };
-
 
 export default EndGamepage

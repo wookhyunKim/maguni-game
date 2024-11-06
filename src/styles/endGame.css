@@ -1,0 +1,39 @@
+.endGame-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F5E6D3;
+    height:100vh;
+    width: 100%;
+
+}
+
+.wallImage {
+    height: 100%;
+    width: 100%;
+    background-image: url(../assets/images/endPage_bgImage.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-title {
+    font-size: 8rem;
+}
+
+.hangiImage {
+    height:100px;
+    width: 100px;
+}

@@ -38,7 +38,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 60;
+    const startTime = 3;
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -156,16 +156,13 @@ const GameRoomPage = () => {
         });
         // 게임 종료 처리
         _socket.on('game ended', (finalCounts) => {
-            console.log(finalCounts);
             setGameActive(false);
             setModal('goongYeAnnouncingResult', true);
             setFinalCountList(finalCounts);
             document.getElementById('stopButton').click();
-            // navigate('/end', { state: { result: finalCounts, roomCode :roomcode }});
         });
 
         _socket.on('setting word ended', () => {
-            console.log('금칙어 설정이 끝났습니다.');
             forbiddenwordAnouncement();
         });
 
@@ -255,7 +252,6 @@ useEffect(() => {
                     finalTranscript += transcript + ' ';
                     // 금칙어 카운트 수정
                     const word = forbiddenWordlist.find(e => e.nickname === username)?.words;
-                    console.log(word);
 
                     if (word) {
                         const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
@@ -412,7 +408,22 @@ useEffect(() => {
                     <GoongYeAnouncingEndModal onClose={() => setModal('goongYeAnouncingEnd', false)} />
                 )}
                 {modals.goongYeAnnouncingResult && (
-                <GoongYeAnouncingGameEndModal finalCounts={finalCountList} onClose={() => setModal('goongYeAnnouncingResult', false)} />
+                <GoongYeAnouncingGameEndModal 
+                    finalCounts={finalCountList} 
+                    onClose={() => {
+                        setModal('goongYeAnnouncingResult', false);
+                        // 모달이 닫힌 후 페이지 이동
+                        setTimeout(() => {
+                            navigate('/end', { 
+                                state: { 
+                                    result: finalCountList,
+                                    words: forbiddenWordlist,
+                                    roomCode: roomcode 
+                                }
+                            });
+                        }, 3000); // 모달 애니메이션을 위한 지연시간 5초
+                    }} 
+                />
                 )}
             </div>
             <Footer />
