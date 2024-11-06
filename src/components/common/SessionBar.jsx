@@ -7,22 +7,20 @@ import bombImage from '../../assets/images/bombImage.png';
 
 const SessionBar = ({sessionTime}) => {
 
-    //sessionTime 전체 시간
-    const[initalTime, setInitalTime] = useState(sessionTime);
-    const [progress,setProgress] = useState(sessionTime);
+    // 최대 시간을 상태로 관리
+    const [maxTime, setMaxTime] = useState(sessionTime);
+    const [progress, setProgress] = useState(sessionTime);
 
     useEffect(() => {
-        if(sessionTime > 0){
-            setInitalTime(sessionTime);
+        // sessionTime이 현재 maxTime보다 크면 maxTime 업데이트
+        if (sessionTime > maxTime) {
+            setMaxTime(sessionTime);
         }
-    }, []);
-
-    useEffect(() => {
         setProgress(sessionTime);
-    }, [sessionTime]);
+    }, [sessionTime, maxTime]);
 
-    //progressPercentage 계산
-    const progressPercentage = ( sessionTime / initalTime) * 100;
+    // progressPercentage 계산 시 maxTime 사용
+    const progressPercentage = (sessionTime / maxTime) * 100;
 
     return (
         <div className="session-bar-container">

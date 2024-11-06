@@ -9,7 +9,7 @@ import { scriptData } from '../../assets/utils/gameScripts.js';
 const preloadImage = new Image();
 preloadImage.src = Goon;
 
-const GoongYeForbiddenWordModal = ({onClose }) => {
+const SettingForbiddenWordModal = ({onClose }) => {
     const { goongYeRevealForbiddenWord } = useGameStageStore();
     const [currentScript, setCurrentScript] = useState('');
     const [isImageLoaded, setIsImageLoaded] = useState(false);
@@ -62,8 +62,8 @@ const GoongYeForbiddenWordModal = ({onClose }) => {
     );
 };
 
-GoongYeForbiddenWordModal.propTypes = {
+SettingForbiddenWordModal.propTypes = {
     onClose: PropTypes.func.isRequired,
 };
 
-export default GoongYeForbiddenWordModal;
+export default SettingForbiddenWordModal;

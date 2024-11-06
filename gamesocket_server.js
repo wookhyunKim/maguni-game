@@ -47,6 +47,7 @@ io.on('connection', (client) => {
     io.emit('hit user', username, occurrences);
   });
 
+   // 금칙어 설정 후 게임 시작하게 하는 함수
   client.on('start game', (roomcode,startTime) => {
     console.log("게임 시작, roomcode:", roomcode, "startTime:", startTime);
     let timer = startTime;
@@ -64,14 +65,15 @@ io.on('connection', (client) => {
 
 
   client.on('start setting word', (roomcode) => {
-    let timer = 15;
+    let timer = 20;
     const countdownInterval = setInterval(() => {
       io.to(roomcode).emit('timer update', timer);
       timer--;
-      if(timer === 14) {
-        io.to(roomcode).emit('open modal'); 
-      }
 
+      // 20초 부터 금칙어 설정하기
+      if(timer === 19) {
+        io.to(roomcode).emit('start setting fw'); 
+      }
 
       if (timer < 0) {
         clearInterval(countdownInterval);

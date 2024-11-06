@@ -24,7 +24,7 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
 
         const timer = setTimeout(() => {
             onClose();
-        }, 5000); // 5초로 고정
+        }, 4000); // 4초로 고정
 
         return () => clearTimeout(timer);
     }, [onClose]);

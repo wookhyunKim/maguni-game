@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
 import ForbiddenWordlistModal from '../components/modals/ForbiddenWordlistModal.jsx';
-import GoongYeForbiddenWordModal from '../components/modals/goongYeForbiddenwordModal.jsx';
+import SettingForbiddenWordModal from '../components/modals/goongYeForbiddenwordModal.jsx';
 import GoongYeAnouncingEndModal from '../components/modals/goongYeAnouncingEndModal.jsx';
 import GoongYeAnouncingGameEndModal from '../components/modals/GoongYeAnouncingGameEndModal.jsx';
 import Footer from '../components/layout/Footer.jsx';
@@ -37,6 +37,8 @@ const GameRoomPage = () => {
     const [isWordsShown, setIsWordsShown] = useState(false);
 
     const [timer, setTimer] = useState(20); // 타이머 상태
+    // 금칙어 설정 후 말하는 시간
+    const startTime = 60;
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -67,9 +69,10 @@ const GameRoomPage = () => {
         })
     };
 
+    // 금칙어 설정 후 게임 시작하게 하는 함수
     function startGame() {
-        let startTime = 60;
-        socket.emit('start game', roomcode,startTime); // 게임 시작 요청
+        // 게임 시작 요청
+        socket.emit('start game', roomcode,startTime); 
         setGameActive(true);
         setTimer(startTime); // 타이머 초기화
         document.getElementById('startButton').click();
@@ -104,14 +107,20 @@ const GameRoomPage = () => {
         }
     };
         //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
-        const startSettingForbiddenWord = () => {
-
-            // setModal('goongYeForbiddenWord', true);
-    
-            // setTimeout(() => {
-            //     setModal('goongYeForbiddenWord', false);
-            // }, 3000);
-    
+        const startSettingForbiddenWord = async () => {
+            // 모달 표시
+            setModal('SettingForbiddenWordModal', true);
+            
+            // Promise를 사용하여 5초 대기
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            
+            // 모달 닫기
+            setModal('SettingForbiddenWordModal', false);
+            
+            // 모달이 완전히 닫힌 것을 보장하기 위해 짧은 대기
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // 금칙어 설정 시작
             socket.emit('start setting word', roomcode);
         };
     
@@ -160,11 +169,11 @@ const GameRoomPage = () => {
             forbiddenwordAnouncement();
         });
 
-        _socket.on('open modal', () => {
-            setModal('goongYeForbiddenWord', true);
-
+        // 금칙어 설정 안내 모달 열기
+        _socket.on('open instruction modal', () => {
+            setModal('SettingForbiddenWordModal', true);
             setTimeout(() => {
-                setModal('goongYeForbiddenWord', false);
+                setModal('SettingForbiddenWordModal', false);
             }, 4000);
         });
         _socket.on('hit user', (user, occurrences) => {
@@ -394,8 +403,8 @@ useEffect(() => {
                         forbiddenWordlist={forbiddenWordlist}
                         onClose={() => setModal('FW', false)}
                     />)}
-                {modals.goongYeForbiddenWord && (
-                    <GoongYeForbiddenWordModal
+                {modals.SettingForbiddenWordModal && (
+                    <SettingForbiddenWordModal
                         onClose={() => setModal('goongYeForbiddenWord', false)}
                     />
                 )}
@@ -404,7 +413,7 @@ useEffect(() => {
                 )}
                 {modals.goongYeAnnouncingResult && (
                 <GoongYeAnouncingGameEndModal finalCounts={finalCountList} onClose={() => setModal('goongYeAnnouncingResult', false)} />
-            )}
+                )}
             </div>
             <Footer />
         </>
