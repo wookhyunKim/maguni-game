@@ -10,7 +10,7 @@ const TakePhotos = () => {
     const canvasRef = useRef(null);
     const [imageList,setImageList] = useState([]);
     const location = useLocation();
-    // const roomCode = location.state.roomCode;
+    const roomCode = location.state.roomCode;
     const sendImage= () =>{
         const date = new Date();
         const nowtime = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
@@ -21,7 +21,7 @@ const TakePhotos = () => {
                 axios.post("http://localhost:3001/upload/api/v1", 
                     {
                         image: imageData,
-                        filename : `SNT2SS_${nowtime}.png`
+                        filename : `${roomCode}_${nowtime}.png`
                     }
                 ).then(response => {
                         console.log("Image saved on server:", response.data);
@@ -33,7 +33,6 @@ const TakePhotos = () => {
         }
     };
     const recvImage = ()=>{
-        const roomCode = "SNT2SS"
         return axios({
             method: "GET",
             url: `http://localhost:3001/upload/api/v1/${roomCode}`,
