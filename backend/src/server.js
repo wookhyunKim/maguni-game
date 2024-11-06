@@ -9,7 +9,10 @@ dotenv.config(); // .env 파일의 변수를 불러옵니다.
 const cors = require("cors");
 app.use(
     cors({
-        origin: ["https://main.maguni-game.com","https://43.202.180.250:3001"], // 특정 도메인만 허용
+        origin: [
+            "https://main.maguni-game.com",
+            "http://localhost:5175",
+        ], // 특정 도메인만 허용
         methods: ["GET", "POST", "PATCH", "DELETE"], // 특정 HTTP 메서드만 허용
         credentials: true, // 쿠키 공유가 필요한 경우 설정
     })
