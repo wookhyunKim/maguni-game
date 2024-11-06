@@ -13,7 +13,6 @@ import { usePlayerStore } from '../components/store/playerStore.js';
 import { useModalStore } from '../components/store/modalStore.js';
 import axios from 'axios';
 import { useStoreTime } from '../components/store/gameInfoStore.js';
-import detectModelStore from '../components/store/faceDetectModel.js';
 import Input from '../components/common/Input.jsx';
 import { joinSession } from '../../openvidu/app_openvidu.js';
 

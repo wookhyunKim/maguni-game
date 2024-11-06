@@ -103,6 +103,85 @@ export function joinSession(mySessionId,myUserName) {
    });
 }
 
+function applyNoseEnlargeEffect(ctx, keypoints,canvas) {
+   const { x, y, width, height } = calculateFilterPosition("mustacheFilter",keypoints);
+
+   // 코 영역만 확대
+   ctx.save();
+   ctx.translate(x + width / 2, y + height / 2); // 코 중앙으로 이동
+   ctx.scale(1.5, 1.5); // 확대 비율 설정
+   ctx.translate(-x - width / 2, -y - height / 2); // 원래 위치로 돌아오기
+
+   // 코 영역 그리기
+   ctx.beginPath();
+   ctx.rect(x, y, width, height);
+   ctx.clip();
+   ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+
+   console.log("apply nose enlarge");
+
+   ctx.restore();
+}
+
+function applyEnhancedLensDistortion(ctx, keypoints) {
+   const noseCenter = keypoints[4]; // 코 중심 좌표
+   const radius = 80; // 효과 범위를 조정하는 반경
+   const strength = 0.5; // 왜곡 강도 (값을 높일수록 왜곡이 강해짐)
+
+   // 코 주변의 픽셀 데이터를 가져옵니다.
+   const imageData = ctx.getImageData(
+       noseCenter.x - radius,
+       noseCenter.y - radius,
+       radius * 2,
+       radius * 2
+   );
+
+   const data = imageData.data;
+   const width = imageData.width;
+   const height = imageData.height;
+   const centerX = radius;
+   const centerY = radius;
+
+   // 왜곡된 픽셀 데이터를 저장할 새로운 버퍼 생성
+   const outputData = new Uint8ClampedArray(data);
+
+   // 왜곡 효과 적용
+   for (let y = 0; y < height; y++) {
+       for (let x = 0; x < width; x++) {
+           const dx = x - centerX;
+           const dy = y - centerY;
+           const dist = Math.sqrt(dx * dx + dy * dy);
+
+           if (dist < radius) {
+               // 중심에서의 거리에 따라 왜곡 강도 계산
+               const factor = 1 + strength * (1 - dist / radius);
+               const newX = Math.floor(centerX + dx * factor);
+               const newY = Math.floor(centerY + dy * factor);
+
+               // 새 좌표가 이미지 경계를 벗어나지 않도록 제한
+               if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
+                   const idx = (y * width + x) * 4;
+                   const newIdx = (newY * width + newX) * 4;
+
+                   // 왜곡된 위치로 색상 값을 이동 (outputData에 저장)
+                   outputData[newIdx] = data[idx];
+                   outputData[newIdx + 1] = data[idx + 1];
+                   outputData[newIdx + 2] = data[idx + 2];
+                   outputData[newIdx + 3] = data[idx + 3];
+               }
+           }
+       }
+   }
+
+   // 왜곡된 데이터를 원본 imageData에 복사
+   for (let i = 0; i < data.length; i++) {
+       data[i] = outputData[i];
+   }
+
+   // 왜곡된 이미지 데이터를 캔버스에 다시 그립니다.
+   ctx.putImageData(imageData, noseCenter.x - radius, noseCenter.y - radius);
+}
+
 const startStreaming = async (session, OV, mediaStream) => {
    // 2초 대기
    await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -124,7 +203,8 @@ const filters = [
    { image: new Image(), type: "mustacheFilter" },
    { image: new Image(), type: "baldFilter" },
    { image: new Image(), type: "fallingImage" },
-   { image: new Image(), type: "goongYe" }
+   { image: new Image(), type: "goongYe" },
+   { type: "noseEnlarge" },
  ];
  filters[0].image.src = SUNGLASS;
  filters[1].image.src = MUSTACHE;
@@ -150,13 +230,24 @@ function animateImage(ctx, x, yPosition) {
    loadDetectionModel().then((model) => {
      const addFilter = (filter) => {
        const newFilter = { ...filter, yPosition: -IMG_HEIGHT, timeoutId: null };
- 
-       // 타이머가 만료되면 필터를 제거
-       newFilter.timeoutId = setTimeout(() => {
-         activeFilters = activeFilters.filter((f) => f !== newFilter);
-       }, 2000);
- 
-       activeFilters.push(newFilter);
+       
+       if(filter.type !== "noseEnlarge"){
+         // 타이머가 만료되면 필터를 제거
+         newFilter.timeoutId = setTimeout(() => {
+            activeFilters = activeFilters.filter((f) => f !== newFilter);
+         }, 2000);
+
+         activeFilters.push(newFilter);
+       }
+       else{
+                  // 타이머가 만료되면 필터를 제거
+         newFilter.timeoutId = setTimeout(() => {
+            activeFilters = activeFilters.filter((f) => f !== newFilter);
+         }, 7000);
+
+         activeFilters.push(newFilter);
+       }
+       
      };
  
      const handleStartPenaltyFilter = () => {
@@ -201,6 +292,12 @@ function animateImage(ctx, x, yPosition) {
                   // GOONGYE 이미지를 캔버스 전체에 그리기
                   ctx.drawImage(filter.image, 0, 0, compositeCanvas.width, compositeCanvas.height);
                   break;
+
+                  case "noseEnlarge":
+                     console.log("start nose enlarge");
+                     //applyNoseEnlargeEffect(ctx, faces[0].keypoints,compositeCanvas); // 코 확대 필터 호출
+                     applyEnhancedLensDistortion(ctx,faces[0].keypoints);
+                     break;
           
                 default:
                   console.warn(`Unknown filter type: ${filter.type}`);
