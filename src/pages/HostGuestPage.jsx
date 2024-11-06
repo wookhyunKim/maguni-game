@@ -60,7 +60,7 @@ const HostGuestPage = () => {
     function createRoom() {
             return axios({
                 method: "POST",
-            url: "http://localhost:3001/room/api/v1",
+            url: "https://main.maguni-game.com/room/api/v1",
             data: {
                 "roomCode": generatedCode,
                 "nickname": username,
@@ -75,7 +75,7 @@ const HostGuestPage = () => {
     function joinRoom() {
         return axios({
             method: "POST",
-            url: "http://localhost:3001/member/participant/game/api/v1",
+            url: "https://main.maguni-game.com/member/participant/game/api/v1",
             data: {
                 "roomCode": roomcode,
                 "nickname": username,

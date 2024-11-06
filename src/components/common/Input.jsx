@@ -31,7 +31,7 @@ const handleInputChange = (e) => {
 const insertWord = ()=>{
     return axios({
         method: "POST",
-        url: "http://localhost:3001/member/api/v1/word",
+        url: "https://main.maguni-game.com/member/api/v1/word",
         data: {
             "roomCode": roomcode,
             "nickname": index !=0? playerlist[index-1]: playerlist[playerlist.length-1],
@@ -49,7 +49,7 @@ const insertWord = ()=>{
 const getWords = ()=>{
     return axios({
         method: "GET",
-        url: `http://localhost:3001/member/api/v1/word/${roomcode}/${username}`,
+        url: `https://main.maguni-game.com/member/api/v1/word/${roomcode}/${username}`,
     }).then((res)=>{
         // console.log(res.data[0][0])
         setGetCode(res.data[0][0])
@@ -63,7 +63,7 @@ const getWords = ()=>{
 const getPlayersInfo = ()=>{
     return axios({
         method: "GET",
-        url: `http://localhost:3001/member/api/v1/word/${roomcode}`,
+        url: `https://main.maguni-game.com/member/api/v1/word/${roomcode}`,
     }).then((res)=>{
         // console.log("players  :", res.data[0].words[0])
         // setPlayers(res.data);
