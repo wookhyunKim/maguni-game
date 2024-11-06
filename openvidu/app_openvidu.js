@@ -14,6 +14,11 @@ var session;
 export var subscribers = [];
 var FRAME_RATE = 30;
 
+// 외부 변수로 선언
+let gMediaStream;
+let compositeStream;
+let publisher;
+
 
 /* OPENVIDU METHODS */
 
@@ -87,6 +92,7 @@ export function joinSession(mySessionId,myUserName) {
                resolution: '640x480',
                frameRate: FRAME_RATE,
             }).then((mediaStream) =>{
+               gMediaStream = mediaStream;
                startStreaming(session,OV,mediaStream);
             });
 
@@ -401,8 +407,8 @@ function animateImage(ctx, x, yPosition) {
    });
 
    // 캔버스에서 스트림 생성
-   const compositeStream = compositeCanvas.captureStream(FRAME_RATE);
-   const publisher = OV.initPublisher(undefined, {
+   compositeStream = compositeCanvas.captureStream(FRAME_RATE);
+   publisher = OV.initPublisher(undefined, {
        audioSource: mediaStream.getAudioTracks()[0],
        videoSource: compositeStream.getVideoTracks()[0],
        frameRate: FRAME_RATE,
@@ -415,6 +421,9 @@ function animateImage(ctx, x, yPosition) {
 
 export function leaveSession() {
 
+   if(session && publisher){
+      session.unpublish(publisher);
+   } 
    // --- 9) Leave the session by calling 'disconnect' method over the Session object ---
 
    session.disconnect();

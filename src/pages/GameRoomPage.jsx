@@ -16,6 +16,7 @@ import { useStoreTime } from '../components/store/gameInfoStore.js';
 import Input from '../components/common/Input.jsx';
 import { joinSession } from '../../openvidu/app_openvidu.js';
 import html2canvas from "html2canvas";
+import { leaveSession } from '../../openvidu/app_openvidu.js';
 
 const GameRoomPage = () => {
     //username, roomcode를 가져옴
@@ -446,6 +447,7 @@ useEffect(() => {
                         setModal('goongYeAnnouncingResult', false);
                         // 모달이 닫힌 후 페이지 이동
                         setTimeout(() => {
+                            leaveSession();
                             navigate('/end', { 
                                 state: { 
                                     result: finalCountList,
