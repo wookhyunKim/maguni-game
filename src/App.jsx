@@ -5,6 +5,7 @@ import HostGuestPage from './pages/HostGuestPage.jsx';
 import GameRoomPage from './pages/GameRoomPage.jsx'
 import TakePhotos from './pages/TakePhotos.jsx';
 import EndGamepage from './pages/EndGamepage.jsx';
+import FourCut from './pages/fourcut.jsx';
 function App() {
   
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path='/end' element={<EndGamepage/>}/>
         <Route path='/photo' element={<TakePhotos/>}/>
         {/* <Route path="/" element={<Test/>}/> */}
+        <Route path='/fourcut' element={<FourCut/>}/>
     </Routes>
 </BrowserRouter>
   )

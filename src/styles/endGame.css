@@ -25,15 +25,82 @@
 
 .result-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
 .result-title {
+    padding-top:10%;
     font-size: 8rem;
 }
 
-.hangiImage {
-    height:100px;
-    width: 100px;
+.hanjiImage, .hanji {
+    height:100%;
+    width: 280px;
+}
+
+.hanji-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 320px;
+    margin: 4% 4%;
+}
+
+.hanji {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 4px;
+    /* align-items: stretch; */
+}
+
+.hanji-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.hanji-username {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+}
+
+.hanji-username p {
+    padding: 0;
+    margin: 0;
+}
+
+.hanji-count, .hanji-forbiddenWord, .hanji-username p {
+    font-size: 2rem;
+}
+
+.hanji-forbiddenWord,
+.hanji-count {
+    color: #FF0000;
+    margin:0;
+}
+
+.one-montage {
+    height: 50px;
+    width: 50px;
+}
+
+.hanji-img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.one-montage {
+    height: 150px;
+    width: auto;
 }

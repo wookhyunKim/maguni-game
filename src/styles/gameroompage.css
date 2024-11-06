@@ -210,3 +210,11 @@
 .time-remained {
     display: none;
 }
+
+
+
+.data-node {
+    display:none;
+    height:0;
+    width:0;
+}

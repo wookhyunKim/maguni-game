@@ -29,6 +29,7 @@ const handleInputChange = (e) => {
 };
 //자신의 금칙어를 쓰고나서 "전송버튼"누르면 서버에 그 정보를 보내고, getwords(참가자들의 금칙어)를 가져오는 함수를 호출
 const insertWord = ()=>{
+    setInputValue('');
     return axios({
         method: "POST",
         url: "http://localhost:3001/member/api/v1/word",

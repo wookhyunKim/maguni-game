@@ -1,16 +1,31 @@
 import { useLocation,useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import '../styles/endGame.css'
 import WallImage from '../assets/images/endPage_bgImage.jpg'
 import MontageConatainer from '../components/common/montageConatainer';
+import MontageImage from '../assets/images/montage'
 
 const EndGamepage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const { result, words, roomCode } = location.state || {};
 
-    const gotoPhoto = ()=>{
-      navigate('/photo',{state : {roomCode:roomCode}})
+    // const gotoPhoto = ()=>{
+    //   navigate('/photo',{state : {roomCode:roomCode}})
+    // }
+
+    //추억 남기기 버튼 눌렀을 때, 다른 페이지로 이동함
+    const gotoFourcut = ()=>{
+      navigate('/fourcut',{state : {roomCode:roomCode}})
     }
+
+    //montage 파일에서 랜덤으로 이미지 가져오기
+    const getRandomMontage = ()=>{
+      const randomIndex = Math.floor(Math.random() * MontageImage.length);
+      return MontageImage[randomIndex];
+    }
+
+    //랜덤으로 선택한 하나의 이미지
+    const randomMontage = getRandomMontage();
 
 
 
@@ -25,11 +40,18 @@ const EndGamepage = () => {
 
           return (
               <MontageConatainer key={nickname} className="user-result">
-                <div >
-                    <p>닉네임: {nickname}</p>
-                    <p>금칙어: {forbiddenWord}</p>
-                    <p>위반 횟수: {violationCount}회</p>
-                </div>
+                <>
+                    <div className="hanji-text">
+                      <p className="hanji-forbiddenWord">금칙어: {forbiddenWord}</p>
+                      <p className="hanji-count">위반횟수: {violationCount}회</p>
+                    </div>
+                    <div className="hanji-img-container">
+                      <img className="one-montage"src={randomMontage} alt="montage"/>
+                    </div>
+                    <div className="hanji-username">
+                      <p>{nickname}</p>
+                    </div>
+                </>
               </MontageConatainer>
           );
       });
@@ -46,7 +68,8 @@ const EndGamepage = () => {
             </div>
           </div>
           <div className="endPageFooter">
-            <button onClick={gotoPhoto}>추억 남기기</button>
+            {/* <button onClick={gotoPhoto}>추억 남기기</button> */}
+            <button onClick={gotoFourcut}>추억 남기기</button>
           </div>
         </div>
       </div>
