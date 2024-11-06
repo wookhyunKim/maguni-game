@@ -160,82 +160,6 @@ const HostGuestPage = () => {
     
     ///////////////////////////////////////////////////////
 
-    // return (
-    //     <>
-    //     {!isToggled ? (
-    //         <div className='beforeToggleContainer'>
-    //         <h1>유저: {username}</h1>
-    //         <h1>방: {role === 'host' ? generatedCode : roomcode}</h1>
-    //         <h3>접속상태: {isConnected ? "접속중" : "미접속"}</h3>
-    //         <div className="Card">
-    //             {isConnected ? (
-    //             <>
-    //                 <button onClick={disconnectBtnHandler}>접속종료</button>
-    //             </>
-    //             ) : (
-    //             <>
-    //                 {role === 'host' ? (
-    //                 <>
-    //                     <input
-    //                     value={generatedCode || generateRoomCode()}
-    //                     readOnly
-    //                     placeholder="방 코드 (자동 생성됨)"
-    //                     />
-    //                     <button onClick={connectBtnHandler}>접속하기</button>
-    //                 </>
-    //                 ) : role === 'participant' ? (
-    //                 <>
-    //                     <input
-    //                     value={roomcode}
-    //                     onChange={(e) => setRoomcode(e.target.value.toUpperCase())}
-    //                     placeholder="방 코드를 입력하세요"
-    //                     />
-    //                     <button onClick={connectBtnHandler}>접속하기</button>
-    //                 </>
-    //                 ) : (
-    //                 <>
-    //                     <button onClick={() => setRole('host')}>호스트로 접속</button>
-    //                     <button onClick={() => setRole('participant')}>참가자로 접속</button>
-    //                 </>
-    //                 )}
-    //             </>
-    //             )}
-    //         </div>
-    //         </div>
-    //     ) : (
-    //         <div className="afterToggleContainer">
-    //         <div className="connectedUserList">
-    //             <div>
-    //             <div className="container mt-4">
-    //                 <h3>접속자 목록</h3>
-    //                 <table className="table table-bordered table-hover">
-    //                 <thead className="table-dark">
-    //                     <tr>
-    //                     <th scope="col">#</th>
-    //                     <th scope="col">유저</th>
-    //                     {/* <th scope="col"></th> */}
-    //                     </tr>
-    //                 </thead>
-    //                 <tbody>
-    //                     {userList.map((word, index) => (
-    //                     <tr key={index}>
-    //                         <th scope="row">{index + 1}</th>
-    //                         <td>{word.username}</td>
-    //                     </tr>
-    //                     ))}
-    //                 </tbody>
-    //                 </table>
-    //             </div>
-    //             </div>
-    //         </div>
-    //         <div className="startGameSection">
-    //             <button onClick={Gotogameroompage}>게임 시작하기</button>
-    //         </div>
-    //         </div>
-    //     )}
-    //     </>
-    // );
-    // };
   return (
     <div className='beforeGameRoomBody'>
       <div className='game-title'>
@@ -285,7 +209,7 @@ const HostGuestPage = () => {
                     <div className='hostProfile'>
                       <Profile
                         role={"HOST"}
-                        btnName={"방만들기"}
+                        btnName={"방 만들기"}
                         setRole={setRole}
                       />
                     </div>
@@ -305,25 +229,16 @@ const HostGuestPage = () => {
       ) : (
         <div className="afterToggleContainer">
           <div className="connectedUserList">
-              <Profile role={"HOST"} btnName={"player #1"} setRole={setRole}/>
+              <Profile role={"HOST"} btnName={""} setRole={setRole}/>
               <div className="container mt-4">
-                {/* <h3>접속자 목록</h3> */}
-                <table className="table table-bordered table-hover">
-                  <thead className="table-dark">
-                    <tr>
-                      {/* <th scope="col">#player number</th> */}
-                      <th scope="col">players</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {userList.map((word, index) => (
-                      <tr key={index}>
-                        {/* <th scope="row">{index + 1}</th> */}
-                        <td>player #{index + 1} || {word.username}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="table table-bordered table-hover">
+                  {userList.map((word, index) => (
+                    <div className='player_info_container' key={index}>
+                      <div className='player_number'>종{index + 1}품</div>
+                      <div className='player_name'>{word.username}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
           </div>
           <div className="startGameSection">

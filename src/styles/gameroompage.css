@@ -4,6 +4,9 @@
     height: 100vh;
 }
 
+
+
+
 .status-bar, .main,.footer {
     background-color: #1E2329;
 }
@@ -86,6 +89,7 @@
     flex-direction: column;
     color: #E4E6EB;
     overflow-y: auto;
+    font-family: 'Inter', sans-serif;
 }
 
 .sidebar_wordlist,

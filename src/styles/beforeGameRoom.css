@@ -11,8 +11,16 @@
 
 .game-title {
     padding-top: 10%;
+    font-size: 5rem;
+}
+
+.game-title > h5 {
+    font-size: 1.5rem;
+}
+.game-title > h1 {
     font-size: 3rem;
 }
+
 
 .game-container {
     height: 100%;
@@ -26,6 +34,8 @@
 .main-character {
     padding: 10%;
     width: 100%;
+    animation: swing 3s ease-in-out infinite;
+    transform-origin: top;
 }
 
 .titleContainer {
@@ -36,3 +46,17 @@
     align-items: center;
     padding-bottom: 80px;
 }
+
+.titleContainer > h5 {
+    font-size: 1.5em;
+}
+
+@keyframes swing {
+    0% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+    100% { transform: rotate(-5deg); }
+}
+
+/* .main-character:hover {
+    animation-play-state: paused;
+} */

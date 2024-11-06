@@ -1,3 +1,16 @@
+@font-face {
+  font-family: 'Ownglyph_JAEGEONSA-Rg';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-2@1.0/Ownglyph_JAEGEONSA-Rg.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 전체 앱에 폰트 적용하고 싶다면 */
+body {
+  font-family: 'Ownglyph_JAEGEONSA-Rg', sans-serif;
+}
+
+
 :root {
   width:100vw;
   /* min-height:100vh; */

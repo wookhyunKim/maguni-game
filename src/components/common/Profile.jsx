@@ -24,10 +24,10 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
             (
                 <>
                     <div className="identity">
-                        <img 
-                          className={`identityText ${role === "GUEST" ? 'guest-text' : ''}`} 
-                          src={role === "HOST" ? host_text : guest_text}
-                        />
+                        {/* <img className='identityText' src={role === "HOST" ? host_text : guest_text}/> */}
+                        <span className='identityText'>
+                            {role === "HOST" ? " 방장 마구니 " : "손님 마구니"}
+                        </span> 
                     </div>
                     <div className="border-line"/>
                     <div className='underBorderlineContainer'>
@@ -64,10 +64,10 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
             (
                 <>
                     <div className="identity">
-                        <img 
-                          className={`identityText ${role === "GUEST" ? 'guest-text' : ''}`} 
-                          src={role === "HOST" ? host_text : guest_text}
-                        />
+                        {/* <img className='identityText' src={role === "HOST" ? host_text : guest_text}/> */}
+                        <span className='identityText'>
+                            {role === "HOST" ? " 방장 마구니 " : "손님 마구니"}
+                        </span>
                     </div>
                     <div className="border-line"/>
                     <div className='underBorderlineContainer'>
