@@ -8,7 +8,6 @@ const client = new MongoClient(url, {
 const UploadDao = {
     uploadImage: async (filename) => {
         let roomCode = filename.substring(0, 6);
-        roomCode = "SNT2SS";
         let result;
         try {
             await client.connect();

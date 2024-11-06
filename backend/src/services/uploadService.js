@@ -16,7 +16,7 @@ async function resizing(image, filename) {
     const imageBuffer = Buffer.from(base64Data, "base64");
 
     try {
-        await sharp(imageBuffer).resize(200, 200).toFile(filePath);
+        await sharp(imageBuffer).resize(525, 300).toFile(filePath);
     } catch (err) {
         console.error("Error saving image:", err);
         throw err;

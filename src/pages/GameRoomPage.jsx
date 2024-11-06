@@ -15,6 +15,7 @@ import axios from 'axios';
 import { useStoreTime } from '../components/store/gameInfoStore.js';
 import Input from '../components/common/Input.jsx';
 import { joinSession } from '../../openvidu/app_openvidu.js';
+import html2canvas from "html2canvas";
 
 const GameRoomPage = () => {
     //username, roomcode를 가져옴
@@ -42,6 +43,9 @@ const GameRoomPage = () => {
 
     const hasJoinedSession = useRef(false);
 
+    // 사진용 div
+    const divRef = useRef(null);
+
     const handlePenalty = () => {
         // Emit an event that the filter should display for 2 seconds
         const event = new CustomEvent('startPenaltyFilter');
@@ -52,7 +56,6 @@ const GameRoomPage = () => {
     function quitGame(){
       navigate('/');
       window.location.reload();
-      // window.location.href("/"); // error
     }
 
     // ========================== 금칙어 설정 완료 ================
@@ -181,6 +184,13 @@ const GameRoomPage = () => {
                 handlePenalty();
             }
         });
+        _socket.on('take a picture',(user)=>{
+            console.log(user);
+            if(user==username){
+                console.log("사진찍힘")
+                sendImage()
+            }
+        })
 
     }
 
@@ -201,6 +211,29 @@ const GameRoomPage = () => {
     }, [gameActive, timer]);
 
     
+    // ====================================================== take photos ====================================================== 
+    const sendImage= () =>{
+        const date = new Date();
+        const nowtime = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+        if (divRef.current) {
+            html2canvas(divRef.current).then(canvas => {
+                const imageData = canvas.toDataURL("image/png");
+                // 서버에 이미지 데이터 전송
+                axios.post("http://localhost:3001/upload/api/v1", 
+                    {
+                        image: imageData,
+                        filename : `${roomcode}_${nowtime}.png`
+                    }
+                ).then(response => {
+                    console.log("Image saved on server:", response.data);
+                })
+                .catch(error => {
+                    console.error("Error saving image:", error);
+                });
+            });
+        }
+    };
+
     // ====================================================== detect model load ====================================================== 
 useEffect(() => {
     if(!hasJoinedSession.current){
@@ -332,7 +365,7 @@ useEffect(() => {
                                     <div id="subtitles">자막</div>
                                 </>
                             </div>
-                            <div id="video-container" className="col-md-6">
+                            <div id="video-container" className="col-md-6" ref={divRef}>
                             </div>
                         </div>
                         <div className="gameroom-sidebar">

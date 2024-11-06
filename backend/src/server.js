@@ -34,7 +34,6 @@ app.use("/member", memberRouter);
 const uploadRouter = require("./routes/uploadRoute");
 app.use("/upload", uploadRouter);
 
-// Function to delete old images
 const deleteOldImages = () => {
     const imagesDir = path.join(__dirname, "images");
     const oneHourAgo = Date.now() - 600 * 1000;
@@ -46,25 +45,30 @@ const deleteOldImages = () => {
         }
 
         files.forEach((file) => {
-            const filePath = path.join(imagesDir, file);
-            fs.stat(filePath, (err, stats) => {
-                if (err) {
-                    console.error("Error getting file stats:", err);
-                    return;
-                }
-                if (stats.mtimeMs < oneHourAgo) {
-                    fs.unlink(filePath, (err) => {
-                        if (err) {
-                            console.error("Error deleting file:", err);
-                        } else {
-                            console.log(`Deleted old image: ${file}`);
-                        }
-                    });
-                }
-            });
+            // Check if the file has a .png or .jpg extension
+            if (file.endsWith(".png") || file.endsWith(".jpg")) {
+                const filePath = path.join(imagesDir, file);
+                fs.stat(filePath, (err, stats) => {
+                    if (err) {
+                        console.error("Error getting file stats:", err);
+                        return;
+                    }
+                    // Delete the file if it's older than 10 minutes
+                    if (stats.mtimeMs < oneHourAgo) {
+                        fs.unlink(filePath, (err) => {
+                            if (err) {
+                                console.error("Error deleting file:", err);
+                            } else {
+                                console.log(`Deleted old image: ${file}`);
+                            }
+                        });
+                    }
+                });
+            }
         });
     });
 };
+
 
 setInterval(deleteOldImages, 600 * 1000); // 10분 지난 파일 삭제
 
