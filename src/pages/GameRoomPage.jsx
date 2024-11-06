@@ -121,7 +121,7 @@ const GameRoomPage = () => {
     // ====================================================== 게임 소켓 서버 API ====================================================== 
     function connectToRoom() {
 
-        const _socket = io('http://localhost:3002', {
+        const _socket = io('https://maguni-game-websocket2.onrender.com', {
             autoConnect: false,
             query: {
                 username,

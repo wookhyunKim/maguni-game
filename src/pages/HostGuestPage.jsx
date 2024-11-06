@@ -45,7 +45,7 @@ const HostGuestPage = () => {
     function connectToChatServer() {
         console.log('connectToChatServer');
         role==='host' ? createRoom() : joinRoom();
-        const _socket = io('http://localhost:3000', {
+        const _socket = io('https://maguni-game-websocket1.onrender.com', {
         autoConnect: false,
         query: {
             username: username,
