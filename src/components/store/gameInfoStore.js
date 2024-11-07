@@ -3,7 +3,7 @@ import { scriptData } from "../../assets/utils/gameScripts";
 
 // 전체 시간 스토어
 const useStoreTime = create((set) => ({
-    time: 300, // 초기 시간 설정(5분)
+    time: 90, // 초기 시간 설정(5분)
     setTime: (newTime) => set({ time: newTime }),
     decrementTime: () =>
         set((state) => ({ time: Math.max(state.time - 1, 0) })),

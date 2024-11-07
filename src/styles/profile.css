@@ -1,0 +1,80 @@
+.profileContainer {
+  margin-bottom: 16px;
+    display: flex;
+    width: fit-content;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.border-line {
+    position: absolute;
+    top: 50%;
+    width:100%;
+    height: 8px;
+    background-color: white;
+    transition: all 0.3s ease-in-out;
+  }
+
+.image {
+    border-radius: 50%;
+    border: 8px solid white;
+    padding:0;
+  }
+
+.descript {
+    position: relative;
+    height: 100%;
+    width:400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profileInputContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+/* borderlind과 그 바로 밑의 내용물 간격을 주기 위함 */
+.underBorderlineContainer {
+  margin-top: 10%;
+}
+
+
+.hostProfile, .guestProfile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+}
+
+.identityText {
+  width: fit-content;
+  height: 60px;
+  margin: 0;
+  color: #2D2D2D;
+  display: inline-block;
+  text-align: center;
+}
+
+.guest-text {
+  width: 150px;
+  /* 필요한 경우 추가 스타일 지정 */
+}
+
+input {
+  font-family: 'Inter', sans-serif;
+  vertical-align: middle;
+  text-align: center;
+  line-height: normal;
+  
+}
+
+.identity {
+  font-size: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

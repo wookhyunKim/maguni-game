@@ -1,16 +1,27 @@
 .footer {
-    display:grid;
-    grid-template-columns: 1fr 300px 300px;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    background-color: #1E2329;
+    border-top: 1px solid #363C4A;
+    padding: 10px 20px;
 }
 
-.footer > *:first-child  {
-    grid-column: 1/2;
+.footer-icons-container {
+    background-color: #2C3340;
+    border-radius: 4px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.footer > *:nth-child(2)  {
-    grid-column: 2/3;
+.footer-icon {
+    padding: 0 8px;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
 }
 
-.footer > *:nth-child(3)  {
-    grid-column: 3/4;
+.footer-icon:hover {
+    opacity: 1;
 }

@@ -14,6 +14,7 @@ const io = new Server(server, {
 
 // 금칙어 사용 카운트 저장 객체
 const forbiddenWordCounts = {};
+let totalCount = 1;
 
 io.on('connection', (client) => {
   console.log('사용자가 들어왔습니다!');
@@ -41,14 +42,21 @@ io.on('connection', (client) => {
       forbiddenWordCounts[username] = 0; // 초기화
     }
     forbiddenWordCounts[username] += occurrences; // 카운트 증가
+    totalCount += 1; //사진찍기 위한 카운트
 
     // 모든 클라이언트에 카운트 업데이트
     io.emit('update forbidden word count', forbiddenWordCounts);
     io.emit('hit user', username, occurrences);
+
+    if(totalCount % 3 == 0){
+      io.emit('take a picture',username);
+    }
   });
 
-  client.on('start game', (roomcode) => {
-    let timer = 20;
+   // 금칙어 설정 후 게임 시작하게 하는 함수
+  client.on('start game', (roomcode,startTime) => {
+    console.log("게임 시작, roomcode:", roomcode, "startTime:", startTime);
+    let timer = startTime;
     const countdownInterval = setInterval(() => {
       io.to(roomcode).emit('timer update', timer);
       timer--;
@@ -63,14 +71,15 @@ io.on('connection', (client) => {
 
 
   client.on('start setting word', (roomcode) => {
-    let timer = 15;
+    let timer = 20;
     const countdownInterval = setInterval(() => {
       io.to(roomcode).emit('timer update', timer);
       timer--;
-      if(timer === 13) {
-        io.to(roomcode).emit('open modal'); 
-      }
 
+      // 20초 부터 금칙어 설정하기
+      if(timer === 19) {
+        io.to(roomcode).emit('start setting fw'); 
+      }
 
       if (timer < 0) {
         clearInterval(countdownInterval);

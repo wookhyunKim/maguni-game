@@ -1,16 +1,36 @@
 import PropTypes from 'prop-types';
 import '../../styles/modals.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useGameStageStore from '../store/gameStage.js';
 import Goon from "../../assets/images/goongYeImage.png"
+import { scriptData } from '../../assets/utils/gameScripts.js';
 
-const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose }) => {
-    const { goongYeRevealForbiddenWord } = useGameStageStore();
+// 이미지 미리 로딩
+const preloadImage = new Image();
+preloadImage.src = Goon;
+
+const GoongYeAnouncingEndModal = ({onClose}) => {
+    const { goongYeAnouncingEnd } = useGameStageStore();
+    const [currentScript, setCurrentScript] = useState('');
+    const [isImageLoaded, setIsImageLoaded] = useState(false);
 
     useEffect(() => {
+        const randomIndex = Math.floor(Math.random() * scriptData.goongYeAnouncingEnd.length);
+        setCurrentScript(scriptData.goongYeAnouncingEnd[randomIndex]);
+
+        // 이미지가 이미 캐시되어 있는지 확인
+        if (preloadImage.complete) {
+            setIsImageLoaded(true);
+        } else {
+            preloadImage.onload = () => {
+                setIsImageLoaded(true);
+            };
+        }
+
+        // 타이머는 이미지 로딩 상태와 관계없이 즉시 시작
         const timer = setTimeout(() => {
             onClose();
-        }, goongYeRevealForbiddenWord.sessiontime * 1000);
+        }, 5000); // 직접 5000ms 지정
 
         return () => clearTimeout(timer);
     }, [onClose]);
@@ -18,36 +38,30 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <img src={Goon}/>
-                <h2>금칙어 공개</h2>
-                <table className="forbidden-word-table">
-                    <thead>
-                        <tr>
-                            <th>참가자</th>
-                            <th>금칙어</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {participantList?.map(user => (
-                            <tr key={user}>
-                                <td>{user}</td>
-                                <td>{forbiddenWordlist?.find(e => e.nickname === user)?.words || '금칙어 없음'}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <img 
+                    src={Goon} 
+                    alt="궁예"
+                    style={{ 
+                        height: 'auto',
+                        display: isImageLoaded ? 'block' : 'none'  // 로딩 완료 전까지 숨김
+                    }}
+                />
+                <h2>게임 종료</h2>
+                <p>{currentScript}</p>
                 <div className="timer">
-                    <div className="progress-bar" />
+                    <div className="progress-bar" 
+                        style={{
+                            animation: 'progress 5s linear'
+                        }}
+                    />
                 </div>
             </div>
         </div>
     );
 };
 
-ForbiddenWordlistModal.propTypes = {
-    participantList: PropTypes.array.isRequired,
-    forbiddenWordlist: PropTypes.array.isRequired,
+GoongYeAnouncingEndModal.propTypes = {
     onClose: PropTypes.func.isRequired,
 };
 
-export default ForbiddenWordlistModal;
+export default GoongYeAnouncingEndModal;

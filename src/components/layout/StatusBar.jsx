@@ -3,18 +3,30 @@ import ProfileCard from '../common/ProfileCard'
 import SessionBar from '../common/SessionBar'
 import '../../styles/statusBar.css'
 import teamLogo from '../../assets/images/teamLogoImage.png'
+import PropTypes from 'prop-types';
 
-const StatusBar = (sessionTime) => {
+const StatusBar = ({ sessionTime, username, roomcode }) => {
   return (
     <div className="status-bar">
-        <img className="teamLogo" src={teamLogo}></img>
-        {/* remainingTime은 세션별로 남은시간 입력*/}
-        <SessionBar className="sessionBar" sessionTime = {sessionTime}/>
-        {/* nickname은 유저 닉네임, playerNumber는 player번호, imageUrl는 프로필 이미지*/}
-        <ProfileCard className="profileCard"/>
+        <img className="teamLogo" src={teamLogo} alt="팀 로고"/>
+        <div id="sessionTitleContianer">
+            <h1 id="session-title">{roomcode}</h1>
+        </div>
+        <SessionBar className="sessionBar" sessionTime={sessionTime}/>
+        <ProfileCard 
+            className="profileCard"
+            nickname={username}
+            playerNumber={1}
+        />
         <Timer className="timer"/>
     </div>
   )
 }
+
+StatusBar.propTypes = {
+    sessionTime: PropTypes.number,
+    username: PropTypes.string,
+    roomcode: PropTypes.string
+};
 
 export default StatusBar

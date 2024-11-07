@@ -1,0 +1,52 @@
+@font-face {
+  font-family: 'Ownglyph_JAEGEONSA-Rg';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-2@1.0/Ownglyph_JAEGEONSA-Rg.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 전체 앱에 폰트 적용하고 싶다면 */
+body {
+  font-family: 'Ownglyph_JAEGEONSA-Rg', sans-serif;
+}
+
+
+:root {
+  width:100vw;
+  /* min-height:100vh; */
+  height:100%;
+  max-height:fit-content;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  /* font-synthesis: none; */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  text: #2D3436
+}
+
+html, body {
+  min-height:100vh;
+  margin:0;
+  padding:0; 
+}
+
+
+
+
+input {
+  border-radius:4px;
+  background-color: #AC2F2F;
+  border: 1px solid white;
+  color: white;
+  height: 40px;
+  width:300px
+
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}

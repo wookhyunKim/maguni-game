@@ -5,13 +5,14 @@ import PropTypes from 'prop-types';
 import { usePlayerStore } from '../store/playerStore';
 
 
+// function Input({username, roomcode, participantList, setParticipantList}) {
 function Input({username, roomcode}) {
 
 //상태관리: inputvlaue, getcode
 const [inputValue, setInputValue] = useState('');
 const [getCode,setGetCode] = useState('');
-const players = usePlayerStore(state=>state.players);
-const setPlayers = usePlayerStore(state=>state.setPlayers)
+// const players = usePlayerStore(state=>state.players);
+// const setPlayers = usePlayerStore(state=>state.setPlayers)
 
 const [gamers,setGamers] = useState([]);
 const [playerlist,setPlayerlist] = useState([]);
@@ -28,6 +29,7 @@ const handleInputChange = (e) => {
 };
 //자신의 금칙어를 쓰고나서 "전송버튼"누르면 서버에 그 정보를 보내고, getwords(참가자들의 금칙어)를 가져오는 함수를 호출
 const insertWord = ()=>{
+    setInputValue('');
     return axios({
         method: "POST",
         url: "http://localhost:3001/member/api/v1/word",
@@ -65,7 +67,7 @@ const getPlayersInfo = ()=>{
         url: `http://localhost:3001/member/api/v1/word/${roomcode}`,
     }).then((res)=>{
         // console.log("players  :", res.data[0].words[0])
-        setPlayers(res.data);
+        // setPlayers(res.data);
         setGamers(res.data);
     }).catch((err)=>{
         console.log(err)
@@ -85,7 +87,7 @@ useEffect(() => {
 
 return (
     <>
-        <p>{index !=0? playerlist[index-1]: playerlist[playerlist.length-1]} 님의 금칙어를 입력해주세요</p>
+        <p>{index !=0? playerlist[index-1]: playerlist[playerlist.length-1]} 마구니의 금칙어를 입력하거라!</p>
         <div className="input-group" style={{ margin: '10px 0' }}>
             <input 
                 type="text"
@@ -95,9 +97,8 @@ return (
                 placeholder="메시지를 입력하세요"
                 />
             <button 
-                className="btn btn-primary"
+                className="sendBtn btn btn-primary"
                 onClick={insertWord}
-                style={{ marginLeft: '5px' }}
             >
                 전송
             </button>
