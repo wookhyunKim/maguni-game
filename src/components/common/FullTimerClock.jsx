@@ -46,7 +46,6 @@ const Timer = ({ isModalOpen }) => {
     useEffect(() => {
         // 시간이 0이 되면 타이머 종료
         if (time === 0) {
-            console.log("타이머 종료 이벤트 호출");
             return;
         }
 

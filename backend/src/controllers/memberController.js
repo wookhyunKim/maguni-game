@@ -8,8 +8,7 @@ async function getAllWords(req, res) {
     if (result) {
         res.json(result);
     } else {
-        console.log("err : ");
-        // res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 }
 
@@ -44,8 +43,7 @@ async function getPlayersInfo(req, res) {
     if (result) {
         res.json(result);
     } else {
-        console.log("err : --");
-        // res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 }
 module.exports = {

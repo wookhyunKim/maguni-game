@@ -17,12 +17,6 @@ const [getCode,setGetCode] = useState('');
 const [gamers,setGamers] = useState([]);
 const [playerlist,setPlayerlist] = useState([]);
 const [index,setIndex] = useState(-1);
-
-
-useEffect(() => {
-  console.log(getCode)
-}, [getCode]);
-
 //
 const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -39,7 +33,6 @@ const insertWord = ()=>{
             "word": inputValue
         },
     }).then((res)=>{
-        // console.log(res.data['success'])
         return getWords();
     }).catch((err)=>{
         console.log(err)
@@ -52,7 +45,6 @@ const getWords = ()=>{
         method: "GET",
         url: `http://localhost:3001/member/api/v1/word/${roomcode}/${username}`,
     }).then((res)=>{
-        // console.log(res.data[0][0])
         setGetCode(res.data[0][0])
         return getPlayersInfo();
     }).catch((err)=>{
@@ -67,7 +59,6 @@ const getPlayersInfo = ()=>{
         url: `http://localhost:3001/member/api/v1/word/${roomcode}`,
     }).then((res)=>{
         // console.log("players  :", res.data[0].words[0])
-        // setPlayers(res.data);
         setGamers(res.data);
     }).catch((err)=>{
         console.log(err)

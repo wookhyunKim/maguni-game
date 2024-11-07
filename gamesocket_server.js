@@ -55,7 +55,6 @@ io.on('connection', (client) => {
 
    // 금칙어 설정 후 게임 시작하게 하는 함수
   client.on('start game', (roomcode,startTime) => {
-    console.log("게임 시작, roomcode:", roomcode, "startTime:", startTime);
     let timer = startTime;
     const countdownInterval = setInterval(() => {
       io.to(roomcode).emit('timer update', timer);
@@ -63,7 +62,6 @@ io.on('connection', (client) => {
 
       if (timer < 0) {
         clearInterval(countdownInterval);
-        console.log(forbiddenWordCounts);
         io.to(roomcode).emit('game ended', forbiddenWordCounts); // 게임 종료 및 최종 결과 전송
       }
     }, 1000);

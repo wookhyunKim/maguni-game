@@ -104,7 +104,6 @@ export function joinSession(mySessionId,myUserName) {
 
          })
          .catch(error => {
-            console.log('There was an error connecting to the session:', error.code, error.message);
          });
    });
 }
@@ -373,13 +372,11 @@ function animateImage(ctx, x, yPosition) {
                   break;
 
                   case "noseEnlarge":
-                     console.log("start nose enlarge");
                      //applyNoseEnlargeEffect(ctx, faces[0].keypoints,compositeCanvas); // 코 확대 필터 호출
                      applyEnhancedLensDistortion(ctx,faces[0].keypoints);
                      break;
 
                case "smile":
-                  console.log("start smile distortion");
                   applyEnhancedMouthDistortion(ctx,faces[0].keypoints);
                   break;
           
