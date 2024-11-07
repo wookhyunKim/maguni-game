@@ -1,22 +1,28 @@
+import axios from 'axios';
 import {useEffect, useState,useRef} from 'react';
 import {useNavigate} from 'react-router-dom';
 import io from 'socket.io-client';
 import '../styles/gameroompage.css'
+
+// 레이아웃 import
 import StatusBar from '../components/layout/StatusBar.jsx';
+import Input from '../components/common/Input.jsx';
+import Footer from '../components/layout/Footer.jsx';
+// 모달 import
 import ForbiddenWordlistModal from '../components/modals/ForbiddenWordlistModal.jsx';
 import SettingForbiddenWordModal from '../components/modals/goongYeForbiddenwordModal.jsx';
 import GoongYeAnouncingEndModal from '../components/modals/goongYeAnouncingEndModal.jsx';
 import GoongYeAnouncingGameEndModal from '../components/modals/GoongYeAnouncingGameEndModal.jsx';
-import Footer from '../components/layout/Footer.jsx';
+
+// 스토어 import
 import useRoomStore from '../components/store/roomStore.js';
 import { usePlayerStore } from '../components/store/playerStore.js';
 import { useModalStore } from '../components/store/modalStore.js';
-import axios from 'axios';
 import { useStoreTime } from '../components/store/gameInfoStore.js';
-import Input from '../components/common/Input.jsx';
+
+// 오픈비두 관련 import
 import { joinSession } from '../../openvidu/app_openvidu.js';
 import html2canvas from "html2canvas";
-import { leaveSession } from '../../openvidu/app_openvidu.js';
 
 const GameRoomPage = () => {
     //username, roomcode를 가져옴
@@ -39,7 +45,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 3;
+    const startTime = 120
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -245,13 +251,6 @@ useEffect(() => {
 },[])
 
 
-
-    // =========================== 방나가기 ========================
-    // function disconnectFromRoom() {
-    //     socket?.disconnect();
-    //     setParticipantList([]);
-    //     setForbiddenWordCount({});
-    // }
     // ====================================================== 음성인식 ====================================================== 
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -448,7 +447,6 @@ useEffect(() => {
                         setModal('goongYeAnnouncingResult', false);
                         // 모달이 닫힌 후 페이지 이동
                         setTimeout(() => {
-                            leaveSession();
                             navigate('/end', { 
                                 state: { 
                                     result: finalCountList,
@@ -456,6 +454,7 @@ useEffect(() => {
                                     roomCode: roomcode 
                                 }
                             });
+                            window.location.reload();
                         }, 3000); // 모달 애니메이션을 위한 지연시간 5초
                     }} 
                 />

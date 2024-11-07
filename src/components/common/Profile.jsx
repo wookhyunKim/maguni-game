@@ -3,10 +3,6 @@ import GuestImage from '../../assets/images/guestAvatar.png';
 import PropTypes from 'prop-types';
 import '../../styles/profile.css';
 import nextButton from '../../assets/images/nextButton.png';
-import host_text from '../../assets/images/host_text.png';
-import guest_text from '../../assets/images/guest_text.png';
-
-
 
 const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoomCode, connectBtnHandler, roomcode, setRoomcode}) => {
   return (

@@ -5,7 +5,7 @@ import mainCharacter from '../assets/images/mainImage.png'
 
 const HomePage = () => {
     const navigate = useNavigate();
-    const  gotonickname = () => {
+    const  goToNickname = () => {
         navigate('/nickname');
         }
     return (
@@ -16,7 +16,7 @@ const HomePage = () => {
                 <div className="character-container">
                     <img src={mainCharacter} alt="mainCharacter" className="main-character"/>
                 </div>
-                <CommonButton text="시작하기" onClick={gotonickname} size="large"/>
+                <CommonButton text="시작하기" onClick={goToNickname} size="large"/>
             </div>
         </div>
     </div>

@@ -5,18 +5,18 @@ import saveAs from "file-saver";
 import BasicFrame from "../assets/images/photo_frame/frame1.png";
 import GoongYeFrame from "../assets/images/photo_frame/frame2.png";
 import YeomjuFrame from "../assets/images/photo_frame/frame3.png";
-import image_prac from "../assets/images/profile_images/one.png";
+// import image_prac from "../assets/images/profile_images/one.png";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import '../styles/fourcut.css'
-import CommonButton from "../components/commonButton";
+import CommonButton from "../components/CommonButton";
 
 const FourCut = () => {
     const divRef = useRef(null);
     const [showModal, setShowModal] = useState(true); // 초기에 모달 표시
     const [selectedFrame, setSelectedFrame] = useState(null);
-    const [imageList, setImageList] = useState([image_prac, image_prac, image_prac, image_prac]);
-    // const [imageList, setImageList] = useState([]);
+    // const [imageList, setImageList] = useState([image_prac, image_prac, image_prac, image_prac]);
+    const [imageList, setImageList] = useState([]);
     const location = useLocation();
     const roomCode = location.state.roomCode;
 
@@ -27,19 +27,19 @@ const FourCut = () => {
         { id: 'frame3', image: YeomjuFrame, name: '염주 안대 프레임' }
     ];
 
-    // // 서버에서 이미지 가져오기
-    // const fetchImages = async () => {
-    //     try {
-    //         const response = await axios.get(`http://localhost:3001/upload/api/v1/${roomCode}`);
-    //         setImageList(response.data);
-    //     } catch (error) {
-    //         console.error("이미지 로딩 실패:", error);
-    //     }
-    // };
+    // 서버에서 이미지 가져오기
+    const fetchImages = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3001/upload/api/v1/${roomCode}`);
+            setImageList(response.data);
+        } catch (error) {
+            console.error("이미지 로딩 실패:", error);
+        }
+    };
 
-    // useEffect(() => {
-    //     fetchImages();
-    // }, [roomCode]);
+    useEffect(() => {
+        fetchImages();
+    });
 
     // 이미지 다운로드
     const handleDownload = async () => {
@@ -131,8 +131,8 @@ const FourCut = () => {
                                         }}
                                     >
                                         <img
-                                            // src={`http://localhost:3001/images/${image}`}
-                                            src={image}
+                                            src={`http://localhost:3001/backend/src/images/${image}`}
+                                            // src={image}
                                             alt={`사진 ${index + 1}`}
                                             style={{
                                                 width: "428px",

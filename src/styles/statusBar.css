@@ -24,3 +24,8 @@
     width: 300px;
     display: block;
 }
+
+.timer-container {
+    display: none;
+
+}

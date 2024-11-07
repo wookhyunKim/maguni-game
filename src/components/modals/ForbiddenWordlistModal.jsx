@@ -50,7 +50,7 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
                     </thead>
                     <tbody>
                         {participantList
-                            ?.filter(user => user !== username)
+                            // ?.filter(user => user !== username)
                             .map(user => (
                             <tr key={user}>
                                 <td>{user}</td>

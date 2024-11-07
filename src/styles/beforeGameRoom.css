@@ -14,14 +14,16 @@
     font-size: 5rem;
 }
 
-.game-title > h5 {
-    font-size: 1.5rem;
-}
+/* 금칙어 게임 글자 */
 .game-title > h1 {
     font-size: 3rem;
 }
+/*never, say the word 글자*/
+.game-title > h5 {
+    font-size: 1.5rem;
+}
 
-
+/*글자들 아래 내용물 전부*/
 .game-container {
     height: 100%;
     width: 100%;
@@ -31,8 +33,9 @@
     align-items: center;
 }
 
+/*메인 궁예 캐리커쳐*/
 .main-character {
-    padding: 10%;
+    padding: 0 10% 10% 10%;
     width: 100%;
     animation: swing 3s ease-in-out infinite;
     transform-origin: top;
