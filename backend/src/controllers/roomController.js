@@ -5,8 +5,7 @@ async function getAllRooms(_, res) {
     if (result) {
         res.json(result);
     } else {
-        console.log("err : ");
-        // res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 }
 async function getOneRoom(req, res) {
@@ -15,8 +14,7 @@ async function getOneRoom(req, res) {
     if (result) {
         res.json(result);
     } else {
-        console.log("err :== ");
-        // res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 }
 
@@ -37,19 +35,16 @@ async function deleteRoom(req, res) {
     if (result) {
         res.json(result);
     } else {
-        console.log("err :== ");
-        // res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 }
 async function patchRoom(req, res) {
     const roomCode = req.params.roomCode;
-    console.log(roomCode);
     const result = await RoomService.patchRoom(roomCode);
     if (result) {
         res.json(result);
     } else {
-        console.log("err :== ");
-        // res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 }
 module.exports = {

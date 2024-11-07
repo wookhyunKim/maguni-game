@@ -17,7 +17,6 @@ const SettingForbiddenWordModal = ({onClose }) => {
     useEffect(() => {
         const randomIndex = Math.floor(Math.random() * scriptData.goongYeForbiddenWord.length);
         setCurrentScript(scriptData.goongYeForbiddenWord[randomIndex].text);
-        console.log("TEST RANDOM SCRIPT");
 
         // 이미지가 이미 캐시되어 있는지 확인
         if (preloadImage.complete) {

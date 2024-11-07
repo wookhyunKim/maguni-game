@@ -18,8 +18,6 @@ var roomUserList = {};
 
 
 io.on('connection', (client) => {               //client가 연결되면 실행
-    console.log('사용자가 들어왔습니다!');
-
     const { username, roomnumber, role } = client.handshake.query;
 
     client.join(roomnumber); // 클라이언트를 해당 방에 입장
@@ -49,7 +47,6 @@ io.on('connection', (client) => {               //client가 연결되면 실행
     io.to(roomnumber).emit('send user list', roomUserList[roomnumber]);
 
     client.on('disconnect', () => {         //client로부터 disconnection
-        console.log(`사용자가 나갔습니다... ${username}`);
         roomUserList[roomnumber] = roomUserList[roomnumber].filter(user => user.username !== username);
         io.to(roomnumber).emit('send user list', roomUserList[roomnumber]);
     })

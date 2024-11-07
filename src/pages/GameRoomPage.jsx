@@ -183,7 +183,6 @@ const GameRoomPage = () => {
             }, 4000);
         });
         _socket.on('hit user', (user, occurrences) => {
-            console.log(occurrences);
              if(user !== username) {
                   return;
              }
@@ -192,7 +191,6 @@ const GameRoomPage = () => {
             }
         });
         _socket.on('take a picture',(user)=>{
-            console.log(user);
             if(user==username){
                 console.log("사진찍힘")
                 sendImage()
@@ -261,7 +259,6 @@ useEffect(() => {
 
 
         const handleStart = () => {
-            console.log("시작");
             setIsStoppedManually(false);
             recognition.start();
         };
@@ -287,7 +284,6 @@ useEffect(() => {
 
                     if (word) {
                         const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
-                        console.log('금칙어 발생 횟수:', occurrences);
                         if (occurrences > 0) {
                             handleForbiddenWordUsed(occurrences);
                         }

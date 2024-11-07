@@ -43,7 +43,6 @@ const HostGuestPage = () => {
 
 
     function connectToChatServer() {
-        console.log('connectToChatServer');
         role==='host' ? createRoom() : joinRoom();
         const _socket = io('https://maguni-game-websocket1.onrender.com', {
         autoConnect: false,
@@ -66,7 +65,7 @@ const HostGuestPage = () => {
                 "nickname": username,
             },
         }).then((res)=>{
-            console.log(res.data['success'])
+            // console.log(res.data['success'])
         }).catch((err)=>{
             console.log(err)
         })
@@ -81,7 +80,7 @@ const HostGuestPage = () => {
                 "nickname": username,
             },
         }).then((res)=>{
-            console.log(res.data['success'])
+            // console.log(res.data['success'])
         }).catch((err)=>{
             console.log(err)
         })
@@ -89,17 +88,14 @@ const HostGuestPage = () => {
 
 
     function disconnectToChatServer() {
-        console.log('disconnectToChatServer');
         socket?.disconnect();
     }
 
     function onConnected() {
-        console.log('프론트 - onConnected');
         setIsConnected(true);
     }
 
     function onDisconnected() {
-        console.log('프론트 - onDisconnected');
         setIsConnected(false);
     }
 
@@ -108,13 +104,11 @@ const HostGuestPage = () => {
     }
 
     useEffect(() => {   //소켓 별 이벤트 리스너
-        console.log('useEffect called!');
         socket?.on('connect', onConnected); //서버랑 연결이 되면
         socket?.on('disconnect', onDisconnected); //서버로부터 연결이 끊어지면
         socket?.on('send user list', updateUserList);
 
         return () => {
-        console.log('useEffect clean up function called!');
         socket?.off('connect', onConnected);
         socket?.off('disconnect', onDisconnected);
         };
