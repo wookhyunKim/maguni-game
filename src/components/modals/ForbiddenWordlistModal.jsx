@@ -36,7 +36,6 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
                     src={Goon} 
                     alt="궁예"
                     style={{ 
-                        maxWidth: '300px',
                         height: 'auto',
                         display: isImageLoaded ? 'block' : 'none'
                     }}
@@ -50,7 +49,9 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
                         </tr>
                     </thead>
                     <tbody>
-                        {participantList?.map(user => (
+                        {participantList
+                            ?.filter(user => user !== username)
+                            .map(user => (
                             <tr key={user}>
                                 <td>{user}</td>
                                 <td>{forbiddenWordlist?.find(e => e.nickname === user)?.words || '금칙어 없음'}</td>

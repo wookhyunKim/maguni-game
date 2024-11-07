@@ -384,15 +384,16 @@ useEffect(() => {
                                     <table className="user-wordlist-table">
                                         <tbody>
                                             <ul>
-                                                {isWordsShown && participantList.map(user => (
-                                                    <li key={user}>
-                                                        <div>
-                                                            {user} - {forbiddenWordlist.find(e => e.nickname === user)?.words || '금칙어 없음'}
-                                                            - 금칙어 카운트: {forbiddenWordCount[user] || 0}
-                                                        </div>
-
-                                                    </li>
-                                                ))}
+                                                {isWordsShown && participantList
+                                                    .filter(user => user !== username)
+                                                    .map(user => (
+                                                        <li key={user}>
+                                                            <div>
+                                                                {user} - {forbiddenWordlist.find(e => e.nickname === user)?.words || '금칙어 없음'}
+                                                                - 금칙어 카운트: {forbiddenWordCount[user] || 0}
+                                                            </div>
+                                                        </li>
+                                                    ))}
                                             </ul>
                                         </tbody>
                                     </table>
@@ -434,7 +435,7 @@ useEffect(() => {
                     />)}
                 {modals.SettingForbiddenWordModal && (
                     <SettingForbiddenWordModal
-                        onClose={() => setModal('goongYeForbiddenWord', false)}
+                        onClose={() => setModal('SettingForbiddenWordModal', false)}
                     />
                 )}
                 {modals.goongYeAnouncingEnd && (

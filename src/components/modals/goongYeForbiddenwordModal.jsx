@@ -42,7 +42,6 @@ const SettingForbiddenWordModal = ({onClose }) => {
                     src={Goon} 
                     alt="궁예"
                     style={{ 
-                        maxWidth: '300px',
                         height: 'auto',
                         display: isImageLoaded ? 'block' : 'none'
                     }}

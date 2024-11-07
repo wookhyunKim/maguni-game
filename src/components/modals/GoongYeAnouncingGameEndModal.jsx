@@ -51,7 +51,6 @@ const GoongYeAnouncingGameEndModal = ({finalCounts={},onClose}) => {
                     src={Goon} 
                     alt="궁예"
                     style={{ 
-                        maxWidth: '300px',  // 이미지 크기 제한
                         height: 'auto',
                         display: isImageLoaded ? 'block' : 'none'  // 로딩 완료 전까지 숨김
                     }}

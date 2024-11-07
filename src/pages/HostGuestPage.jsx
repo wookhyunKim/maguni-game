@@ -234,7 +234,7 @@ const HostGuestPage = () => {
                 <div className="table table-bordered table-hover">
                   {userList.map((word, index) => (
                     <div className='player_info_container' key={index}>
-                      <div className='player_number'>종{index + 1}품</div>
+                      <div className='player_number'>정 {index + 1}품</div>
                       <div className='player_name'>{word.username}</div>
                     </div>
                   ))}
