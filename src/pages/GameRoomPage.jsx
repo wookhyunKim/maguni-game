@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {useEffect, useState,useRef} from 'react';
-import {useNavigate} from 'react-router-dom';
 import io from 'socket.io-client';
 import '../styles/gameroompage.css'
+import {useNavigate} from 'react-router-dom';
 
 // 레이아웃 import
 import StatusBar from '../components/layout/StatusBar.jsx';
@@ -18,13 +18,13 @@ import GoongYeAnouncingGameEndModal from '../components/modals/GoongYeAnouncingG
 import useRoomStore from '../components/store/roomStore.js';
 import { usePlayerStore } from '../components/store/playerStore.js';
 import { useModalStore } from '../components/store/modalStore.js';
-import { useStoreTime } from '../components/store/gameInfoStore.js';
 
 // 오픈비두 관련 import
 import { joinSession } from '../../openvidu/app_openvidu.js';
 import html2canvas from "html2canvas";
 
 const GameRoomPage = () => {
+    const navigate = useNavigate();
     //username, roomcode를 가져옴
     const username = usePlayerStore(state => state.username)
     const roomcode = useRoomStore(state => state.roomcode)
@@ -50,6 +50,9 @@ const GameRoomPage = () => {
 
     const hasJoinedSession = useRef(false);
 
+    // Input 컴포넌트 표시 여부 상태
+    const [showInput, setShowInput] = useState(false);
+
     // 사진용 div
     const divRef = useRef(null);
 
@@ -59,11 +62,7 @@ const GameRoomPage = () => {
         window.dispatchEvent(event);
     };
 
-    const navigate = useNavigate();
-    function quitGame(){
-      navigate('/');
-      window.location.reload();
-    }
+
 
     // ========================== 금칙어 설정 완료 ================
     // DB에서 유저별 금칙어 리스트 가져오기 => forbiddenWordlist
@@ -93,6 +92,7 @@ const GameRoomPage = () => {
             await getPlayersInfo();
             // 데이터를 가져온 후 모달 창 띄우기
             setModal('FW', true);
+            setShowInput(false);
 
             // Promise를 사용하여 타이머 완료를 기다림
             await new Promise(resolve => {
@@ -119,6 +119,7 @@ const GameRoomPage = () => {
         const startSettingForbiddenWord = async () => {
             // 모달 표시
             setModal('SettingForbiddenWordModal', true);
+            setShowInput(true);
             
             // Promise를 사용하여 5초 대기
             await new Promise(resolve => setTimeout(resolve, 5000));
@@ -365,14 +366,6 @@ useEffect(() => {
                             </div>
                         </div>
                         <div className="gameroom-sidebar">
-                            <div className="sidebar-btn">
-                                {/*여기에 onclick으로 leaveSession하면서 방 나가기 해야될듯*/}
-                                <input className="btn btn-large btn-danger"
-                                                    type="button"
-                                                    id="buttonLeaveSession"
-                                                    onClick={() => quitGame()}
-                                                    value="게임 종료" />
-                            </div>
                             <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
@@ -398,12 +391,14 @@ useEffect(() => {
                                 <div className="sidebar_index">나의 미션</div>
                                     <div className="sidebar_content">
                                     <div className="footer-input">
-                                    <Input 
-                                        username={username} 
-                                        roomcode={roomcode} 
-                                        participantList={participantList} 
-                                        setParticipantList={setParticipantList}
+                                    {showInput && (
+                                        <Input 
+                                            username={username} 
+                                            roomcode={roomcode} 
+                                            participantList={participantList} 
+                                            setParticipantList={setParticipantList}
                                         />
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -434,7 +429,10 @@ useEffect(() => {
                     />
                 )}
                 {modals.goongYeAnouncingEnd && (
-                    <GoongYeAnouncingEndModal onClose={() => setModal('goongYeAnouncingEnd', false)} />
+                    <GoongYeAnouncingEndModal onClose={() => {
+                        setModal('goongYeAnnouncingEnd', false);
+                        setShowInput(false); // 모달 종료 시 Input 숨기기
+                      }} />
                 )}
                 {modals.goongYeAnnouncingResult && (
                 <GoongYeAnouncingGameEndModal 
