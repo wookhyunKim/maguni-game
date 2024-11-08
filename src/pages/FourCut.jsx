@@ -132,6 +132,7 @@ const FourCut = () => {
                                     >
                                         <img
                                             src={`../../backend/src/images/${image}`}
+                                            // src={`http://localhost:3001/images/${image}`}
                                             // src={image}
                                             alt={`사진 ${index + 1}`}
                                             style={{
