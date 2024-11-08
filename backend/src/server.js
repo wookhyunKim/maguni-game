@@ -23,7 +23,9 @@ const PORT = 3001;
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
-app.use('/public', express.static(path.join(__dirname, 'src/images')));
+// 절대 경로로 이미지 디렉토리 설정
+const imagesPath = path.resolve(__dirname, "../src/images");
+app.use("/photos", express.static(imagesPath));
 
 const roomRouter = require("./routes/roomRoute");
 app.use("/room", roomRouter);
