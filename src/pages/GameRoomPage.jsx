@@ -1,8 +1,8 @@
 import axios from 'axios';
-import {useEffect, useState,useRef} from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import '../styles/gameroompage.css'
-import {useNavigate} from 'react-router-dom';
 
 // 레이아웃 import
 import StatusBar from '../components/layout/StatusBar.jsx';
@@ -37,7 +37,7 @@ const GameRoomPage = () => {
     // 음성인식 관련 상태
     const [isStoppedManually, setIsStoppedManually] = useState(false); //수동 종료
     //소켓에서 받아온 금칙어 횟수 리스트
-    const [finalCountList,setFinalCountList] = useState([]);
+    const [finalCountList, setFinalCountList] = useState([]);
     //모달 관련 상태
     const { modals, setModal } = useModalStore();
     //사이드바에 금칙어 보이는 여부
@@ -58,11 +58,16 @@ const GameRoomPage = () => {
 
     const handlePenalty = () => {
         // Emit an event that the filter should display for 2 seconds
+        console.log('penalty');
         const event = new CustomEvent('startPenaltyFilter');
         window.dispatchEvent(event);
     };
 
-
+    function quitGame() {
+        const navigate = useNavigate();
+        navigate('/');
+        window.location.reload();
+    }
 
     // ========================== 금칙어 설정 완료 ================
     // DB에서 유저별 금칙어 리스트 가져오기 => forbiddenWordlist
@@ -80,7 +85,7 @@ const GameRoomPage = () => {
     // 금칙어 설정 후 게임 시작하게 하는 함수
     function startGame() {
         // 게임 시작 요청
-        socket.emit('start game', roomcode,startTime); 
+        socket.emit('start game', roomcode, startTime);
         setGameActive(true);
         setTimer(startTime); // 타이머 초기화
         document.getElementById('startButton').click();
@@ -115,28 +120,27 @@ const GameRoomPage = () => {
             console.error('금칙어 안내 모달 창 띄우기 오류:', error);
         }
     };
-        //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
-        const startSettingForbiddenWord = async () => {
-            // 모달 표시
-            setModal('SettingForbiddenWordModal', true);
-            setShowInput(true);
-            
-            // Promise를 사용하여 5초 대기
-            await new Promise(resolve => setTimeout(resolve, 5000));
-            
-            // 모달 닫기
-            setModal('SettingForbiddenWordModal', false);
-            
-            // 모달이 완전히 닫힌 것을 보장하기 위해 짧은 대기
-            await new Promise(resolve => setTimeout(resolve, 100));
-            
-            // 금칙어 설정 시작
-            socket.emit('start setting word', roomcode);
-        };
-    
-        const testPenalty = () => {
-            handlePenalty();
-        }
+    //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
+    const startSettingForbiddenWord = async () => {
+        // 모달 표시
+        setModal('SettingForbiddenWordModal', true);
+
+        // Promise를 사용하여 5초 대기
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        // 모달 닫기
+        setModal('SettingForbiddenWordModal', false);
+
+        // 모달이 완전히 닫힌 것을 보장하기 위해 짧은 대기
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // 금칙어 설정 시작
+        socket.emit('start setting word', roomcode);
+    };
+
+    const testPenalty = () => {
+        handlePenalty();
+    }
     // ====================================================== 게임 소켓 서버 API ====================================================== 
     function connectToRoom() {
 
@@ -183,16 +187,16 @@ const GameRoomPage = () => {
                 setModal('SettingForbiddenWordModal', false);
             }, 4000);
         });
-        _socket.on('hit user', (user, occurrences) => {
-             if(user !== username) {
-                  return;
-             }
-            for (let i = 0; i < occurrences; i++) {
-                handlePenalty();
+
+        _socket.on('hit user', (user) => {
+            if (user !== username) {
+                return;
             }
+            handlePenalty();
         });
-        _socket.on('take a picture',(user)=>{
-            if(user==username){
+
+        _socket.on('take a picture', (user) => {
+            if (user == username) {
                 console.log("사진찍힘")
                 sendImage()
             }
@@ -200,8 +204,14 @@ const GameRoomPage = () => {
 
     }
 
-    const handleForbiddenWordUsed = (occurrences) => {
-        socket.emit('forbidden word used', username, occurrences);
+    const handleForbiddenWordUsedCount = (occurrences) => {
+        console.log("금칙어 사용- count", occurrences);
+        socket.emit('forbidden word used count', username, occurrences);
+    };
+
+    const handleForbiddenWordUsedHit = () => {
+        console.log("금칙어 사용 - hit");
+        socket.emit('forbidden word used hit', username);
     };
 
     useEffect(() => {
@@ -216,38 +226,38 @@ const GameRoomPage = () => {
         }
     }, [gameActive, timer]);
 
-    
+
     // ====================================================== take photos ====================================================== 
-    const sendImage= () =>{
+    const sendImage = () => {
         const date = new Date();
-        const nowtime = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+        const nowtime = `${String(date.getHours()).padStart(2, "0")}-${String(date.getMinutes()).padStart(2, "0")}-${String(date.getSeconds()).padStart(2, "0")}`;
         if (divRef.current) {
             html2canvas(divRef.current).then(canvas => {
                 const imageData = canvas.toDataURL("image/png");
                 // 서버에 이미지 데이터 전송
-                axios.post("http://localhost:3001/upload/api/v1", 
+                axios.post("http://localhost:3001/upload/api/v1",
                     {
                         image: imageData,
-                        filename : `${roomcode}_${nowtime}.png`
+                        filename: `${roomcode}_${nowtime}.png`
                     }
                 ).then(response => {
                     console.log("Image saved on server:", response.data);
                 })
-                .catch(error => {
-                    console.error("Error saving image:", error);
-                });
+                    .catch(error => {
+                        console.error("Error saving image:", error);
+                    });
             });
         }
     };
 
     // ====================================================== detect model load ====================================================== 
-useEffect(() => {
-    if(!hasJoinedSession.current){
-        joinSession(roomcode,username);
-        connectToRoom();
-        hasJoinedSession.current = true;
-    }
-},[])
+    useEffect(() => {
+        if (!hasJoinedSession.current) {
+            joinSession(roomcode, username);
+            connectToRoom();
+            hasJoinedSession.current = true;
+        }
+    }, [])
 
 
     // ====================================================== 음성인식 ====================================================== 
@@ -277,20 +287,27 @@ useEffect(() => {
             for (let i = event.resultIndex; i < event.results.length; ++i) {
                 const result = event.results[i];
                 const transcript = result[0].transcript.trim();
+                const word = forbiddenWordlist.find(e => e.nickname === username)?.words;
 
                 if (result.isFinal) {
                     finalTranscript += transcript + ' ';
                     // 금칙어 카운트 수정
-                    const word = forbiddenWordlist.find(e => e.nickname === username)?.words;
 
                     if (word) {
                         const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
                         if (occurrences > 0) {
-                            handleForbiddenWordUsed(occurrences);
+                            handleForbiddenWordUsedCount(occurrences);
                         }
                     }
                 } else {
                     interimTranscript += transcript + ' ';
+
+                    if (word) {
+                        const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
+                        if (occurrences > 0) {
+                            handleForbiddenWordUsedHit();
+                        }
+                    }
                 }
             }
 
@@ -302,8 +319,6 @@ useEffect(() => {
 
         const handleStop = () => {
             setIsStoppedManually(true);
-            // startButton.disabled = false;
-            // stopButton.disabled = true;
             recognition.stop();
         };
 
@@ -366,6 +381,14 @@ useEffect(() => {
                             </div>
                         </div>
                         <div className="gameroom-sidebar">
+                            <div className="sidebar-btn">
+                                {/*여기에 onclick으로 leaveSession하면서 방 나가기 해야될듯*/}
+                                <input className="btn btn-large btn-danger"
+                                    type="button"
+                                    id="buttonLeaveSession"
+                                    onClick={() => quitGame()}
+                                    value="게임 종료" />
+                            </div>
                             <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
@@ -389,7 +412,7 @@ useEffect(() => {
                             </div>
                             <div className="sidebar_mymission">
                                 <div className="sidebar_index">나의 미션</div>
-                                    <div className="sidebar_content">
+                                <div className="sidebar_content">
                                     <div className="footer-input">
                                     <Input 
                                             username={username} 
@@ -431,26 +454,26 @@ useEffect(() => {
                     <GoongYeAnouncingEndModal onClose={() => {
                         setModal('goongYeAnnouncingEnd', false);
                         setShowInput(false); // 모달 종료 시 Input 숨기기
-                      }} />
+                    }} />
                 )}
                 {modals.goongYeAnnouncingResult && (
-                <GoongYeAnouncingGameEndModal 
-                    finalCounts={finalCountList} 
-                    onClose={() => {
-                        setModal('goongYeAnnouncingResult', false);
-                        // 모달이 닫힌 후 페이지 이동
-                        setTimeout(() => {
-                            navigate('/end', { 
-                                state: { 
-                                    result: finalCountList,
-                                    words: forbiddenWordlist,
-                                    roomCode: roomcode 
-                                }
-                            });
-                            window.location.reload();
-                        }, 3000); // 모달 애니메이션을 위한 지연시간 5초
-                    }} 
-                />
+                    <GoongYeAnouncingGameEndModal
+                        finalCounts={finalCountList}
+                        onClose={() => {
+                            setModal('goongYeAnnouncingResult', false);
+                            // 모달이 닫힌 후 페이지 이동
+                            setTimeout(() => {
+                                navigate('/end', {
+                                    state: {
+                                        result: finalCountList,
+                                        words: forbiddenWordlist,
+                                        roomCode: roomcode
+                                    }
+                                });
+                                window.location.reload();
+                            }, 3000); // 모달 애니메이션을 위한 지연시간 5초
+                        }}
+                    />
                 )}
             </div>
             <Footer />
