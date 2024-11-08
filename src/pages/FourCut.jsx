@@ -39,7 +39,7 @@ const FourCut = () => {
 
     useEffect(() => {
         fetchImages();
-    });
+    },[]);
 
     // 이미지 다운로드
     const handleDownload = async () => {
@@ -131,7 +131,7 @@ const FourCut = () => {
                                         }}
                                     >
                                         <img
-                                            src={`http://localhost:3001/backend/src/images/${image}`}
+                                            src={`../../backend/src/images/${image}`}
                                             // src={image}
                                             alt={`사진 ${index + 1}`}
                                             style={{
