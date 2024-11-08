@@ -117,18 +117,29 @@ const MemberDao = {
             await client.connect();
             const db = client.db("database");
             const rooms = db.collection("rooms");
-
-            // roomId에 따라 필터링
+    
+            // roomCode로 필터링
             room = await rooms.findOne({ code: roomCode });
-            participants = room.participants;
+            
+            if (!room) {
+                console.log("방을 찾을 수 없음");
+                return null; // 방이 없을 경우 null 반환
+            }
+            
+            participants = room.participants || []; // participants가 없으면 빈 배열로 설정
+            
+            if (participants.length === 0) {
+                console.log("참가자 없음");
+            }
         } catch (error) {
             throw error;
         } finally {
             // client.close(); // 클라이언트 연결 종료
         }
-
+    
         return participants;
     },
+    
     
     
 };
