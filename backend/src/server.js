@@ -23,7 +23,7 @@ const PORT = 3001;
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
-app.use('/images', express.static(path.join(__dirname, '/images')));
+app.use('/images', express.static(path.join(__dirname, 'src/images')));
 
 const roomRouter = require("./routes/roomRoute");
 app.use("/room", roomRouter);
