@@ -12,6 +12,7 @@ import '../styles/HostGuestPage.css'
 import '../styles/beforeGameRoom.css'
 import Profile from '../components/common/Profile';
 import CommonButton from '../components/CommonButton';
+import RuleDescriber from '../components/common/RuleDescriber';
 
 const HostGuestPage = () => {
     const navigate = useNavigate();
@@ -284,6 +285,7 @@ const HostGuestPage = () => {
             </button>
           <div className="startGameSection">
             <CommonButton className="startGameBtn" onClick={Gotogameroompage} text="시작하기"/>
+            <RuleDescriber />
           </div>
         </div>
       )}
