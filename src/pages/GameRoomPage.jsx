@@ -391,14 +391,13 @@ useEffect(() => {
                                 <div className="sidebar_index">나의 미션</div>
                                     <div className="sidebar_content">
                                     <div className="footer-input">
-                                    {showInput && (
-                                        <Input 
+                                    <Input 
                                             username={username} 
                                             roomcode={roomcode} 
                                             participantList={participantList} 
                                             setParticipantList={setParticipantList}
+                                            showInput={showInput}
                                         />
-                                        )}
                                     </div>
                                 </div>
                             </div>
