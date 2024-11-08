@@ -53,8 +53,7 @@ padding: 20px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  /* width: 80%; */
-  margin: 20px auto;
+  /* margin: 20px auto; */
   border: 2px solid rgba(255, 255, 255, 0.6);
   padding: 15px;
   border-radius: 15px;
@@ -79,6 +78,7 @@ padding: 20px;
 .table {
   color: #333;
   font-weight: bold;
+  width:60%;
 }
 
 .table tbody .player_info_container {
@@ -161,8 +161,12 @@ padding: 20px;
   background-color: rgba(245, 230, 211, 1);
 }
 
-.container.mt-4 {
+.stonewallcontainer {
   margin-top: 0 !important;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
 }
 
 .hostProfile:hover {
