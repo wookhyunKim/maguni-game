@@ -4,8 +4,7 @@ import NicknamePage from './pages/NicknamePage.jsx';
 import HostGuestPage from './pages/HostGuestPage.jsx';
 import GameRoomPage from './pages/GameRoomPage.jsx'
 import EndGamepage from './pages/EndGamepage.jsx';
-import FourCut from './pages/Fourcut.jsx';
-import { useEffect } from 'react';
+import FourCut from './pages/FourCut.jsx';
 function App() {
     return (
         <BrowserRouter>

@@ -124,6 +124,7 @@ const GameRoomPage = () => {
     const startSettingForbiddenWord = async () => {
         // 모달 표시
         setModal('SettingForbiddenWordModal', true);
+        setShowInput(true);
 
         // Promise를 사용하여 5초 대기
         await new Promise(resolve => setTimeout(resolve, 5000));
