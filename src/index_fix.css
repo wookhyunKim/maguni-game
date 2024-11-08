@@ -74,3 +74,38 @@ ul {
   padding: 8px; /* Adjust this value for the desired spacing */
   box-sizing: border-box; /* Ensures padding doesn’t increase the input size */
 }
+
+.rule-container {
+  position: relative;
+  display: inline-block;
+}
+
+.ruleDescribe {
+  cursor: pointer;
+}
+
+.speech-bubble {
+  position: absolute;
+  top: 30px; /* Adjust as needed to control vertical position */
+  left: -50px; /* Adjust as needed to control horizontal position */
+  width: 200px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  top: -10px; /* Adjust to position the triangle above the bubble */
+  left: 20px; /* Adjust to align the triangle with the left side */
+  transform: rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-left: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+}
