@@ -5,19 +5,11 @@ const eyePoint = {
 };
 
 const facePoint = {
-  leftSideTop: 234,    // 왼쪽 귀 윗부분에 해당하는 인덱스
-  leftSideBottom: 454, // 왼쪽 귀 아랫부분에 해당하는 인덱스
+  leftSideTop: 54,    // 왼쪽 귀 윗부분에 해당하는 인덱스
+  leftSideBottom: 36, // 왼쪽 귀 아랫부분에 해당하는 인덱스
   rightSideTop: 4,     // 오른쪽 귀 윗부분에 해당하는 인덱스
-  rightSideBottom: 234 // 오른쪽 귀 아랫부분에 해당하는 인덱스
+  rightSideBottom: 284 // 오른쪽 귀 아랫부분에 해당하는 인덱스
 }
-
-
-const baldPoint = {
-  left:162,
-  right:389,
-  top:10,
-  down:197
-};
 
 const mustachePoint = {
   noseBelowCenterPoint : 164,
@@ -32,6 +24,20 @@ const leftEye = {
   bottom: 145,
 }
 
+const baldPoint = {
+  left:162,
+  right:389,
+  top:10,
+  down:197
+};
+
+const foreHeadPoint = {
+  foreHeadLeft: 105,      // 이마의 왼쪽
+  foreHeadRight: 334,     // 이마의 오른쪽
+  foreHeadTop: 10,        // 이마의 위쪽 (정수리 가까운 위치)
+  foreHeadBottom: 151     // 이마의 아래쪽 (눈썹 위 정도 위치)
+};
+
 export function calculateFilterPosition(type,keypoints) {
   
   switch(type){
@@ -45,6 +51,8 @@ export function calculateFilterPosition(type,keypoints) {
       return calculateLeftEyeFilterPosition(keypoints);
     case "baldFilter":
       return calculateBaldFilterPosition(keypoints);
+    case "foreHead":
+      return calculateForeHeadBaldFilterPosition(keypoints);
     default:
       return calculateLeftEyeFilterPosition(keypoints);
   }
@@ -68,6 +76,32 @@ function calculateLeftEyeFilterPosition(keypoints){
   // const angle = Math.atan2(rightEyeTop.y - leftEyeTop.y, rightEyeTop.x - leftEyeTop.x);
 
   return { x, y, width, height };
+}
+
+function calculateForeHeadBaldFilterPosition(keypoints) {
+  const xPadding = 30; // Adjust padding as needed
+  const yPadding = 20; // Adjust padding as needed
+
+  // Use forehead points to define the overlay position and size
+  const foreHeadLeft = keypoints[foreHeadPoint.foreHeadLeft];
+  const foreHeadRight = keypoints[foreHeadPoint.foreHeadRight];
+  const foreHeadTop = keypoints[foreHeadPoint.foreHeadTop];
+  const foreHeadBottom = keypoints[foreHeadPoint.foreHeadBottom];
+
+  // const x = foreHeadLeft.x - xPadding;
+  // const y = foreHeadTop.y - yPadding;
+  // const width = foreHeadRight.x - foreHeadLeft.x + xPadding * 2;
+  // const height = foreHeadBottom.y - foreHeadTop.y + yPadding * 2;
+
+  const x = (foreHeadLeft.x + foreHeadRight.x) / 2;
+   const y = (foreHeadTop.y + foreHeadBottom.y) / 2 - 30;
+   const width = (foreHeadRight.x - foreHeadLeft.x) * 1.2;
+   const height = (foreHeadBottom.y - foreHeadTop.y) * 0.8;
+
+  // You may want to add an angle if the face is slightly tilted
+  const angle = Math.atan2(foreHeadRight.y - foreHeadLeft.y, foreHeadRight.x - foreHeadLeft.x);
+
+  return { x, y, width, height, angle };
 }
 
 function calculateBaldFilterPosition(keypoints){
