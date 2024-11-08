@@ -8,7 +8,7 @@ async function getAllWords(req, res) {
     if (result) {
         res.json(result);
     } else {
-        res.status(500).json({ error: error.message });
+        console.log("getAllWords error")
     }
 }
 
@@ -43,7 +43,7 @@ async function getPlayersInfo(req, res) {
     if (result) {
         res.json(result);
     } else {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "error.message" });
     }
 }
 module.exports = {

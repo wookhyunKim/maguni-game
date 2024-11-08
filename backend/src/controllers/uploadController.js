@@ -18,7 +18,7 @@ async function recvImages(req, res) {
     if (result) {
         res.json(result);
     } else {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "error.message" });
     }
 }
 
