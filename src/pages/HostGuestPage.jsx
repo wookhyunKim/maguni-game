@@ -205,13 +205,15 @@ const HostGuestPage = () => {
                         role={"HOST"}
                         btnName={"방 만들기"}
                         setRole={setRole}
+                        withInput={false}
                       />
                     </div>
                     <div className='guestProfile'>
                       <Profile
                         role={"GUEST"}
                         btnName={"코드 입력"}
-                        setRole={setRole}
+                        setRole={setRole} 
+                        withInput={false}
                       />
                     </div>
                   </div>
@@ -223,8 +225,13 @@ const HostGuestPage = () => {
       ) : (
         <div className="afterToggleContainer">
           <div className="connectedUserList">
-              <Profile role={"HOST"} btnName={""} setRole={setRole}/>
-              <div className="container mt-4">
+              <Profile 
+                role={"HOST"}
+                btnName={""}
+                setRole={setRole}
+                withInput={false}
+              />
+              <div className="stonewallcontainer">
                 <div className="table table-bordered table-hover">
                   {userList.map((word, index) => (
                     <div className='player_info_container' key={index}>

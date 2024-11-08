@@ -3,6 +3,7 @@ import '../../styles/modals.css';
 import { useEffect, useState } from 'react';
 import useGameStageStore from '../store/gameStage.js';
 import Goon from "../../assets/images/goongYeImage.png"
+import {usePlayerStore } from '../store/playerStore.js';
 
 // 이미지 미리 로딩
 const preloadImage = new Image();
@@ -11,6 +12,7 @@ preloadImage.src = Goon;
 const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose }) => {
     const { goongYeRevealForbiddenWord } = useGameStageStore();
     const [isImageLoaded, setIsImageLoaded] = useState(false);
+    const { username } = usePlayerStore();
 
     useEffect(() => {
         // 이미지가 이미 캐시되어 있는지 확인
@@ -50,7 +52,7 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
                     </thead>
                     <tbody>
                         {participantList
-                            // ?.filter(user => user !== username)
+                            ?.filter(user => user !== username)
                             .map(user => (
                             <tr key={user}>
                                 <td>{user}</td>

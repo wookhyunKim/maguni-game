@@ -251,89 +251,103 @@ useEffect(() => {
 
     // ====================================================== 음성인식 ====================================================== 
     useEffect(() => {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'ko-KR';
-        recognition.continuous = true;
-        recognition.interimResults = true;
+        let recognition = null;
+        
+        try {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ko-KR';
+            recognition.continuous = true;
+            recognition.interimResults = true;
 
+            const handleStart = () => {
+                setIsStoppedManually(false);
+                recognition.start();
+            };
 
-        const handleStart = () => {
-            setIsStoppedManually(false);
-            recognition.start();
-        };
+            recognition.onstart = () => {
+                console.log('녹음이 시작되었습니다.');
+                document.getElementById('startButton').disabled = true;
+                document.getElementById('stopButton').disabled = false;
+            };
 
-        recognition.onstart = () => {
-            console.log('녹음이 시작되었습니다.');
-            document.getElementById('startButton').disabled = true;
-            document.getElementById('stopButton').disabled = false;
-        };
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                let interimTranscript = '';
 
-        recognition.onresult = (event) => {
-            let finalTranscript = '';
-            let interimTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    const result = event.results[i];
+                    const transcript = result[0].transcript.trim();
 
-            for (let i = event.resultIndex; i < event.results.length; ++i) {
-                const result = event.results[i];
-                const transcript = result[0].transcript.trim();
+                    if (result.isFinal) {
+                        finalTranscript += transcript + ' ';
+                        // 금칙어 카운트 수정
+                        const word = forbiddenWordlist.find(e => e.nickname === username)?.words;
 
-                if (result.isFinal) {
-                    finalTranscript += transcript + ' ';
-                    // 금칙어 카운트 수정
-                    const word = forbiddenWordlist.find(e => e.nickname === username)?.words;
-
-                    if (word) {
-                        const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
-                        if (occurrences > 0) {
-                            handleForbiddenWordUsed(occurrences);
+                        if (word) {
+                            const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
+                            if (occurrences > 0) {
+                                handleForbiddenWordUsed(occurrences);
+                            }
                         }
+                    } else {
+                        interimTranscript += transcript + ' ';
                     }
-                } else {
-                    interimTranscript += transcript + ' ';
                 }
-            }
 
-            const transcriptElement = document.getElementById('subtitles');
-            if (transcriptElement) {
-                transcriptElement.innerText = finalTranscript + interimTranscript;
-            }
-        };
+                const transcriptElement = document.getElementById('subtitles');
+                if (transcriptElement) {
+                    transcriptElement.innerText = finalTranscript + interimTranscript;
+                }
+            };
 
-        const handleStop = () => {
-            setIsStoppedManually(true);
-            // startButton.disabled = false;
-            // stopButton.disabled = true;
-            recognition.stop();
-        };
-
-        recognition.onend = () => {
-            console.log('녹음이 종료되었습니다.');
-            if (!isStoppedManually) {
-                console.log('자동으로 음성 인식 재시작');
-                recognition.start();
-            }
-        };
-
-        // 버튼
-        const startButton = document.getElementById('startButton');
-        const stopButton = document.getElementById('stopButton');
-        startButton?.addEventListener('click', handleStart);
-        stopButton?.addEventListener('click', handleStop);
-
-        recognition.onerror = (event) => {
-            console.error('음성 인식 오류:', event.error);
-            if (event.error !== 'no-speech') {
+            const handleStop = () => {
+                setIsStoppedManually(true);
+                // startButton.disabled = false;
+                // stopButton.disabled = true;
                 recognition.stop();
-                recognition.start();
-            }
-        };
+            };
 
-        // Clean up
-        return () => {
-            recognition.stop();
-            startButton?.removeEventListener('click', handleStart);
-            stopButton?.removeEventListener('click', handleStop);
-        };
+            recognition.onend = () => {
+                console.log('녹음이 종료되었습니다.');
+                if (!isStoppedManually) {
+                    console.log('자동으로 음성 인식 재시작');
+                    recognition.start();
+                }
+            };
+
+            // 버튼
+            const startButton = document.getElementById('startButton');
+            const stopButton = document.getElementById('stopButton');
+            startButton?.addEventListener('click', handleStart);
+            stopButton?.addEventListener('click', handleStop);
+
+            recognition.onerror = (event) => {
+                console.error('음성 인식 오류:', event.error);
+                if (event.error !== 'no-speech') {
+                    recognition.stop();
+                    recognition.start();
+                }
+            };
+
+            // Clean up 함수 수정
+            return () => {
+                if (recognition) {
+                    recognition.stop();
+                    recognition.onend = null;
+                    recognition.onresult = null;
+                    recognition.onerror = null;
+                    recognition.onstart = null;
+                }
+                
+                const startButton = document.getElementById('startButton');
+                const stopButton = document.getElementById('stopButton');
+                if (startButton) startButton.removeEventListener('click', handleStart);
+                if (stopButton) stopButton.removeEventListener('click', handleStop);
+            };
+        } catch (error) {
+            console.error('음성 인식 초기화 오류:', error);
+        }
     }, [forbiddenWordlist, isStoppedManually, username, socket]);
     // ====================================================== return ====================================================== 
     return (
@@ -376,8 +390,7 @@ useEffect(() => {
                             <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
-                                    <table className="user-wordlist-table">
-                                        <tbody>
+                                    <div className="user-wordlist-table">
                                             <ul>
                                                 {isWordsShown && participantList
                                                     .filter(user => user !== username)
@@ -390,8 +403,7 @@ useEffect(() => {
                                                         </li>
                                                     ))}
                                             </ul>
-                                        </tbody>
-                                    </table>
+                                    </div>
                                 </div>
                             </div>
                             <div className="sidebar_mymission">

@@ -44,7 +44,7 @@ padding: 20px;
 } 
 
 .startGameBtn {
-    width: 60%;
+    width: 586px;
 }
 
 /* 테이블 스타일링 */
@@ -78,7 +78,7 @@ padding: 20px;
 .table {
   color: #333;
   font-weight: bold;
-  width:60%;
+  width:586px;
 }
 
 .table tbody .player_info_container {
