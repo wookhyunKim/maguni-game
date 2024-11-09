@@ -18,6 +18,7 @@ const RoomDao = {
                 },
             ],
             photos: [], // 사진 관련 데이터 저장 공간
+            results: [],
         };
         await client.connect();
         let result;
@@ -59,6 +60,10 @@ const RoomDao = {
 
             // roomId에 따라 필터링
             room = await rooms.findOne({ code: roomCode });
+            if (!room) {
+                console.log("방을 찾을 수 없음");
+                return false; // 방이 없을 경우 null 반환
+            }
         } catch (error) {
             throw error;
         } finally {

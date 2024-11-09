@@ -16,10 +16,27 @@ async function getPlayersInfo(roomCode ) {
     const result = await MemberDao.getPlayersInfo(roomCode);
     return result;
 }
+async function getResults(roomCode ) {
+    const result = await MemberDao.getResults(roomCode);
+    return result;
+}
 
+async function checkAnswer(roomCode, nickname, word) {
+    let check ;
+    const gotWord = await MemberDao.getAllWords(roomCode, nickname);
+    if (gotWord[0] == word){
+        check = true;
+    }else{
+        check = false;
+    }
+    const result = await MemberDao.checkAnswer(roomCode, nickname, check);
+    return result;
+}
 module.exports = {
     insertWord,
     getAllWords,
     participantGame,
-    getPlayersInfo
+    getPlayersInfo,
+    checkAnswer,
+    getResults
 };

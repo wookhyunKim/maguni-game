@@ -139,7 +139,57 @@ const MemberDao = {
     
         return participants;
     },
+
+    getResults: async (roomCode) => {
+        let room;
+        let gameResult;
+        try {
+            await client.connect();
+            const db = client.db("database");
+            const rooms = db.collection("rooms");
     
+            // roomCode로 필터링
+            room = await rooms.findOne({ code: roomCode });
+            
+            if (!room) {
+                console.log("방을 찾을 수 없음");
+                return null; // 방이 없을 경우 null 반환
+            }
+            
+            gameResult = room.results || []; 
+            
+            if (gameResult.length === 0) {
+                console.log("참가자 없음");
+            }
+        } catch (error) {
+            throw error;
+        } finally {
+            // client.close(); // 클라이언트 연결 종료
+        }
+    
+        return gameResult;
+    },
+    
+
+    checkAnswer: async (roomCode, nickname, check) => {
+        let result;
+        try {
+            await client.connect();
+            const db = client.db("database");
+            const rooms = db.collection("rooms");
+
+            result = await rooms.updateOne(
+                { code: roomCode },
+                { $push: { results: {[nickname]:check} } }
+            );
+        } catch (error) {
+            throw error;
+        } finally {
+            // client.close(); // 클라이언트 연결 종료
+        }
+
+        return result; // updateOne의 결과 반환
+    },
     
     
 };
