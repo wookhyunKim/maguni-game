@@ -7,18 +7,16 @@ import { useEffect, useContext, useState } from 'react';
 import ENDINGBGM from "../assets/bgm/endbgm.mp3";
 import { Context } from '../../IntroMusicContainer';
 import axios from 'axios';
-import { UsePlayerStore } from '../components/store/playerStore';
+
 import '../styles/failStampAni.css'
 import '../styles/successStampAni.css'
 
 const EndGamepage = () => {
     const [showModal, setShowModal] = useState(true);
     const [timeLeft, setTimeLeft] = useState(20);
-    const username = UsePlayerStore((state) => state.username);
-
     const location = useLocation();
     const navigate = useNavigate();
-    const { result, words, roomCode } = location.state || {};
+    const { result, words, roomCode, username } = location.state || {};
     const { setIsPlay } = useContext(Context);
     const [animationResult, setAnimationResult] = useState({});
 
@@ -41,6 +39,12 @@ const EndGamepage = () => {
         const inputValue = document.getElementById('input-forbiddenWord').value;
         if (!inputValue.trim()) return;  // 빈 입력값 체크
         
+        console.log('보내는 데이터:', {
+            roomCode: roomCode,
+            nickname: username,
+            word: inputValue,
+        });
+
         return axios({
             method: 'POST',
             url: 'http://localhost:3001/member/game/api/v1',
@@ -51,10 +55,10 @@ const EndGamepage = () => {
             },
         })
         .then((res) => {
-            console.log(res.data["success"]);
+            console.log('서버 응답:', res.data);
         })
         .catch((err) => {
-            console.log(err);
+            console.log('에러:', err.response?.data || err);
         });
     };
 

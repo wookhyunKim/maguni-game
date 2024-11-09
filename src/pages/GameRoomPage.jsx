@@ -550,7 +550,8 @@ const GameRoomPage = () => {
                                     state: {
                                         result: finalCountList,
                                         words: forbiddenWordlist,
-                                        roomCode: roomcode
+                                        roomCode: roomcode,
+                                        username: username
                                     }
                                 });
                                 window.location.reload();

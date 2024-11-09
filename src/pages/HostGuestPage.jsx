@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import useRoomStore from '../components/store/roomStore';
-import { UsePlayerStore } from '../components/store/playerStore';
+import { UsePlayerStore } from '../components/store/playerStore.js';
 import { io } from "socket.io-client";
 import detectModelStore from '../components/store/faceDetectModel';
 import { loadDetectionModel } from '../../filter/load-detection-model';
@@ -29,6 +29,7 @@ const HostGuestPage = () => {
 
     //username을 usePlayerStore에서 가져옴
     const username = UsePlayerStore(state => state.username)
+    console.log("유저네임 호스트게스트 페이지: "+username);
 
     const setUserRole = UsePlayerStore(state => state.setUserRole)
 
