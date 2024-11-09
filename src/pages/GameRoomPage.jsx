@@ -26,6 +26,9 @@ import html2canvas from "html2canvas";
 import Goon from "../assets/images/goongYeImage.webp";
 // 다른 모달에서 사용하는 이미지들도 import
 
+import { Context } from '../../IntroMusicContainer';
+import { useContext } from 'react';
+
 const GameRoomPage = () => {
     const navigate = useNavigate();
     //username, roomcode를 가져옴
@@ -33,6 +36,8 @@ const GameRoomPage = () => {
     const roomcode = useRoomStore(state => state.roomcode)
     const playerNumber = UsePlayerStore(state => state.userIndex) + 1;
     const userRole = UsePlayerStore(state => state.userRole)
+
+    const { setIsPlay } = useContext(Context);
 
     // console.log(playerNumber);
 
@@ -545,8 +550,10 @@ const GameRoomPage = () => {
                         finalCounts={finalCountList}
                         onClose={() => {
                             setModal('goongYeAnnouncingResult', false);
-                            // 모달이 닫힌 후 페이지 이동
                             setTimeout(() => {
+                                // IntroMusicContainer의 음악 중지
+                                setIsPlay(false);
+                                
                                 navigate('/end', {
                                     state: {
                                         result: finalCountList,
@@ -554,8 +561,7 @@ const GameRoomPage = () => {
                                         roomCode: roomcode
                                     }
                                 });
-                                window.location.reload();
-                            }, 3000); // 모달 애니메이션을 위한 지연시간 5초
+                            }, 3000);
                         }}
                     />
                 )}

@@ -11,7 +11,7 @@ const GameLayout = ({ children, title, subtitle }) => {
     const [music, setMusic] = useState(false);
     const navigate = useNavigate();
     const playMusic = () => {
-      const audio = document.getElementById('bgm');
+      const audio = document.getElementById('beginbgm');
       setMusic(!music)
       if (!audio) {
           return;
@@ -38,13 +38,13 @@ const GameLayout = ({ children, title, subtitle }) => {
         <div className="beforeGameRoomFooter">
             <button 
                 className="backButton beforeGameRoomFooterBtn" 
-                onClick={() => navigate('/nickname')}
+                onClick={() => navigate(-1)}
             >
                 뒤로가기
             </button>
-            <div>
+            <div className="soundBtnContainer">
                 <img 
-                src={music?SOUNDOFF:SOUNDON} 
+                src={music?SOUNDON:SOUNDOFF} 
                 alt="" 
                 onClick={playMusic} 
                 style={{ width: '50px', height: '50px', cursor: 'pointer' }} 

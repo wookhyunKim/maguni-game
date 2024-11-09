@@ -267,6 +267,16 @@ const HostGuestPage = () => {
                             btnName={``}
                             setRole={setRole}
                         />
+                        <div className="stonewallcontainer">
+                            <div className="table table-bordered table-hover">
+                                {userList.map((word, index) => (
+                                    <div className='player_info_container' key={index}>
+                                        <div className='player_number'>정 {index + 1}품</div>
+                                        <div className='player_name'>{word.username}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
 
                     <div className="startGameSection">

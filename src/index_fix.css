@@ -111,3 +111,7 @@ ul {
   border-left: 1px solid #ccc;
   border-top: 1px solid #ccc;
 }
+
+.nextButton {
+  height: 36px;
+}

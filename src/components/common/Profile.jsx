@@ -52,6 +52,7 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
                             value={roomcode}
                             onChange={(e) => setRoomcode(e.target.value.toUpperCase())}
                             placeholder="방 코드를 입력하세요"
+                            className="room-code-input"
                             />
                             <img src={nextButton} onClick={connectBtnHandler} type="submit"></img>
                         </form>

@@ -2,9 +2,6 @@ import { useNavigate } from "react-router-dom";
 import '../styles/beforeGameRoom.css'
 import CommonButton from '../components/CommonButton'
 import mainCharacter from '../assets/images/mainImage.png'
-// import BEGINBGM from "../assets/bgm/beginbgm.mp3";
-// import SOUNDON from "../assets/images/SoundOnIcon.png"
-// import SOUNDOFF from "../assets/images/SoundOffIcon.png"
 import GameLayout from '../components/layout/GameLayout.jsx';
 
 const HomePage = () => {
