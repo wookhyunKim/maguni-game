@@ -174,26 +174,27 @@ const HostGuestPage = () => {
     }
     /////
     const shareKakao = () => {
+        const linkUrl = `https://main.maguni-game.com`;
         if (window.Kakao) {
             window.Kakao.Share.createDefaultButton({
             container: "#kakaotalk-sharing-btn",
             objectType: "feed",
             content: {
-                title: "초대장",
-                description: "당신은 마구니 게임에 초대되었습니다.",
+                title: "📧 초대장",
+                description: `당신은 마구니 게임에 초대되었습니다!\n참여 코드: ${roomcode}`,
                 imageUrl:
                 mainCharacter,
                 link: {
-                mobileWebUrl: "https://main.maguni-game.com",
-                webUrl: "https://main.maguni-game.com",
+                mobileWebUrl: linkUrl,
+                webUrl: linkUrl,
                 },
             },
             buttons: [
                 {
                 title: "입장하기",
                 link: {
-                    mobileWebUrl: "https://main.maguni-game.com",
-                    webUrl: "https://main.maguni-game.com",
+                    mobileWebUrl: linkUrl,
+                    webUrl: linkUrl,
                 },
             },
             ],
