@@ -1,5 +1,6 @@
 import RuleDescribe from '../../assets/images/questionIcon.png';
 import { useState } from 'react';
+import { ruleData } from '../../assets/utils/gameScripts';
 
 const RuleDescriber = () =>{
     const [isBubbleVisible, setIsBubbleVisible] = useState(false);
@@ -18,10 +19,15 @@ const RuleDescriber = () =>{
           onClick={toggleBubble} 
         />
         {isBubbleVisible && (
-          <div className="speech-bubble">
-            <p>게임 규칙에 대한 설명이 여기에 표시됩니다.</p>
-          </div>
-        )}
+                <div className="speech-bubble">
+                    {ruleData.GameRule.map((rule, index) => (
+                        <p key={index}>{rule}</p>
+                    ))}
+                    {ruleData.ForbiddenAction.map((action, index) => (
+                        <p key={index}>{action}</p>
+                    ))}
+                </div>
+            )}
       </div>
     )
 }
