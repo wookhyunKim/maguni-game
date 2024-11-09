@@ -440,7 +440,7 @@ const GameRoomPage = () => {
                         <div className="main-content">
                             <div className="test_button_container">
                                 <>
-                                    {/* <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button> */}
+                                    <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
                                     <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                     <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
                                     <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>

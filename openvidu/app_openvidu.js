@@ -10,6 +10,7 @@ import GOONGYE from "../src/assets/images/goongYe.png";
 import RCEYE from "../src/assets/images/RCeye.png";
 import SMILEMOUTH from "../src/assets/images/smileMouth2.png";
 import MINIONS from "../src/assets/images/minions.png";
+import MAGUNI from "../src/assets/images/maguni.gif";
 
 
 var OV;
@@ -22,6 +23,23 @@ let gMediaStream;
 let compositeStream;
 let publisher;
 
+function drawGIFOnCanvas(ctx, gifSrc, x, y, width, height) {
+   // gifSrc는 이미지 파일 경로
+   const gifImage = new Image();
+   gifImage.src = gifSrc; // MAGUNI 경로를 gifImage에 설정
+
+   // 이미지가 로드된 후에 그리기 시작
+   gifImage.onload = () => {
+       const interval = setInterval(() => {
+           ctx.clearRect(0, 0, width, height); // 이전 프레임 제거
+           ctx.drawImage(gifImage, x, y, width, height); // 새로운 프레임 그리기
+       }, 1000 / FRAME_RATE);
+   };
+
+   gifImage.onerror = () => {
+       console.error("GIF 이미지를 불러오는 데 실패했습니다:", gifSrc);
+   };
+}
 
 /* OPENVIDU METHODS */
 
@@ -289,6 +307,7 @@ function stretchForehead(ctx, keypoints) {
 }
 
 const startStreaming = async (session, OV, mediaStream) => {
+
    // Publisher 화면에 원본 비디오 표시용 `publisherCanvas`
    const publisherCanvas = document.createElement('canvas');
    publisherCanvas.width = 640;
@@ -323,6 +342,7 @@ const filters = [
    { type: "noseEnlarge" },
    { type: "smile" },
    { type: "foreHead" },
+   { type: "gifPlay" }
  ];
  //filters[0].image.src = SUNGLASS;
  filters[0].image.src = MUSTACHE;
@@ -358,6 +378,7 @@ function animateImage(ctx, x, yPosition) {
          case "goongYe":
          case "mouthFilter":
          case "faceOutlineFilter":
+         case "gifPlay":
             newFilter.timeoutId = setTimeout(() => {
                activeFilters = activeFilters.filter((f) => f !== newFilter);
             }, 2000);
@@ -445,7 +466,7 @@ function animateImage(ctx, x, yPosition) {
                   break;
 
                case "faceOutlineFilter":
-                  ctx.drawImage(filter.image,x,y,width,height);
+                  ctx.drawImage(filter.image,0,0,compositeCanvas.width,compositeCanvas.height);
                   break;
 
                case "noseEnlarge":
@@ -460,8 +481,12 @@ function animateImage(ctx, x, yPosition) {
                case "foreHead":
                   stretchForehead(ctx,faces[0].keypoints);
                   break;
+
+               case "gifPlay":
+                  console.log("check gif");
+                  drawGIFOnCanvas(ctx,MAGUNI,x,y,width,height);
+                  break;
                
-          
                 default:
                   console.warn(`Unknown filter type: ${filter.type}`);
               }

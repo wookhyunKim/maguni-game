@@ -90,28 +90,33 @@ ul {
 
 .speech-bubble {
   position: absolute;
-  top: 30px; /* Adjust as needed to control vertical position */
-  left: -50px; /* Adjust as needed to control horizontal position */
-  width: 200px;
-  padding: 10px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  top: 40px;
+  left: -20px;
+  width: 220px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 10;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .speech-bubble::after {
-  content: "";
+  content: '';
   position: absolute;
-  top: -10px; /* Adjust to position the triangle above the bubble */
-  left: 20px; /* Adjust to align the triangle with the left side */
-  transform: rotate(45deg);
-  width: 10px;
-  height: 10px;
-  background-color: #fff;
-  border-left: 1px solid #ccc;
-  border-top: 1px solid #ccc;
+  top: -8px;
+  left: 20px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent #f9f9f9 transparent;
+}
+
+.rule-container:hover .speech-bubble {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .nextButton {
