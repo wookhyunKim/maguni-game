@@ -3,7 +3,7 @@ import '../../styles/profileCard.css';
 import { PROFILE_COLORS } from '../../constants/colors';
 import { UsePlayerStore } from '../store/playerStore';
 
-function ProfileCard({ nickname, playerNumber }) {
+function ProfileCard({ nickname}) {
     const userIndex = UsePlayerStore((state) => state.userIndex);
     const userNumber = userIndex+1;
     return (
@@ -11,15 +11,8 @@ function ProfileCard({ nickname, playerNumber }) {
         <div className="profile-info">
           {/* 프로필 이미지 */}
           <div className="profile-image-container">
-            {/* {imageUrl ? (
-              <img 
-                src={imageUrl} 
-                alt="프로필" 
-                className="profile-image"
-              />
-            ) : ( */}
               <div 
-              className="profile-image-placeholder" style={{ backgroundColor: PROFILE_COLORS[`COLOR_${playerNumber}`] }}>
+              className="profile-image-placeholder" style={{ backgroundColor: PROFILE_COLORS[`COLOR_${userNumber}`] }}>
                 <div>{userNumber}</div>
               </div>
             {/* )} */}
@@ -28,7 +21,7 @@ function ProfileCard({ nickname, playerNumber }) {
           {/* 텍스트 정보 */}
           <div className="profile-text">
             <span className="profile-nickname">{nickname}</span>
-            <span className="profile-number">정 {playerNumber}품</span>
+            <span className="profile-number">정 {userNumber}품</span>
           </div>
         </div>
       </div>
@@ -37,7 +30,6 @@ function ProfileCard({ nickname, playerNumber }) {
 
 ProfileCard.propTypes = {
    nickname: PropTypes.string.isRequired,
-   playerNumber: PropTypes.number.isRequired,
    imageUrl: PropTypes.string
 };
 

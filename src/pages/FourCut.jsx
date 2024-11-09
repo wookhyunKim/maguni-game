@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 import '../styles/fourcut.css'
 import CommonButton from "../components/CommonButton";
 import {useNavigate} from 'react-router-dom';
+import WallImage from '../assets/images/endPage_bgImage.webp';
 
 
 const FourCut = () => {
@@ -29,19 +30,19 @@ const FourCut = () => {
         { id: 'frame3', image: YeomjuFrame, name: '염주 안대 프레임' }
     ];
 
-    // 서버에서 이미지 가져오기
-    const fetchImages = async () => {
-        try {
-            const response = await axios.get(`http://localhost:3001/upload/api/v1/${roomCode}`);
-            setImageList(response.data);
-        } catch (error) {
-            console.error("이미지 로딩 실패:", error);
-        }
-    };
+    // // 서버에서 이미지 가져오기
+    // const fetchImages = async () => {
+    //     try {
+    //         const response = await axios.get(`http://localhost:3001/upload/api/v1/${roomCode}`);
+    //         setImageList(response.data);
+    //     } catch (error) {
+    //         console.error("이미지 로딩 실패:", error);
+    //     }
+    // };
 
-    useEffect(() => {
-        fetchImages();
-    }, []);
+    // useEffect(() => {
+    //     fetchImages();
+    // }, []);
 
     // 이미지 다운로드
     const handleDownload = async () => {
@@ -77,7 +78,7 @@ const FourCut = () => {
     }
 
     return (
-        <div className="take-photos-container">
+        <div className="wallImage" style={{backgroundImage: `url(${WallImage})`}}>
             {/* 프레임 선택 모달 */}
             {showModal && (
                 <div className="modal-overlay">
@@ -157,10 +158,20 @@ const FourCut = () => {
                     </div>
 
                     <div className="button-container">
-                        <CommonButton text="프레임 변경" onClick={() => setShowModal(true)} />
-                        <CommonButton text="이미지 다운로드" onClick={handleDownload}></CommonButton>
+                        <button 
+                            className="changeFrameBtn" 
+                            onClick={() => setShowModal(true)}
+                        >
+                            프레임 변경
+                        </button>
+                        <button 
+                            className="downloadBtn" 
+                            onClick={handleDownload}
+                        >
+                            이미지 다운로드
+                        </button>
                     </div>
-                    <CommonButton text="다시 플레이" onClick={quitGame}></CommonButton>
+
 
 
 

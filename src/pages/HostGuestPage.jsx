@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import useRoomStore from '../components/store/roomStore';
 import { UsePlayerStore } from '../components/store/playerStore';
@@ -7,6 +7,7 @@ import { io } from "socket.io-client";
 import detectModelStore from '../components/store/faceDetectModel';
 import { loadDetectionModel } from '../../filter/load-detection-model';
 import mainCharacter from '../assets/images/mainImage.png'
+import { Context } from '../../IntroMusicContainer';
 import Swal from "sweetalert2";
 
 import '../styles/HostGuestPage.css'
@@ -15,9 +16,11 @@ import Profile from '../components/common/Profile';
 import CommonButton from '../components/CommonButton';
 import RuleDescriber from '../components/common/RuleDescriber';
 import GameLayout from '../components/layout/GameLayout';
+import { find_my_index } from '../assets/utils/findMyIndex';
 
 const HostGuestPage = () => {
     const navigate = useNavigate();
+    const { setIsPlay } = useContext(Context);
 
     const setDetectModel = detectModelStore(state => state.setDetectModel);
 
@@ -55,6 +58,8 @@ const HostGuestPage = () => {
     //
 
     const Gotogameroompage = () => {
+        find_my_index(username);
+        setIsPlay(false);
         navigate('/gameroom', { state: { roomcode: role === 'host' ? generatedCode : roomcode, username: username, isHost: role === 'host' ? true : false } });
     }
 
@@ -151,6 +156,7 @@ const HostGuestPage = () => {
 
     function updateUserList(list) {
         setUserList(list);
+        UsePlayerStore.getState().setUserList(list);
     }
 
     useEffect(() => {   //소켓 별 이벤트 리스너

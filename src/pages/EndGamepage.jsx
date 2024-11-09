@@ -130,7 +130,7 @@ const EndGamepage = () => {
                 </div>
                 <div className="endPageFooter">
                     {/* <button onClick={gotoPhoto}>추억 남기기</button> */}
-                    <button onClick={gotoFourcut}>추억 남기기</button>
+                    <button className=" gotofourcutBtn commonButton" onClick={gotoFourcut}>추억 남기기</button>
                 </div>
                 </div>
             </div>

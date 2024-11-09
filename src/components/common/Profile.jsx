@@ -41,7 +41,7 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
                             readOnly
                             placeholder="방 코드 (자동 생성됨)"
                             />
-                            <img src={nextButton} onClick={connectBtnHandler} type="submit"></img>
+                            <img className='nextButton'src={nextButton} onClick={connectBtnHandler} type="submit"></img>
                         </form>
                     )
                     : 
@@ -54,7 +54,7 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
                             placeholder="방 코드를 입력하세요"
                             className="room-code-input"
                             />
-                            <img src={nextButton} onClick={connectBtnHandler} type="submit"></img>
+                            <img className='nextButton' src={nextButton} onClick={connectBtnHandler} type="submit"></img>
                         </form>
                     )}
                     </div>
@@ -66,7 +66,6 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
             (
                 <>
                     <div className="identity">
-                        {/* <img className='identityText' src={role === "HOST" ? host_text : guest_text}/> */}
                         <span className='identityText'>
                             {role === "HOST" ? " 방장 마구니 " : "손님 마구니"}
                         </span>

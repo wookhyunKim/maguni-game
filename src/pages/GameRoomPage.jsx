@@ -449,7 +449,7 @@ const GameRoomPage = () => {
                         <div className="gameroom-sidebar">
                             <div>
                                 {userRole === "host" ? (
-                                    <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
+                                    <button className="commonButton settingWordsButton" onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
                                 ) : (
                                     <button disabled>호스트가 게임을 시작하기를 기다리세요</button>
                                 )}
