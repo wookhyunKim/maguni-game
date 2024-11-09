@@ -452,16 +452,7 @@ const GameRoomPage = () => {
                         <div className="main-content">
                             <div className="test_button_container">
                                 <>
-                                    {/* <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button> */}
-                                    <div>
-                                        {userRole === "host" ? (
-                                            <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
-                                        ) : (
-                                            <button disabled>호스트가 게임을 시작하기를 기다리세요</button>
-                                        )}
-                                    </div>
-                                    <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
-                                    {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
+                                    {/* <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button> */}
                                     <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                     <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
                                     <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>
@@ -475,8 +466,13 @@ const GameRoomPage = () => {
                             </div>
                         </div>
                         <div className="gameroom-sidebar">
-                        <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
-                            <div className="sidebar_wordlist">
+                            <div>
+                                {userRole === "host" ? (
+                                    <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
+                                ) : (
+                                    <button disabled>호스트가 게임을 시작하기를 기다리세요</button>
+                                )}
+                            </div>                            <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
                                     <div className="player-cards-container">
