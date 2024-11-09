@@ -7,6 +7,7 @@ import { io } from "socket.io-client";
 import detectModelStore from '../components/store/faceDetectModel';
 import { loadDetectionModel } from '../../filter/load-detection-model';
 import mainCharacter from '../assets/images/mainImage.png'
+import Swal from "sweetalert2";
 
 import '../styles/HostGuestPage.css'
 import '../styles/beforeGameRoom.css'
@@ -55,6 +56,25 @@ const HostGuestPage = () => {
 
     const Gotogameroompage = () => {
         navigate('/gameroom', { state: { roomcode: role === 'host' ? generatedCode : roomcode, username: username, isHost: role === 'host' ? true : false } });
+    }
+
+    function alertFunc(icon,title,message){
+        Swal.fire({
+            icon: icon,
+            title: title,
+            text: message,
+            showCancelButton: true,
+            confirmButtonText: "확인",
+            cancelButtonText: "취소",
+        }).then((res) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (res.isConfirmed) {
+                 //확인 요청 처리
+            }
+            else{
+                //취소
+            }
+        });
     }
 
 
@@ -157,10 +177,31 @@ const HostGuestPage = () => {
         return code;
     }
 
-    //접속하기 누르면, toggle상태 바뀌고, chatserver에 커넥트 되게 함 
+    // //접속하기 누르면, toggle상태 바뀌고, chatserver에 커넥트 되게 함 
+    // function connectBtnHandler() {
+    //     connectToChatServer();
+    //     setIsToggled(true);
+    // }
     function connectBtnHandler() {
-        connectToChatServer();
-        setIsToggled(true);
+        const result = checkRoom(); // 방 생성 여부 false : 없는 방   true : 있는 방
+
+        if (result){
+            if(role=='guest'){
+                connectToChatServer();
+                setIsToggled(true);
+            }else{
+                // 있는 방 코드에 방장이 들어가려고 하면 실패 alert
+                alertFunc()
+            }
+        }else{
+            if(role == 'guest'){
+                alertFunc()
+                // 없는 방을 게스트가 참가하려고 해서 alert
+            }else{
+                connectToChatServer();
+                setIsToggled(true);
+            }
+        }
     }
 
     function disconnectBtnHandler() {

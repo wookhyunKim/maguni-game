@@ -12,9 +12,10 @@ async function getOneRoom(req, res) {
     const roomCode = req.params.roomCode;
     const result = await RoomService.getOneRoom(roomCode);
     if (result) {
-        res.json(result);
+        // res.json(result);
+        res.status(200).json({ success: true });
     } else {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ success: false });
     }
 }
 

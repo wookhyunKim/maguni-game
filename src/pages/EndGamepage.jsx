@@ -6,6 +6,7 @@ import MontageImage from '../assets/images/montage'
 import { useEffect, useContext } from 'react';
 import ENDINGBGM from "../assets/bgm/endbgm.mp3";
 import { Context } from '../../IntroMusicContainer';
+import axios from 'axios';
 
 const EndGamepage = () => {
     useEffect(() => {
@@ -36,6 +37,38 @@ const EndGamepage = () => {
     //랜덤으로 선택한 하나의 이미지
     const randomMontage = getRandomMontage();
 
+
+    const checkAnswer = () => {
+        setInputValue('');
+        return axios({
+            method: 'POST',
+            url: 'http://localhost:3001/member/game/api/v1',
+            data: {
+                roomCode: roomCode,
+                nickname: index !== 0 ? playerlist[index - 1] : playerlist[playerlist.length - 1],
+                word: inputValue,
+            },
+            })
+            .then((res) => {
+                console.log(res.data["success"]);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+      };
+
+    const getResults = () => {
+    return axios({
+        method: 'GET',
+        url: `http://localhost:3001/member/game/api/v1/${roomCode}`,
+    })
+        .then((res) => {
+            console.log("end game  result : ", res.data)
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    };
 
 
     //유저별로 금칙어 단어, 그리고 위반 횟수 표시
