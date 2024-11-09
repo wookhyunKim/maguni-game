@@ -1,6 +1,6 @@
 import { useLocation,useNavigate } from 'react-router-dom';
 import '../styles/endGame.css'
-import WallImage from '../assets/images/endPage_bgImage.jpg'
+import WallImage from '../assets/images/endPage_bgImage.webp'
 import MontageConatainer from '../components/common/montageConatainer';
 import MontageImage from '../assets/images/montage'
 import { useEffect, useState } from 'react';

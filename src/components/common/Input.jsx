@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import '../../styles/input.css';
 import axios from 'axios';
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'; 
+import { UsePlayerStore } from '../store/playerStore';
 
 function Input({ username, roomcode, showInput }) {
   const [inputValue, setInputValue] = useState('');
@@ -70,26 +71,34 @@ function Input({ username, roomcode, showInput }) {
     setIndex(currentIndex);
   }, [gamers, username]);
 
-  return (
+
+const handleSubmit = (e) => {
+    e.preventDefault(); // 폼 기본 동작 방지
+    if (inputValue.trim()) { // 입력값이 있을 때만 전송
+        insertWord();
+    }
+};
+
+return (
     <>
-      <p>{index !== 0 ? playerlist[index - 1] : playerlist[playerlist.length - 1]} 마구니의 금칙어를 입력하거라!</p>
-      <div
-        className={`input-group ${showInput ? 'blinking-border' : ''}`}
-        style={{ margin: '10px 0' }}
-      >
-        <input
-          type="text"
-          className="form-control"
-          value={inputValue}
-          onChange={handleInputChange}
-          placeholder="메시지를 입력하세요"
-        />
-        <button className="sendBtn btn btn-primary" onClick={insertWord}>
-          전송
-        </button>
-      </div>
+        <p>{index !=0? playerlist[index-1]: playerlist[playerlist.length-1]} 마구니의 금칙어를 입력하거라!</p>
+        <form onSubmit={handleSubmit} className={`input-group ${showInput ? 'blinking-border' : ''}`} style={{ margin: '10px 0' }}>
+            <input 
+                type="text"
+                className="form-control"
+                value={inputValue}
+                onChange={handleInputChange}
+                placeholder="메시지를 입력하세요"
+            />
+            <button 
+                type="submit"
+                className="sendBtn btn btn-primary"
+            >
+                완료
+            </button>
+        </form>
     </>
-  );
+);
 }
 
 Input.propTypes = {

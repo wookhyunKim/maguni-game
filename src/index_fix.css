@@ -12,6 +12,8 @@ body {
 
 
 :root {
+  background-color: #A2CDCD;
+  /* min-width:990px; */
   width:100vw;
   /* min-height:100vh; */
   height:100%;
