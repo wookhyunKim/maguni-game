@@ -31,7 +31,9 @@ const GameRoomPage = () => {
     //username, roomcode를 가져옴
     const username = UsePlayerStore(state => state.username)
     const roomcode = useRoomStore(state => state.roomcode)
-    const playerNumber = UsePlayerStore(state => state.userIndex)+1;
+    const playerNumber = UsePlayerStore(state => state.userIndex) + 1;
+    const userRole = UsePlayerStore(state => state.userRole)
+
     // console.log(playerNumber);
 
     //게임진행 소켓 상태관리
@@ -55,7 +57,7 @@ const GameRoomPage = () => {
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
-    
+
     //이미지 프리로딩 상태
     const [imagesPreloaded, setImagesPreloaded] = useState(false);
 
@@ -168,13 +170,13 @@ const GameRoomPage = () => {
         if (imagesPreloaded) {
             setModal('SettingForbiddenWordModal', true);
             setShowInput(true);
-            
+
             await new Promise(resolve => setTimeout(resolve, 5000));
-            
+
             setModal('SettingForbiddenWordModal', false);
-            
+
             await new Promise(resolve => setTimeout(resolve, 100));
-            
+
             socket.emit('start setting word', roomcode);
         } else {
             console.log('이미지 로딩 중입니다...');
@@ -307,7 +309,7 @@ const GameRoomPage = () => {
     // ====================================================== 음성인식 ====================================================== 
     useEffect(() => {
         let recognition = null;
-        
+
         try {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
@@ -330,14 +332,14 @@ const GameRoomPage = () => {
                 let finalTranscript = '';
                 let interimTranscript = '';
 
-            for (let i = event.resultIndex; i < event.results.length; ++i) {
-                const result = event.results[i];
-                const transcript = result[0].transcript.trim();
-                const word = forbiddenWordlist.find(e => e.nickname === username)?.words;
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    const result = event.results[i];
+                    const transcript = result[0].transcript.trim();
+                    const word = forbiddenWordlist.find(e => e.nickname === username)?.words;
 
-                if (result.isFinal) {
-                    finalTranscript += transcript + ' ';
-                    // 금칙어 카운트 수정
+                    if (result.isFinal) {
+                        finalTranscript += transcript + ' ';
+                        // 금칙어 카운트 수정
 
                         if (word) {
                             const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
@@ -394,7 +396,7 @@ const GameRoomPage = () => {
                     recognition.onerror = null;
                     recognition.onstart = null;
                 }
-                
+
                 const startButton = document.getElementById('startButton');
                 const stopButton = document.getElementById('stopButton');
                 if (startButton) startButton.removeEventListener('click', handleStart);
@@ -411,7 +413,7 @@ const GameRoomPage = () => {
             const sidebarBtn = document.querySelector('.sidebar-btn');
             const mainContainer = document.querySelector('#main-container');
             const gameRoomSidebar = document.querySelector('.gameroom-sidebar');
-            
+
             if (window.innerWidth <= 1090) {
                 // 1090px 이하일 때 main-container로 이동
                 if (sidebarBtn && mainContainer && sidebarBtn.parentElement === gameRoomSidebar) {
@@ -440,7 +442,7 @@ const GameRoomPage = () => {
     // ====================================================== return ====================================================== 
     return (
         <>
-            <StatusBar username={username} sessionTime={timer} playerNumber={playerNumber}/>
+            <StatusBar username={username} sessionTime={timer} playerNumber={playerNumber} />
             <div id="main-container" className="container">
                 {/* ---------- 대기실 2 ----------*/}
                 <div id="join">
@@ -451,7 +453,14 @@ const GameRoomPage = () => {
                         <div className="main-content">
                             <div className="test_button_container">
                                 <>
-                                    <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
+                                    {/* <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button> */}
+                                    <div>
+                                        {userRole === "host" ? (
+                                            <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
+                                        ) : (
+                                            <button disabled>호스트가 게임을 시작하기를 기다리세요</button>
+                                        )}
+                                    </div>
                                     <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
                                     {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
                                     <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
@@ -501,10 +510,10 @@ const GameRoomPage = () => {
                                 <div className="sidebar_index">나의 미션</div>
                                 <div className="sidebar_content">
                                     <div className="footer-input">
-                                    <Input 
-                                            username={username} 
-                                            roomcode={roomcode} 
-                                            participantList={participantList} 
+                                        <Input
+                                            username={username}
+                                            roomcode={roomcode}
+                                            participantList={participantList}
                                             setParticipantList={setParticipantList}
                                             showInput={showInput}
                                         />
