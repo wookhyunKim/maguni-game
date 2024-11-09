@@ -1,4 +1,4 @@
-button {
+.commonButton {
     border-radius:4px;
     background-color: #AC2F2F;
     color: white;
@@ -10,7 +10,25 @@ button {
     font-size: 1.5em;
 }
 
-button:hover {
+.commonButton:hover {
     background-color: #8B2424;
     color: white;
+}
+
+.backButton {
+    border-radius:4px;
+    background-color: #242424;
+    color: #E0E0E0;
+    border: none;
+    height:44px;
+    padding: 10px 0;
+    width: 100px;
+    transition: all 0.3s ease;
+    font-size: 1.5em;
+}
+
+.backButton:hover {
+    background-color: #E0E0E0;
+    color: #1A1A1A;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

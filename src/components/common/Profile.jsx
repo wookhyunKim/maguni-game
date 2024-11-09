@@ -5,13 +5,18 @@ import '../../styles/profile.css';
 import nextButton from '../../assets/images/nextButton.png';
 
 const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoomCode, connectBtnHandler, roomcode, setRoomcode}) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    connectBtnHandler();
+  };
+
   return (
     <div className='profileContainer'>
         <img className="image" 
         src={role === "HOST" ? HostImage : GuestImage} 
         style={{ 
-          width: '200px', 
-          height: '200px'
+          width: '150px', 
+          height: '150px'
         }}
         />
         <div className="descript">
@@ -30,26 +35,26 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
                     {role === "HOST" ? 
 
                     (   
-                        <div className='profileInputContainer'>
+                        <form className='profileInputContainer' onSubmit={handleSubmit}>
                             <input
                             value={generatedCode || generateRoomCode()}
                             readOnly
                             placeholder="방 코드 (자동 생성됨)"
                             />
-                            <img src={nextButton} onClick={connectBtnHandler}></img>
-                        </div>
+                            <img src={nextButton} onClick={connectBtnHandler} type="submit"></img>
+                        </form>
                     )
                     : 
 
                     (
-                        <div className='profileInputContainer'>
+                        <form className='profileInputContainer' onSubmit={handleSubmit}>
                             <input
                             value={roomcode}
                             onChange={(e) => setRoomcode(e.target.value.toUpperCase())}
                             placeholder="방 코드를 입력하세요"
                             />
-                            <img src={nextButton} onClick={connectBtnHandler}></img>
-                        </div>
+                            <img src={nextButton} onClick={connectBtnHandler} type="submit"></img>
+                        </form>
                     )}
                     </div>
                 </>
@@ -70,12 +75,12 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
                     {role === "HOST" ? 
 
                         (
-                            <button onClick={() => setRole('host')}>{btnName}</button> 
+                            <button className="commonButton" onClick={() => setRole('host')}>{btnName}</button> 
                         )
                         : 
 
                         (
-                            <button onClick={() => setRole('participant')}>{btnName}</button>
+                            <button className="commonButton" onClick={() => setRole('participant')}>{btnName}</button>
                         )}
                     </div>
                 </>

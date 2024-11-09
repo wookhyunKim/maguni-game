@@ -40,7 +40,7 @@ const getSeconds = (time) => {
 const Timer = ({ isModalOpen }) => {
     // 전역 상태에서 현재 시간과 시간 감소 함수 가져오기
     const time = useStoreTime((state) => state.time);
-    const decrementTime = useStoreTime((state) => state.decrementTime);
+    const incrementTime = useStoreTime((state) => state.incrementTime);
 
     // 타이머 로직
     useEffect(() => {
@@ -53,13 +53,13 @@ const Timer = ({ isModalOpen }) => {
         const timer = setInterval(() => {
             // 모달이 열려있지 않을 때만 시간 감소
             if (!isModalOpen) {
-                decrementTime();
+                incrementTime();
             }
         }, 1000);
 
         // 컴포넌트 언마운트 시 타이머 정리
         return () => clearInterval(timer);
-    }, [time, isModalOpen, decrementTime]);
+    }, [time, isModalOpen, incrementTime]);
 
     // 초 단위를 두 자리 숫자로 포맷팅 (예: 5 -> "05")
     const getSeconds = (time) => String(time % 60).padStart(2, '0');
