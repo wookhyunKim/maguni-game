@@ -1,0 +1,33 @@
+.player-word-card {
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    color: #fff;
+    transition: transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.player-word-card:hover {
+    transform: translateY(-2px);
+}
+
+.player-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.word-info {
+    font-size: 0.85rem;
+}
+
+.forbidden-word, .word-count {
+    margin: 2px 0;
+}
+
+.forbidden-word span, .word-count span {
+    opacity: 0.8;
+    margin-right: 6px;
+} 
