@@ -25,7 +25,7 @@ async function checkAnswer(roomCode, nickname, word) {
     let check ;
     const gotWord = await MemberDao.getAllWords(roomCode, nickname);
     console.log("got word : ", gotWord)
-    if (gotWord[0][0] == word){
+    if (gotWord[0] == word){
         check = true;
     }else{
         check = false;
