@@ -60,6 +60,10 @@ export const Globalstore = create((set) => ({
         playerList: [...prev.playerList, {playerNum: (prev.playerList.length)+1, nickname:val}]
     }))
 
+
+    // 배경음악 상태
+    
+
     // deletePlayer:(val) ;
 
 

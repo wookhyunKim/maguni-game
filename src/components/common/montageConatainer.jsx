@@ -1,4 +1,4 @@
-import hanjiImage from '../../assets/images/endpage_hanji.jpg'
+import hanjiImage from '../../assets/images/endpage_hanji.webp'
 import '../../styles/endGame.css'
 import PropTypes from 'prop-types';
 

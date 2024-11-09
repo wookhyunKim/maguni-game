@@ -3,11 +3,14 @@ import { scriptData } from "../../assets/utils/gameScripts";
 
 // 전체 시간 스토어
 const useStoreTime = create((set) => ({
-    time: 90, // 초기 시간 설정(5분)
+    time: 0, // 초기 시간 설정(5분)
     setTime: (newTime) => set({ time: newTime }),
     decrementTime: () =>
         set((state) => ({ time: Math.max(state.time - 1, 0) })),
     resetTime: () => set({ time: 300 }),
+    //full timer에서 1초씩 시간 증가시키기 위해 쓰는 상태
+    incrementTime: () =>
+        set((state) => ({ time: state.time + 1 })),
 }));
 
 // 게임 정보 스토어

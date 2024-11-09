@@ -517,12 +517,47 @@ function appendUserData(videoElement, connection) {
       userData = JSON.parse(connection.data).clientData;
       nodeId = connection.connectionId;
    }
-   var dataNode = document.createElement('div');
-   dataNode.className = "data-node";
-   dataNode.id = "data-" + nodeId;
-   dataNode.innerHTML = "<p>" + userData + "</p>";
-   videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
-   addClickListener(videoElement, userData);
+   // var dataNode = document.createElement('div');
+   // dataNode.className = "data-node";
+   // dataNode.id = "data-" + nodeId;
+   // dataNode.innerHTML = "<p>" + userData + "</p>";
+   // videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
+   // addClickListener(videoElement, userData);
+   // var userData;
+   // var nodeId;
+   // if (typeof connection === "string") {
+   //     userData = connection;
+   //     nodeId = connection;
+   // } else {
+   //     userData = JSON.parse(connection.data).clientData;
+   //     nodeId = connection.connectionId;
+   // }
+
+   // // 로딩 컨테이너 생성
+   // const loadingContainer = document.createElement('div');
+   // loadingContainer.className = "loading-container";
+   // loadingContainer.innerHTML = `
+   //     <div class="loading-spinner"></div>
+   //     <div class="loading-text">접속 대기중...</div>
+   // `;
+
+   // // 비디오 요소가 로드되기 전에 로딩 컨테이너를 표시
+   // videoElement.parentNode.insertBefore(loadingContainer, videoElement);
+
+   // // 비디오가 실제로 재생되기 시작할 때 로딩 컨테이너를 제거
+   // videoElement.addEventListener('playing', () => {
+   //     if (loadingContainer.parentNode) {
+   //         loadingContainer.parentNode.removeChild(loadingContainer);
+   //     }
+   //     videoElement.style.display = 'block';
+   // });
+
+   // var dataNode = document.createElement('div');
+   // dataNode.className = "data-node";
+   // dataNode.id = "data-" + nodeId;
+   // dataNode.innerHTML = "<p>" + userData + "</p>";
+   // videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
+   // addClickListener(videoElement, userData);
 }
 
 function removeUserData(connection) {
