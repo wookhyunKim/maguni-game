@@ -15,7 +15,7 @@ const IntroMusicContainer = ({ children }) => {
       {children}
       {isPlay && (
         <audio 
-          id="bgm" 
+          id="beginbgm" 
           src={BEGINBGM} 
           autoPlay={true}
         />

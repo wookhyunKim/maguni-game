@@ -8,6 +8,8 @@ import MUMURI from "../src/assets/images/mumuri.png";
 import DISH from "../src/assets/images/dish.png";
 import GOONGYE from "../src/assets/images/goongYe.png";
 import RCEYE from "../src/assets/images/RCeye.png";
+import SMILEMOUTH from "../src/assets/images/smileMouth2.png";
+import MINIONS from "../src/assets/images/minions.png";
 
 
 var OV;
@@ -315,7 +317,9 @@ const filters = [
    { image: new Image(), type: "baldFilter" },
    { image: new Image(), type: "fallingImage" },
    { image: new Image(), type: "goongYe" },
-   //{ image: new Image(), type: "eyeFilter"},
+   { image: new Image(), type: "eyeFilter"},
+   { image: new Image(), type: "mouthFilter"},
+   { image: new Image(), type: "faceOutlineFilter" },
    { type: "noseEnlarge" },
    { type: "smile" },
    { type: "foreHead" },
@@ -325,7 +329,9 @@ const filters = [
  filters[1].image.src = MUMURI;
  filters[2].image.src = DISH;
  filters[3].image.src = GOONGYE;
- //filters[4].image.src = RCEYE;
+ filters[4].image.src = RCEYE;
+ filters[5].image.src = SMILEMOUTH;
+ filters[6].image.src = MINIONS;
  
  let activeFilters = [];
 
@@ -350,6 +356,8 @@ function animateImage(ctx, x, yPosition) {
          case "baldFilter":
          case "fallingImage":
          case "goongYe":
+         case "mouthFilter":
+         case "faceOutlineFilter":
             newFilter.timeoutId = setTimeout(() => {
                activeFilters = activeFilters.filter((f) => f !== newFilter);
             }, 2000);
@@ -361,7 +369,7 @@ function animateImage(ctx, x, yPosition) {
                               // 타이머가 만료되면 필터를 제거
          newFilter.timeoutId = setTimeout(() => {
             activeFilters = activeFilters.filter((f) => f !== newFilter);
-         }, 5000);
+         }, 3000);
 
          activeFilters.push(newFilter);
          break;
@@ -412,6 +420,7 @@ function animateImage(ctx, x, yPosition) {
                 case "eyeFilter":
                 case "mustacheFilter":
                 case "baldFilter":
+                case "mouthFilter":
                   // 기존 필터의 위치 계산
                   ctx.save();
                   ctx.translate(x + width / 2, y + height / 2);
@@ -422,23 +431,27 @@ function animateImage(ctx, x, yPosition) {
           
                 case "fallingImage":{
                   // 떨어지는 이미지 애니메이션
-                  const fallPosition = calculateFilterPosition(filter.type, faces[0].keypoints);
-                  if (filter.yPosition < fallPosition.y) {
+                  const fallPosition = faces[0].keypoints[10];
+                  if (filter.yPosition < (fallPosition.y + 20))  {
                     filter.yPosition += 5; // 떨어지는 속도 조절
                   }
                   animateImage(ctx, fallPosition.x, filter.yPosition);
                   break;
                 }
           
-                case "goongYe":
+               case "goongYe":
                   // GOONGYE 이미지를 캔버스 전체에 그리기
                   ctx.drawImage(filter.image, 0, 0, compositeCanvas.width, compositeCanvas.height);
                   break;
 
-                  case "noseEnlarge":
-                     //applyNoseEnlargeEffect(ctx, faces[0].keypoints,compositeCanvas); // 코 확대 필터 호출
-                     applyEnhancedLensDistortion(ctx,faces[0].keypoints);
-                     break;
+               case "faceOutlineFilter":
+                  ctx.drawImage(filter.image,x,y,width,height);
+                  break;
+
+               case "noseEnlarge":
+                  //applyNoseEnlargeEffect(ctx, faces[0].keypoints,compositeCanvas); // 코 확대 필터 호출
+                  applyEnhancedLensDistortion(ctx,faces[0].keypoints);
+                  break;
 
                case "smile":
                   applyEnhancedMouthDistortion(ctx,faces[0].keypoints);

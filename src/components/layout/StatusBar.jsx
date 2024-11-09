@@ -10,7 +10,8 @@ const StatusBar = ({ sessionTime, username, roomcode,playerNumber}) => {
   return (
     <div className="status-bar">
 
-        <img className="teamLogo" src={teamLogo} alt="팀 로고"/>
+        {/* <img className="teamLogo" src={teamLogo} alt="팀 로고"/> */}
+        <img />
         <div id="sessionTitleContianer">
             <h1 id="session-title">{roomcode}</h1>
         </div>

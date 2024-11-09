@@ -44,14 +44,8 @@ const Timer = ({ isModalOpen }) => {
 
     // 타이머 로직
     useEffect(() => {
-        // 시간이 0이 되면 타이머 종료
-        if (time === 0) {
-            return;
-        }
-
-        // 1초마다 시간 감소
+        // 1초마다 시간 증가
         const timer = setInterval(() => {
-            // 모달이 열려있지 않을 때만 시간 감소
             if (!isModalOpen) {
                 incrementTime();
             }
@@ -59,18 +53,19 @@ const Timer = ({ isModalOpen }) => {
 
         // 컴포넌트 언마운트 시 타이머 정리
         return () => clearInterval(timer);
-    }, [time, isModalOpen, incrementTime]);
+    }, [isModalOpen, incrementTime]);
 
-    // 초 단위를 두 자리 숫자로 포맷팅 (예: 5 -> "05")
+    // 초 단위를 두 자리 숫자로 포맷팅
     const getSeconds = (time) => String(time % 60).padStart(2, '0');
+    const getMinutes = (time) => String(Math.floor(time / 60)).padStart(2, '0');
 
     // 타이머 UI 렌더링
     return (
         <div className="timer-container">
             <div className="timer-box">
-                <span className="timer-number">{parseInt(time / 60)}</span> {/* 분 */}
+                <span className="timer-number">{getMinutes(time)}</span>
                 <span className="timer-colon">:</span>
-                <span className="timer-number">{getSeconds(time)}</span> {/* 초 */}
+                <span className="timer-number">{getSeconds(time)}</span>
             </div>
         </div>
     );

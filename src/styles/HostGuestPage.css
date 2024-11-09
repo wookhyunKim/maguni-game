@@ -184,3 +184,35 @@ padding: 20px;
   }
 
 }
+
+#kakaotalk-sharing-btn {
+  width: 586px;
+}
+
+.startGameSection {
+  padding: 10px 0;
+}
+
+
+#kakaotalk-sharing-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.startGameSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.gameControlSection {
+  width: 586px;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}

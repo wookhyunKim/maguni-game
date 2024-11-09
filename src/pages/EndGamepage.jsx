@@ -3,13 +3,24 @@ import '../styles/endGame.css'
 import WallImage from '../assets/images/endPage_bgImage.webp'
 import MontageConatainer from '../components/common/montageConatainer';
 import MontageImage from '../assets/images/montage'
-import { useEffect, useState } from 'react';
+import { useEffect, useContext } from 'react';
 import ENDINGBGM from "../assets/bgm/endbgm.mp3";
+import { Context } from '../../IntroMusicContainer';
 
 const EndGamepage = () => {
+    useEffect(() => {
+        // 기존 audio 태그 중지 또는 음소거
+        const existingAudio = document.getElementById('bgm');
+        if (existingAudio) {
+            existingAudio.pause();  // 중지
+            existingAudio.muted = true;  // 음소거
+        }
+    }, []); // 컴포넌트가 처음 렌더링될 때만 실행
+
     const location = useLocation();
     const navigate = useNavigate();
     const { result, words, roomCode } = location.state || {};
+    const { setIsPlay } = useContext(Context);
 
     //추억 남기기 버튼 눌렀을 때, 다른 페이지로 이동함
     const gotoFourcut = ()=>{
@@ -64,9 +75,12 @@ const EndGamepage = () => {
             });
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
+        // IntroMusicContainer의 음악을 확실히 중지
+        setIsPlay(false);
+        // EndGamePage의 BGM 재생
         playMusic();
-    })
+    }, [setIsPlay]);
     
 
     return (

@@ -11,7 +11,7 @@ import SOUNDOFF from "../../assets/images/SoundOffIcon.png"
   const [music, setMusic] = useState(false);
 
   const playMusic = () => {
-    const audio = document.getElementById('bgm');
+    const audio = document.getElementById('beginbgm');
     setMusic(!music)
     if (!audio) {
         return;

@@ -15,8 +15,8 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
         <img className="image" 
         src={role === "HOST" ? HostImage : GuestImage} 
         style={{ 
-          width: '200px', 
-          height: '200px'
+          width: '150px', 
+          height: '150px'
         }}
         />
         <div className="descript">
@@ -52,6 +52,7 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
                             value={roomcode}
                             onChange={(e) => setRoomcode(e.target.value.toUpperCase())}
                             placeholder="방 코드를 입력하세요"
+                            className="room-code-input"
                             />
                             <img src={nextButton} onClick={connectBtnHandler} type="submit"></img>
                         </form>
