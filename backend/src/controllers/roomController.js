@@ -15,7 +15,7 @@ async function getOneRoom(req, res) {
         // res.json(result);
         res.status(200).json({ success: true });
     } else {
-        res.status(500).json({ success: false });
+        res.status(200).json({ success: false });
     }
 }
 

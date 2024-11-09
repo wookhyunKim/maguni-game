@@ -122,6 +122,20 @@ const HostGuestPage = () => {
         })
     }
 
+    const checkRoom = () => {
+        return axios({
+            method: 'GET',
+            url: `http://localhost:3001/room/api/v1/${roomcode}`,
+        })
+            .then((res) => {
+                return res.data['success']
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        };
+
+
 
     function disconnectToChatServer() {
         socket?.disconnect();
@@ -182,9 +196,29 @@ const HostGuestPage = () => {
     //     connectToChatServer();
     //     setIsToggled(true);
     // }
-    function connectBtnHandler() {
-        connectToChatServer();
-        setIsToggled(true);
+    async function connectBtnHandler() {
+        const result = await checkRoom(); // 방 생성 여부 false : 없는 방   true : 있는 방
+        let icon = "error";
+        let title = "방 입장 오류";
+        let message =  "없는 방입니다.";
+
+        if (result){
+            if(role=='participant'){
+                connectToChatServer();
+                setIsToggled(true);
+            }else{
+                // 있는 방 코드에 방장이 들어가려고 하면 실패 alert
+                alertFunc(icon,title,message)
+            }
+        }else{
+            if(role == 'participant'){
+                // 없는 방을 게스트가 참가하려고 해서 alert
+                alertFunc(icon,title,message)
+            }else{
+                connectToChatServer();
+                setIsToggled(true);
+            }
+        }
     }
 
     function disconnectBtnHandler() {
@@ -313,7 +347,6 @@ const HostGuestPage = () => {
                             />
                         </button>
                         <div className='gameControlSection'>
-                            {console.log("Current role:", role)}
                             <CommonButton
                                 className="startGameBtn commonButton"
                                 onClick={() => { Gotogameroompage(); setUserRole(role); }} 

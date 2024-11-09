@@ -58,17 +58,17 @@ const EndGamepage = () => {
       };
 
     const getResults = () => {
-    return axios({
-        method: 'GET',
-        url: `http://localhost:3001/member/game/api/v1/${roomCode}`,
-    })
-        .then((res) => {
-            console.log("end game  result : ", res.data)
+        return axios({
+            method: 'GET',
+            url: `http://localhost:3001/member/game/api/v1/${roomCode}`,
         })
-        .catch((err) => {
-            console.log(err);
-        });
-    };
+            .then((res) => {
+                console.log("end game  result : ", res.data)
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        };
 
 
     //유저별로 금칙어 단어, 그리고 위반 횟수 표시
