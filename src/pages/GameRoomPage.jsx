@@ -465,6 +465,7 @@ const GameRoomPage = () => {
                             </div>
                         </div>
                         <div className="gameroom-sidebar">
+                        <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
                             <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
@@ -491,7 +492,6 @@ const GameRoomPage = () => {
                                 <div className="sidebar_index">나의 미션</div>
                                 <div className="sidebar_content">
                                     <div className="footer-input">
-                                    <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
                                     <Input 
                                             username={username} 
                                             roomcode={roomcode} 
