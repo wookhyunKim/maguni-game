@@ -267,46 +267,30 @@ const HostGuestPage = () => {
                         btnName={``}
                         setRole={setRole}
                       />
-                    </div>
+                </div>
 
-                    <div className="startGameSection">
-                        <button id="kakaotalk-sharing-btn" onClick={shareKakao} className='commonButton'>
-                            <div>{roomcode}</div>
-                            <img
-                                src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
-                                alt="카카오톡 공유 보내기 버튼"
-                                // style={{ width: "50px", cursor: "pointer" }}
-                                />
-                        </button>
+                <div className="startGameSection">
+                  <button id="kakaotalk-sharing-btn" onClick={shareKakao} className='commonButton'>
+                    <div>{roomcode}</div>
+                      <img
+                          src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                          alt="카카오톡 공유 보내기 버튼"
+                          // style={{ width: "50px", cursor: "pointer" }}
+                          />       
+                  </button>
                         <div className='gameControlSection'>
                         {console.log("Current role:", role)}
-                            {role === "host" &&
-                            (<>
-                              <CommonButton 
+                            <CommonButton 
                                 className="startGameBtn commonButton" 
                                 onClick={Gotogameroompage} 
                                 text="시작하기"
                             />
                             <RuleDescriber />
-                            </>
-                            )}
-
-                            {role === "participant" &&
-                            (<>
-                              <CommonButton 
-                                className="startGameBtn commonButton" 
-                                text="대기중..."
-                            />
-                            <RuleDescriber />
-                            </>
-                            )}
                         </div>
                     </div>
                 </div>
-            </div>
         )}
     </GameLayout>
-
  );
 };
 

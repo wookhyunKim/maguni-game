@@ -7,6 +7,15 @@ import { useEffect, useState } from 'react';
 import ENDINGBGM from "../assets/bgm/endbgm.mp3";
 
 const EndGamepage = () => {
+    useEffect(() => {
+        // 기존 audio 태그 중지 또는 음소거
+        const existingAudio = document.getElementById('bgm');
+        if (existingAudio) {
+            existingAudio.pause();  // 중지
+            existingAudio.muted = true;  // 음소거
+        }
+    }, []); // 컴포넌트가 처음 렌더링될 때만 실행
+
     const location = useLocation();
     const navigate = useNavigate();
     const { result, words, roomCode } = location.state || {};
