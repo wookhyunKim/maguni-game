@@ -86,36 +86,6 @@ const GameRoomPage = () => {
 
 
 
-    /////////////////////// 이미지 프리로드 함수 ///////////////////////
-    const preloadImages = async () => {
-        const images = [
-            Goon,
-            // OtherImage,  // 다른 이미지들도 추가
-        ];
-
-        try {
-            // 모든 이미지를 프리로드
-            await Promise.all(
-                images.map((src) => {
-                    return new Promise((resolve, reject) => {
-                        const img = new Image();
-                        img.src = src;
-                        img.onload = resolve;
-                        img.onerror = reject;
-                    });
-                })
-            );
-            setImagesPreloaded(true);
-            console.log('모든 이미지가 성공적으로 프리로드되었습니다.');
-        } catch (error) {
-            console.error('이미지 프리로드 중 오류 발생:', error);
-        }
-    };
-
-    // 컴포넌트 마운트 시 이미지 프리로드 실행
-    useEffect(() => {
-        preloadImages();
-    }, []);
 
     // ========================== 금칙어 설정 완료 ================
     // DB에서 유저별 금칙어 리스트 가져오기 => forbiddenWordlist
@@ -170,21 +140,21 @@ const GameRoomPage = () => {
     };
 
     //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
-    const startSettingForbiddenWord = async () => {
-        if (imagesPreloaded) {
-            setModal('SettingForbiddenWordModal', true);
-            setShowInput(true);
+    const startSettingForbiddenWord = () => {
+        // if (imagesPreloaded) {
+        //     setModal('SettingForbiddenWordModal', true);
+        //     setShowInput(true);
 
-            await new Promise(resolve => setTimeout(resolve, 5000));
+        //     await new Promise(resolve => setTimeout(resolve, 5000));
 
-            setModal('SettingForbiddenWordModal', false);
+        //     setModal('SettingForbiddenWordModal', false);
 
-            await new Promise(resolve => setTimeout(resolve, 100));
+        //     await new Promise(resolve => setTimeout(resolve, 100));
 
-            socket.emit('start setting word', roomcode);
-        } else {
-            console.log('이미지 로딩 중입니다...');
-        }
+        // } else {
+        //     console.log('이미지 로딩 중입니다...');
+        // }
+        socket.emit('start setting word', roomcode);
     };
 
     const testPenalty = () => {
@@ -231,11 +201,17 @@ const GameRoomPage = () => {
         });
 
         // 금칙어 설정 안내 모달 열기
-        _socket.on('open instruction modal', () => {
-            setModal('SettingForbiddenWordModal', true);
-            setTimeout(() => {
+        _socket.on('open instruction modal', async () => {
+                setModal('SettingForbiddenWordModal', true);
+                setShowInput(true);
+    
+                await new Promise(resolve => setTimeout(resolve, 5000));
+    
                 setModal('SettingForbiddenWordModal', false);
-            }, 4000);
+    
+                await new Promise(resolve => setTimeout(resolve, 100));
+    
+       
         });
 
         _socket.on('hit user', (user) => {
