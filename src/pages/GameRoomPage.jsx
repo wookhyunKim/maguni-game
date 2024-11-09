@@ -145,19 +145,6 @@ const GameRoomPage = () => {
 
     //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
     const startSettingForbiddenWord = () => {
-        // if (imagesPreloaded) {
-        //     setModal('SettingForbiddenWordModal', true);
-        //     setShowInput(true);
-
-        //     await new Promise(resolve => setTimeout(resolve, 5000));
-
-        //     setModal('SettingForbiddenWordModal', false);
-
-        //     await new Promise(resolve => setTimeout(resolve, 100));
-
-        // } else {
-        //     console.log('이미지 로딩 중입니다...');
-        // }
         socket.emit('start setting word', roomcode);
     };
 
@@ -331,11 +318,18 @@ const GameRoomPage = () => {
                         if (word) {
                             const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
                             if (occurrences > 0) {
-                                handleForbiddenWordUsed(occurrences);
+                                handleForbiddenWordUsedCount(occurrences);
                             }
                         }
                     } else {
                         interimTranscript += transcript + ' ';
+
+                        if (word) {
+                            const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
+                            if (occurrences > 0) {
+                                handleForbiddenWordUsedHit();
+                            }
+                        }
                     }
                 }
 
@@ -393,7 +387,6 @@ const GameRoomPage = () => {
             console.error('음성 인식 초기화 오류:', error);
         }
     }, [forbiddenWordlist, isStoppedManually, username, socket]);
-
     // 화면 크기에 따른 sidebar-btn 위치 조정을 위한 useEffect
     useEffect(() => {
         const handleResize = () => {

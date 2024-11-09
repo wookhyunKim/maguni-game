@@ -30,19 +30,19 @@ const FourCut = () => {
         { id: 'frame3', image: YeomjuFrame, name: '염주 안대 프레임' }
     ];
 
-    // // 서버에서 이미지 가져오기
-    // const fetchImages = async () => {
-    //     try {
-    //         const response = await axios.get(`http://localhost:3001/upload/api/v1/${roomCode}`);
-    //         setImageList(response.data);
-    //     } catch (error) {
-    //         console.error("이미지 로딩 실패:", error);
-    //     }
-    // };
+    // 서버에서 이미지 가져오기
+    const fetchImages = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3001/upload/api/v1/${roomCode}`);
+            setImageList(response.data);
+        } catch (error) {
+            console.error("이미지 로딩 실패:", error);
+        }
+    };
 
-    // useEffect(() => {
-    //     fetchImages();
-    // }, []);
+    useEffect(() => {
+        fetchImages();
+    }, []);
 
     // 이미지 다운로드
     const handleDownload = async () => {
