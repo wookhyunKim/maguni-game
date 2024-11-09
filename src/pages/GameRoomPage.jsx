@@ -488,7 +488,18 @@ const GameRoomPage = () => {
                                         />
                                     </div>
                                 </div>
+                                
                             </div>
+                            <div className="sidebar-btn">
+                                <input 
+                                    className="btn btn-large btn-danger"
+                                    type="button"
+                                    id="buttonLeaveSession"
+                                    onClick={quitGame}
+                                    value="나가기" 
+                                />
+                            </div>
+                           
                             {/* <div className="sidebar_goongye">
                                 <div className="sidebar_index">진행자</div>
                                 <div className="sidebar_content">

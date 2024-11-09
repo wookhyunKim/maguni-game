@@ -183,25 +183,8 @@ const HostGuestPage = () => {
     //     setIsToggled(true);
     // }
     function connectBtnHandler() {
-        const result = checkRoom(); // 방 생성 여부 false : 없는 방   true : 있는 방
-
-        if (result){
-            if(role=='guest'){
-                connectToChatServer();
-                setIsToggled(true);
-            }else{
-                // 있는 방 코드에 방장이 들어가려고 하면 실패 alert
-                alertFunc()
-            }
-        }else{
-            if(role == 'guest'){
-                alertFunc()
-                // 없는 방을 게스트가 참가하려고 해서 alert
-            }else{
-                connectToChatServer();
-                setIsToggled(true);
-            }
-        }
+        connectToChatServer();
+        setIsToggled(true);
     }
 
     function disconnectBtnHandler() {
