@@ -72,15 +72,15 @@ io.on('connection', (client) => {
 
 
   client.on('start setting word', (roomcode) => {
+    io.to(roomcode).emit('open instruction modal');
     let timer = 20;
     const countdownInterval = setInterval(() => {
       io.to(roomcode).emit('timer update', timer);
       timer--;
 
-      // 20초 부터 금칙어 설정하기
-      if (timer === 19) {
-        io.to(roomcode).emit('start setting fw');
-      }
+      // // 20초 부터 금칙어 설정하기
+      // if (timer === 19) {
+      // }
 
       if (timer < 0) {
         clearInterval(countdownInterval);
