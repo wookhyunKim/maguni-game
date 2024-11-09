@@ -36,7 +36,7 @@ io.on('connection', (client) => {
     io.to(roomcode).emit('participant list', users); // 참가자 목록 전송
   });
 
-  client.on('forbidden word used', (username, occurrences) => {
+  client.on('forbidden word used count', (username, occurrences) => {
     // 금칙어 사용 카운트 업데이트 로직
     if (!forbiddenWordCounts[username]) {
       forbiddenWordCounts[username] = 0; // 초기화
@@ -46,15 +46,18 @@ io.on('connection', (client) => {
 
     // 모든 클라이언트에 카운트 업데이트
     io.emit('update forbidden word count', forbiddenWordCounts);
-    io.emit('hit user', username, occurrences);
 
-    if(totalCount % 3 == 0){
-      io.emit('take a picture',username);
+    if (totalCount % 3 == 0) {
+      io.emit('take a picture', username);
     }
   });
 
-   // 금칙어 설정 후 게임 시작하게 하는 함수
-  client.on('start game', (roomcode,startTime) => {
+  client.on('forbidden word used hit', (username) => {
+    io.emit('hit user', username);
+  });
+
+  // 금칙어 설정 후 게임 시작하게 하는 함수
+  client.on('start game', (roomcode, startTime) => {
     let timer = startTime;
     const countdownInterval = setInterval(() => {
       io.to(roomcode).emit('timer update', timer);
@@ -75,17 +78,17 @@ io.on('connection', (client) => {
       timer--;
 
       // 20초 부터 금칙어 설정하기
-      if(timer === 19) {
-        io.to(roomcode).emit('start setting fw'); 
+      if (timer === 19) {
+        io.to(roomcode).emit('start setting fw');
       }
 
       if (timer < 0) {
         clearInterval(countdownInterval);
-        io.to(roomcode).emit('setting word ended'); 
+        io.to(roomcode).emit('setting word ended');
       }
     }, 1000);
   });
-  
+
 
 
 

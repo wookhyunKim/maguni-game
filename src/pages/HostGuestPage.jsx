@@ -6,11 +6,13 @@ import { usePlayerStore } from '../components/store/playerStore';
 import { io } from "socket.io-client";
 import detectModelStore from '../components/store/faceDetectModel';
 import { loadDetectionModel } from '../../filter/load-detection-model';
+import mainCharacter from '../assets/images/mainImage.png'
 
 import '../styles/HostGuestPage.css'
 import '../styles/beforeGameRoom.css'
 import Profile from '../components/common/Profile';
 import CommonButton from '../components/CommonButton';
+import RuleDescriber from '../components/common/RuleDescriber';
 
 const HostGuestPage = () => {
     const navigate = useNavigate();
@@ -36,6 +38,16 @@ const HostGuestPage = () => {
     const [userList, setUserList] = useState([]);
 
     const [generatedCode, setGeneratedCode] = useState(''); // 호스트용 코드 표시
+
+    //
+    const JAVASCRIPT_KEY = import.meta.env.VITE_APP_JAVASCRIPT_KEY;
+
+    useEffect(()=>{
+        window.Kakao.cleanup();
+        window.Kakao.init(JAVASCRIPT_KEY);
+        window.Kakao.isInitialized();
+    },[])
+    //
 
     const Gotogameroompage = () => {
         navigate('/gameroom', { state: { roomcode:  role === 'host' ? generatedCode : roomcode, username: username,isHost:role==='host'?true:false }});
@@ -129,7 +141,7 @@ const HostGuestPage = () => {
         loadDetectionModel().then((model) => {
             setDetectModel(model);
         });
-    })
+    },[])
 
   // generateRoomCode 함수 수정
     function generateRoomCode() {
@@ -151,6 +163,34 @@ const HostGuestPage = () => {
         disconnectToChatServer();
         window.location.reload();
     }
+    /////
+    const shareKakao = () => {
+        if (window.Kakao) {
+            window.Kakao.Share.createDefaultButton({
+            container: "#kakaotalk-sharing-btn",
+            objectType: "feed",
+            content: {
+                title: "초대장",
+                description: "당신은 마구니 게임에 초대되었습니다.",
+                imageUrl:
+                mainCharacter,
+                link: {
+                mobileWebUrl: "https://main.maguni-game.com",
+                webUrl: "https://main.maguni-game.com",
+                },
+            },
+            buttons: [
+                {
+                title: "입장하기",
+                link: {
+                    mobileWebUrl: "https://main.maguni-game.com",
+                    webUrl: "https://main.maguni-game.com",
+                },
+            },
+            ],
+            });
+        }
+    };
     
     ///////////////////////////////////////////////////////
 
@@ -242,8 +282,17 @@ const HostGuestPage = () => {
                 </div>
               </div>
           </div>
+          <button id="kakaotalk-sharing-btn" onClick={shareKakao}>
+            <img
+                // onClick={shareKakao}
+                src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                alt="카카오톡 공유 보내기 버튼"
+                style={{ width: "50px", cursor: "pointer" }}
+            />
+            </button>
           <div className="startGameSection">
             <CommonButton className="startGameBtn" onClick={Gotogameroompage} text="시작하기"/>
+            <RuleDescriber />
           </div>
         </div>
       )}
