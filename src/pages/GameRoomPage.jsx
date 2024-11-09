@@ -24,6 +24,10 @@ import { useModalStore } from '../components/store/modalStore.js';
 import { joinSession } from '../../openvidu/app_openvidu.js';
 import html2canvas from "html2canvas";
 import Goon from "../assets/images/goongYeImage.webp";
+
+import StartSound from '../assets/bgm/game_start.wav'; 
+
+
 // 다른 모달에서 사용하는 이미지들도 import
 
 import { Context } from '../../IntroMusicContainer';
@@ -202,16 +206,19 @@ const GameRoomPage = () => {
 
         // 금칙어 설정 안내 모달 열기
         _socket.on('open instruction modal', async () => {
-                setModal('SettingForbiddenWordModal', true);
-                setShowInput(true);
-    
-                await new Promise(resolve => setTimeout(resolve, 5000));
-    
-                setModal('SettingForbiddenWordModal', false);
-    
-                await new Promise(resolve => setTimeout(resolve, 100));
-    
-       
+            setModal('SettingForbiddenWordModal', true);
+            setShowInput(true);
+            // 오디오 파일 재생
+            const audio = new Audio(StartSound); // mp3 파일 경로
+            audio.play();
+
+            await new Promise(resolve => setTimeout(resolve, 8000));
+
+            setModal('SettingForbiddenWordModal', false);
+
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+
         });
 
         _socket.on('hit user', (user) => {
@@ -488,18 +495,18 @@ const GameRoomPage = () => {
                                         />
                                     </div>
                                 </div>
-                                
+
                             </div>
                             <div className="sidebar-btn">
-                                <input 
+                                <input
                                     className="btn btn-large btn-danger"
                                     type="button"
                                     id="buttonLeaveSession"
                                     onClick={quitGame}
-                                    value="나가기" 
+                                    value="나가기"
                                 />
                             </div>
-                           
+
                             {/* <div className="sidebar_goongye">
                                 <div className="sidebar_index">진행자</div>
                                 <div className="sidebar_content">
