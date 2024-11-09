@@ -64,7 +64,7 @@ const NicknamePage = () => {
             <img src={nextButton} type="submit" onClick={handleSubmit}></img>
             </form>
             <div className='nicknameRandomBtnContainer'>
-              <button className='nicknameRandomBtn' onClick={createNickName} >랜덤 닉네임 생성</button>
+              <a className='nicknameRandomBtn' onClick={createNickName} >랜덤 닉네임 생성</a>
             </div>
 
           </div>

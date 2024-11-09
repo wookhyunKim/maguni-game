@@ -15,8 +15,8 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
         <img className="image" 
         src={role === "HOST" ? HostImage : GuestImage} 
         style={{ 
-          width: '200px', 
-          height: '200px'
+          width: '150px', 
+          height: '150px'
         }}
         />
         <div className="descript">
