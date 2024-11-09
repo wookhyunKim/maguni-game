@@ -1,16 +1,15 @@
 .beforeGameRoomBody {
     height: 100vh;
     background-color: #A2CDCD;
-    padding:0 20%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
 }
 
 
 .game-title {
-    padding-top: 10%;
+    /* padding-top: 10%; */
     font-size: 5rem;
 }
 
@@ -63,3 +62,25 @@
 /* .main-character:hover {
     animation-play-state: paused;
 } */
+
+.beforeGameRoomFooter {
+    background-color: #A2CDCD;;
+    height: 10%;
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.beforeGameRoomFooterBtn {
+    margin-left: 5%;
+}
+
+.nicknameRandomBtnContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.nicknameRandomBtn {
+    margin-top: 10px;
+}

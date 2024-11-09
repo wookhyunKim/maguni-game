@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import '../../styles/modals.css';
 import { useEffect } from 'react';
 import useGameStageStore from '../store/gameStage.js';
-import Goon from "../../assets/images/goongYeImage.png"
+import Goon from "../../assets/images/goongYeImage.webp"
 
 const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose }) => {
     const { goongYeRevealForbiddenWord } = useGameStageStore();
@@ -18,7 +18,7 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <img src={Goon}/>
+                <img src={Goon} alt="궁예" />
                 <h2>금칙어 공개</h2>
                 <table className="forbidden-word-table">
                     <thead>

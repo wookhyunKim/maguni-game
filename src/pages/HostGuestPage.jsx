@@ -1,16 +1,20 @@
 import axios from 'axios';
-import { useState, useEffect} from 'react'
+import { useState, useEffect, useContext} from 'react'
 import { useNavigate } from 'react-router-dom';
 import useRoomStore from '../components/store/roomStore';
-import { usePlayerStore } from '../components/store/playerStore';
+import { UsePlayerStore } from '../components/store/playerStore';
 import { io } from "socket.io-client";
 import detectModelStore from '../components/store/faceDetectModel';
 import { loadDetectionModel } from '../../filter/load-detection-model';
 import mainCharacter from '../assets/images/mainImage.png'
+import { find_my_index } from '../assets/utils/findMyIndex';
+import { Context } from '../../IntroMusicContainer.jsx';
+
 
 import '../styles/HostGuestPage.css'
 import '../styles/beforeGameRoom.css'
 import Profile from '../components/common/Profile';
+import BeforeGameRoom from '../components/layout/BeforeGameRoom.jsx';
 import CommonButton from '../components/CommonButton';
 import RuleDescriber from '../components/common/RuleDescriber';
 
@@ -22,12 +26,16 @@ const HostGuestPage = () => {
     //toggle 여부 상태 관리
     const [isToggled, setIsToggled] = useState(false);
 
-    //username을 usePlayerStore에서 가져옴
-    const username = usePlayerStore(state=>state.username)
+    //username을 UsePlayerStore에서 가져옴
+    const username = UsePlayerStore(state=>state.username)
 
     //roomcode, setRoomcode를 useRoomStore에서 가져옴
     const roomcode = useRoomStore(state=>state.roomcode)
     const setRoomcode = useRoomStore(state=>state.setRoomcode)
+
+    //대기방의 돌담 안에 있을 유저리스트
+    const userList = UsePlayerStore(state=>state.userList)
+    const setUserList = UsePlayerStore(state=>state.setUserList)
 
     const [isConnected, setIsConnected] = useState(false);
 
@@ -35,11 +43,8 @@ const HostGuestPage = () => {
 
     const [socket, setSocket] = useState(null);
 
-    const [userList, setUserList] = useState([]);
-
     const [generatedCode, setGeneratedCode] = useState(''); // 호스트용 코드 표시
 
-    //
     const JAVASCRIPT_KEY = import.meta.env.VITE_APP_JAVASCRIPT_KEY;
 
     useEffect(()=>{
@@ -48,8 +53,11 @@ const HostGuestPage = () => {
         window.Kakao.isInitialized();
     },[])
     //
+    const { isPlay, setIsPlay } = useContext(Context);
 
     const Gotogameroompage = () => {
+        find_my_index(username);
+        setIsPlay(false);
         navigate('/gameroom', { state: { roomcode:  role === 'host' ? generatedCode : roomcode, username: username,isHost:role==='host'?true:false }});
     }
 
@@ -113,6 +121,7 @@ const HostGuestPage = () => {
 
     function updateUserList(list) {
         setUserList(list);
+        console.log(list);
     }
 
     useEffect(() => {   //소켓 별 이벤트 리스너
@@ -194,103 +203,128 @@ const HostGuestPage = () => {
     
     ///////////////////////////////////////////////////////
 
-  return (
-    <div className='beforeGameRoomBody'>
-      <div className='game-title'>
-        <h1>금칙어 게임</h1>
-        <h5>Never, say The word</h5>
-      </div>
-      <div className='game-container'>
-      {!isToggled ? (
-        <div className='beforeToggleContainer'>
-          {/* <h1>유저: {username}</h1> */}
-          {/* <h1>방: {role === 'host' ? generatedCode : roomcode}</h1>
-          <h3>접속상태: {isConnected ? "접속중" : "미접속"}</h3> */}
-          <div className="hostGuestBtnContainer">
-            {isConnected ? (
-              <>
-                <button onClick={disconnectBtnHandler}>접속종료</button>
-              </>
-            ) : (
-              <>
-                {role === 'host' ? (
-                  <>
-                    <Profile
-                        role={"HOST"}
-                        btnName={"접속하기"}
-                        setRole={setRole}
-                        withInput={true}
-                        generatedCode={generatedCode}
-                        generateRoomCode={generateRoomCode}
-                        connectBtnHandler={connectBtnHandler}
-                    />
-                  </>
-                ) : role === 'participant' ? (
-                  <>
-                    <Profile
-                        role={"GUEST"}
-                        btnName={"코드 입력"}
-                        setRole={setRole}
-                        withInput={true}
-                        connectBtnHandler={connectBtnHandler}
-                        roomcode={roomcode}
-                        setRoomcode={setRoomcode}
-                      />
+    // 뒤로가기 버튼 핸들러 추가
+    const handleBack = () => {
+        navigate('/nickname');
+    };
 
+  return (
+    <>
+        <div className='beforeGameRoomBody'>
+          <div className='game-title'>
+            <h1>금칙어 게임</h1>
+            <h5>Never, say The word</h5>
+          </div>
+          <div className='game-container'>
+          {!isToggled ? (
+            <div className='beforeToggleContainer'>
+              {/* <h1>유저: {username}</h1> */}
+              {/* <h1>방: {role === 'host' ? generatedCode : roomcode}</h1>
+              <h3>접속상태: {isConnected ? "접속중" : "미접속"}</h3> */}
+              <div className="hostGuestBtnContainer">
+                {isConnected ? (
+                  <>
+                    <button className="commonButton" onClick={disconnectBtnHandler}>접속종료</button>
                   </>
                 ) : (
-                  <div className='hostGuestProfileContainer'>
-                    <div className='hostProfile'>
-                      <Profile
-                        role={"HOST"}
-                        btnName={"방 만들기"}
-                        setRole={setRole}
-                      />
-                    </div>
-                    <div className='guestProfile'>
-                      <Profile
-                        role={"GUEST"}
-                        btnName={"코드 입력"}
-                        setRole={setRole}
-                      />
-                    </div>
-                  </div>
+                  <>
+                    {role === 'host' ? (
+                      <>
+                        <Profile
+                            role={"HOST"}
+                            btnName={"접속하기"}
+                            setRole={setRole}
+                            withInput={true}
+                            generatedCode={generatedCode}
+                            generateRoomCode={generateRoomCode}
+                            connectBtnHandler={connectBtnHandler}
+                        />
+                      </>
+                    ) : role === 'participant' ? (
+                      <>
+                        <Profile
+                            role={"GUEST"}
+                            btnName={"코드 입력"}
+                            setRole={setRole}
+                            withInput={true}
+                            connectBtnHandler={connectBtnHandler}
+                            roomcode={roomcode}
+                            setRoomcode={setRoomcode}
+                          />
+
+                      </>
+                    ) : (
+                      <div className='hostGuestProfileContainer'>
+                        <div className='hostProfile'>
+                          <Profile
+                            role={"HOST"}
+                            btnName={"방 만들기"}
+                            setRole={setRole}
+                            withInput={false}
+                          />
+                        </div>
+                        <div className='guestProfile'>
+                          <Profile
+                            role={"GUEST"}
+                            btnName={"코드 입력"}
+                            setRole={setRole} 
+                            withInput={false}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
-              </>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="afterToggleContainer">
-          <div className="connectedUserList">
-              <Profile role={"HOST"} btnName={""} setRole={setRole}/>
-              <div className="container mt-4">
-                <div className="table table-bordered table-hover">
-                  {userList.map((word, index) => (
-                    <div className='player_info_container' key={index}>
-                      <div className='player_number'>정 {index + 1}품</div>
-                      <div className='player_name'>{word.username}</div>
-                    </div>
-                  ))}
-                </div>
               </div>
-          </div>
-          <button id="kakaotalk-sharing-btn" onClick={shareKakao}>
-            <img
-                // onClick={shareKakao}
-                src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
-                alt="카카오톡 공유 보내기 버튼"
-                style={{ width: "50px", cursor: "pointer" }}
-            />
-            </button>
-          <div className="startGameSection">
-            <CommonButton className="startGameBtn" onClick={Gotogameroompage} text="시작하기"/>
-            <RuleDescriber />
+            </div>
+          ) : (
+            <div className="afterToggleContainer">
+                <div className="connectedUserList">
+                    <Profile 
+                        role={"HOST"}
+                        btnName={""}
+                        setRole={setRole}
+                        withInput={false}
+                    />
+                    <div className="stonewallcontainer">
+                        <div className="table table-bordered table-hover">
+                            {userList.map((word, index) => (
+                                <div className='player_info_container' key={index}>
+                                    <div className='player_number'>정 {index + 1}품</div>
+                                    <div className='player_name'>{word.username}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <button id="kakaotalk-sharing-btn" onClick={shareKakao}>
+                    <img
+                        src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                        alt="카카오톡 공유 보내기 버튼"
+                        style={{ width: "50px", cursor: "pointer" }}
+                    />
+                </button>
+
+                <div className="startGameSection">
+                    <CommonButton 
+                        className="startGameBtn" 
+                        onClick={Gotogameroompage} 
+                        text="시작하기"
+                    />
+                    <RuleDescriber />
+                </div>
+            </div>
+          )}
+
           </div>
         </div>
-      )}
-      </div>
-    </div>
+        <div className="beforeGameRoomFooter">
+            <button className="backButton beforeGameRoomFooterBtn" onClick={handleBack}>뒤로가기</button>
+        </div>
+        <BeforeGameRoom/>
+    </>
+
  );
 };
 

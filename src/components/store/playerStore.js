@@ -12,7 +12,7 @@ import {create} from 'zustand';
 // 마이크 on, off 상태
 // 인풋상자 활성화 여부
 
-export const usePlayerStore = create((set) => ({
+export const UsePlayerStore = create((set) => ({
     
     // 현재 플레이어 닉네임값/설정하기
     username:'',
@@ -21,14 +21,12 @@ export const usePlayerStore = create((set) => ({
     userIndex:-1,
     setUserIndex: (newUserIndex) => set({ userIndex: newUserIndex }),
     
-
-    //플레이어 리스트
-    //플레이어 리스트 예시 형식
-    players: [],
-    setPlayers: (newPlayers) => set({ players: newPlayers }),
+    //대기방에서 돌담 안에 있는 유저 리스트
+    userList: [],
+    setUserList: (newUserList) => set({ userList: newUserList }),
 
     
 
 }))
 
-export default usePlayerStore;
+export default UsePlayerStore;
