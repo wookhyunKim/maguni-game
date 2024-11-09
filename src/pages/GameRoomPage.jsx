@@ -538,9 +538,7 @@ const GameRoomPage = () => {
                         onClose={() => {
                             setModal('goongYeAnnouncingResult', false);
                             setTimeout(() => {
-                                // IntroMusicContainer의 음악 중지
                                 setIsPlay(false);
-                                
                                 navigate('/end', {
                                     state: {
                                         result: finalCountList,
@@ -548,6 +546,7 @@ const GameRoomPage = () => {
                                         roomCode: roomcode
                                     }
                                 });
+                                window.location.reload();
                             }, 3000);
                         }}
                     />
