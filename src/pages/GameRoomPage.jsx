@@ -75,7 +75,6 @@ const GameRoomPage = () => {
     };
 
     function quitGame() {
-        const navigate = useNavigate();
         navigate('/');
         window.location.reload();
     }
@@ -476,14 +475,7 @@ const GameRoomPage = () => {
                             </div>
                         </div>
                         <div className="gameroom-sidebar">
-                            <div className="sidebar-btn">
-                                {/*여기에 onclick으로 leaveSession하면서 방 나가기 해야될듯*/}
-                                <input className="btn btn-large btn-danger"
-                                    type="button"
-                                    id="buttonLeaveSession"
-                                    onClick={() => quitGame()}
-                                    value="게임 종료" />
-                            </div>
+                        <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
                             <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
@@ -506,7 +498,7 @@ const GameRoomPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="sidebar_mymission">
+                            <div className="sidebar_mymission ">
                                 <div className="sidebar_index">나의 미션</div>
                                 <div className="sidebar_content">
                                     <div className="footer-input">
