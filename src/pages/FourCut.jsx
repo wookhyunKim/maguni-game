@@ -10,6 +10,8 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import '../styles/fourcut.css'
 import CommonButton from "../components/CommonButton";
+import {useNavigate} from 'react-router-dom';
+
 
 const FourCut = () => {
     const divRef = useRef(null);
@@ -39,12 +41,12 @@ const FourCut = () => {
 
     useEffect(() => {
         fetchImages();
-    },[]);
+    }, []);
 
     // 이미지 다운로드
     const handleDownload = async () => {
         if (!divRef.current) return;
-        
+
         const date = new Date();
         const formattedDate = `${date.getFullYear()}-${String(
             date.getMonth() + 1
@@ -65,7 +67,14 @@ const FourCut = () => {
         } catch (error) {
             console.error("이미지 변환 실패:", error);
         }
-    };
+    };  
+    const navigate = useNavigate();
+
+
+    function quitGame() {
+        navigate('/');
+        window.location.reload();
+    }
 
     return (
         <div className="take-photos-container">
@@ -148,10 +157,12 @@ const FourCut = () => {
                     </div>
 
                     <div className="button-container">
-                        <CommonButton text="프레임 변경" onClick={() => setShowModal(true)}/>
+                        <CommonButton text="프레임 변경" onClick={() => setShowModal(true)} />
                         <CommonButton text="이미지 다운로드" onClick={handleDownload}></CommonButton>
-
                     </div>
+                    <CommonButton text="다시 플레이" onClick={quitGame}></CommonButton>
+
+
 
                     {/* 이미지 목록 */}
                     {/* <div className="image-list">
