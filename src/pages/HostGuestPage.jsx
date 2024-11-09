@@ -298,12 +298,27 @@ const HostGuestPage = () => {
                                 />
                         </button>
                         <div className='gameControlSection'>
-                            <CommonButton 
+                        {console.log("Current role:", role)}
+                            {role === "host" &&
+                            (<>
+                              <CommonButton 
                                 className="startGameBtn commonButton" 
                                 onClick={Gotogameroompage} 
                                 text="시작하기"
                             />
                             <RuleDescriber />
+                            </>
+                            )}
+
+                            {role === "participant" &&
+                            (<>
+                              <CommonButton 
+                                className="startGameBtn commonButton" 
+                                text="대기중..."
+                            />
+                            <RuleDescriber />
+                            </>
+                            )}
                         </div>
                     </div>
                 </div>

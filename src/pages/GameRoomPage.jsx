@@ -450,8 +450,7 @@ const GameRoomPage = () => {
                         <div className="main-content">
                             <div className="test_button_container">
                                 <>
-                                    <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
-                                    <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
+                                    {/* <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button> */}
                                     {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
                                     <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                     <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
@@ -488,10 +487,11 @@ const GameRoomPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="sidebar_mymission">
+                            <div className="sidebar_mymission ">
                                 <div className="sidebar_index">나의 미션</div>
                                 <div className="sidebar_content">
                                     <div className="footer-input">
+                                    <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
                                     <Input 
                                             username={username} 
                                             roomcode={roomcode} 
