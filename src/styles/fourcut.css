@@ -20,16 +20,16 @@
     background-color: white;
     padding: 30px;
     border-radius: 10px;
-    max-width: 800px;
-    width: 90%;
-    max-height: 80vh;
+    max-width: 1000px;
+    width: 95%;
+    max-height: 90vh;
     overflow-y: auto;
 }
 
 .frame-options {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
     margin-top: 20px;
     padding: 10px;
     width: 100%;
@@ -44,7 +44,7 @@
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    height: 300px;
+    height: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -122,25 +122,14 @@
 }
 
 .button-container {
+    width: 586px;
     margin: 20px 0;
     display: flex;
     gap: 10px;
     justify-content: center;
 }
 
-.button-container button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
 
-.button-container button:hover {
-    background-color: #0056b3;
-}
 
 .image-list {
     margin-top: 30px;
@@ -175,3 +164,21 @@
     margin-bottom: 20px;
     font-size: 1.5rem;
 }
+
+
+.changeFrameBtn, .downloadBtn {
+    border-radius:4px;
+    background-color: #AC2F2F;
+    color: white;
+    border: none;
+    height:44px;
+    padding: 10px 0;
+    width: 100%;
+    transition: all 0.3s ease;
+    font-size: 1.5em;
+    background-color: #8B2424;
+    color: white;
+
+}
+
+

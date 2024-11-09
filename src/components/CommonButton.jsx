@@ -14,7 +14,7 @@ const CommonButton = ({ text, onClick, size = "medium", className = "" }) => {
             onClick={onClick}
             className={`
                 ${styles[size]}
-                ${className}
+                commonButton
             `}
         >
             {text}

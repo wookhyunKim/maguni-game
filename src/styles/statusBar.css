@@ -1,31 +1,59 @@
 .status-bar {
     display: grid;
-    grid-template-columns: 200px 200px 3fr 2fr 200px;
+    grid-template-columns:   minmax(100px, 200px) minmax(200px, 1fr) minmax(150px, 300px) auto auto;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
     height: 80px;
     border-bottom: 1px solid #363C4A;
     padding: 0 20px;
-}
-
-.teamLogo {
-    width: 72px;
-    height: 72px;
-    padding: 0;
+    gap: 10px;
+    /* padding-right: 5px; */
 }
 
 #session-title {
-    width:100%;
+    width: 100%;
     color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .sessionTitleContainer {
-    width: 300px;
+    width: 100%;
     display: block;
 }
 
-.timer-container {
-    display: none;
+.session-bar-container {
+    width: 100%;
+    min-width: 200px;
+}
 
+
+/* 화면이 작아질 때 3컬럼만 남기기 */
+@media screen and (max-width: 1090px) {
+    .status-bar {
+        /* 로고, 세션바, 타이머만 남김 */
+        grid-template-columns: auto auto 1fr auto;
+        padding: 0 10px;
+        gap: 30px;
+    }
+
+    /* 불필요한 컴포넌트 완전히 제거 */
+    .sessionTitleContainer,
+    .profile-card {
+        display: none;
+        width: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+
+}
+
+/* 더 작은 화면에서 로고 크기 조정 */
+@media screen and (max-width: 768px) {
+    .teamLogo {
+        width: 60px;
+        height: 60px;
+    }
 }

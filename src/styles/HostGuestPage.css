@@ -44,7 +44,15 @@ padding: 20px;
 } 
 
 .startGameBtn {
-    width: 60%;
+    width: 586px;
+    border-radius:4px;
+    background-color: #AC2F2F;
+    color: white;
+    border: none;
+    height:44px;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+    font-size: 1.5em;
 }
 
 /* 테이블 스타일링 */
@@ -53,12 +61,11 @@ padding: 20px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  /* width: 80%; */
-  margin: 20px auto;
+  /* margin: 20px auto; */
   border: 2px solid rgba(255, 255, 255, 0.6);
   padding: 15px;
   border-radius: 15px;
-  background-image: url('../assets/images/stone_wall.jpg');
+  background-image: url('../assets/images/stone_wall.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -79,10 +86,11 @@ padding: 20px;
 .table {
   color: #333;
   font-weight: bold;
+  width:586px;
 }
 
 .table tbody .player_info_container {
-  background-image: url('../assets/images/stone_wall.jpg');
+  background-image: url('../assets/images/stone_wall.webp');
   margin-bottom: 10px;
 }
 
@@ -161,8 +169,12 @@ padding: 20px;
   background-color: rgba(245, 230, 211, 1);
 }
 
-.container.mt-4 {
+.stonewallcontainer {
   margin-top: 0 !important;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
 }
 
 .hostProfile:hover {
@@ -171,4 +183,41 @@ padding: 20px;
     background-color: #2D2D2D;
   }
 
+}
+
+
+
+.startGameSection {
+  padding: 10px 0;
+}
+
+
+#kakaotalk-sharing-btn {
+  width: 586px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+#kakaotalk-sharing-btn img {
+  width: 40px;
+  height: 40px;
+  margin: 0 10px;
+}
+
+.startGameSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.gameControlSection {
+  width: 586px;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }

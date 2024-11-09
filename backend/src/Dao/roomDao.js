@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 
-const url = `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PW}@cluster0.jmw2t.mongodb.net/database?retryWrites=true&w=majority&appName=Cluster0`;
+const url = `mongodb+srv://${dbconfig.id}:${dbconfig.password}@cluster0.jmw2t.mongodb.net/database?retryWrites=true&w=majority&appName=Cluster0`;
 const client = new MongoClient(url, {
     maxPoolSize: 10,
 });
@@ -17,6 +17,7 @@ const RoomDao = {
                 },
             ],
             photos: [], // 사진 관련 데이터 저장 공간
+            results: [],
         };
         await client.connect();
         let result;
@@ -58,6 +59,10 @@ const RoomDao = {
 
             // roomId에 따라 필터링
             room = await rooms.findOne({ code: roomCode });
+            if (!room) {
+                console.log("방을 찾을 수 없음");
+                return false; // 방이 없을 경우 null 반환
+            }
         } catch (error) {
             throw error;
         } finally {

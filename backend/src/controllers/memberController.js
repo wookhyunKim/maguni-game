@@ -8,7 +8,7 @@ async function getAllWords(req, res) {
     if (result) {
         res.json(result);
     } else {
-        console.log("getAllWords error")
+        res.status(200).json({ error: "error.message" });
     }
 }
 
@@ -43,12 +43,40 @@ async function getPlayersInfo(req, res) {
     if (result) {
         res.json(result);
     } else {
-        res.status(500).json({ error: "error.message" });
+        res.status(500).json({ error: error.message });
     }
 }
+
+async function getResults(req, res) {
+    const roomCode = req.params.roomCode;
+
+    const result = await MemberService.getResults(roomCode);
+    if (result) {
+        res.json(result);
+    } else {
+        res.status(200).json({ error: "error.message" });
+    }
+}
+
+
+async function checkAnswer(req, res) {
+    const roomCode = req.body.roomCode;
+    const nickname = req.body.nickname;
+    const word = req.body.word;
+
+    const result = await MemberService.checkAnswer(roomCode, nickname, word);
+    if (result) {
+        res.json({ success: true });
+    } else {
+        res.json({ success: false });
+    }
+}
+
 module.exports = {
     insertWord,
     getAllWords,
     participantGame,
-    getPlayersInfo
+    getPlayersInfo,
+    checkAnswer,
+    getResults
 };

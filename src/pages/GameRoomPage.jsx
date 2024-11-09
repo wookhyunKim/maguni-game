@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {useEffect, useState,useRef} from 'react';
-import {useNavigate} from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import '../styles/gameroompage.css'
 
@@ -8,6 +8,7 @@ import '../styles/gameroompage.css'
 import StatusBar from '../components/layout/StatusBar.jsx';
 import Input from '../components/common/Input.jsx';
 import Footer from '../components/layout/Footer.jsx';
+import PlayerWordCard from '../components/common/PlayerWordCard.jsx';
 // 모달 import
 import ForbiddenWordlistModal from '../components/modals/ForbiddenWordlistModal.jsx';
 import SettingForbiddenWordModal from '../components/modals/goongYeForbiddenwordModal.jsx';
@@ -16,18 +17,34 @@ import GoongYeAnouncingGameEndModal from '../components/modals/GoongYeAnouncingG
 
 // 스토어 import
 import useRoomStore from '../components/store/roomStore.js';
-import { usePlayerStore } from '../components/store/playerStore.js';
+import { UsePlayerStore } from '../components/store/playerStore.js';
 import { useModalStore } from '../components/store/modalStore.js';
-import { useStoreTime } from '../components/store/gameInfoStore.js';
 
 // 오픈비두 관련 import
 import { joinSession } from '../../openvidu/app_openvidu.js';
 import html2canvas from "html2canvas";
+import Goon from "../assets/images/goongYeImage.webp";
+
+import StartSound from '../assets/bgm/game_start.wav'; 
+
+
+// 다른 모달에서 사용하는 이미지들도 import
+
+import { Context } from '../../IntroMusicContainer';
+import { useContext } from 'react';
 
 const GameRoomPage = () => {
+    const navigate = useNavigate();
     //username, roomcode를 가져옴
-    const username = usePlayerStore(state => state.username)
+    const username = UsePlayerStore(state => state.username)
     const roomcode = useRoomStore(state => state.roomcode)
+    const playerNumber = UsePlayerStore(state => state.userIndex) + 1;
+    const userRole = UsePlayerStore(state => state.userRole)
+
+    const { setIsPlay } = useContext(Context);
+
+    // console.log(playerNumber);
+
     //게임진행 소켓 상태관리
     const [socket, setSocket] = useState(null);
     const [participantList, setParticipantList] = useState([]); //유저네임 리스트
@@ -37,7 +54,7 @@ const GameRoomPage = () => {
     // 음성인식 관련 상태
     const [isStoppedManually, setIsStoppedManually] = useState(false); //수동 종료
     //소켓에서 받아온 금칙어 횟수 리스트
-    const [finalCountList,setFinalCountList] = useState([]);
+    const [finalCountList, setFinalCountList] = useState([]);
     //모달 관련 상태
     const { modals, setModal } = useModalStore();
     //사이드바에 금칙어 보이는 여부
@@ -45,25 +62,34 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 120
+    const startTime = 5
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
+
+    //이미지 프리로딩 상태
+    const [imagesPreloaded, setImagesPreloaded] = useState(false);
+
+    // Input 컴포넌트 표시 여부 상태
+    const [showInput, setShowInput] = useState(false);
 
     // 사진용 div
     const divRef = useRef(null);
 
     const handlePenalty = () => {
         // Emit an event that the filter should display for 2 seconds
+        console.log('penalty');
         const event = new CustomEvent('startPenaltyFilter');
         window.dispatchEvent(event);
     };
 
-    const navigate = useNavigate();
-    function quitGame(){
-      navigate('/');
-      window.location.reload();
+    function quitGame() {
+        navigate('/');
+        window.location.reload();
     }
+
+
+
 
     // ========================== 금칙어 설정 완료 ================
     // DB에서 유저별 금칙어 리스트 가져오기 => forbiddenWordlist
@@ -81,7 +107,7 @@ const GameRoomPage = () => {
     // 금칙어 설정 후 게임 시작하게 하는 함수
     function startGame() {
         // 게임 시작 요청
-        socket.emit('start game', roomcode,startTime); 
+        socket.emit('start game', roomcode, startTime);
         setGameActive(true);
         setTimer(startTime); // 타이머 초기화
         document.getElementById('startButton').click();
@@ -93,6 +119,7 @@ const GameRoomPage = () => {
             await getPlayersInfo();
             // 데이터를 가져온 후 모달 창 띄우기
             setModal('FW', true);
+            setShowInput(false);
 
             // Promise를 사용하여 타이머 완료를 기다림
             await new Promise(resolve => {
@@ -115,27 +142,29 @@ const GameRoomPage = () => {
             console.error('금칙어 안내 모달 창 띄우기 오류:', error);
         }
     };
-        //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
-        const startSettingForbiddenWord = async () => {
-            // 모달 표시
-            setModal('SettingForbiddenWordModal', true);
-            
-            // Promise를 사용하여 5초 대기
-            await new Promise(resolve => setTimeout(resolve, 5000));
-            
-            // 모달 닫기
-            setModal('SettingForbiddenWordModal', false);
-            
-            // 모달이 완전히 닫힌 것을 보장하기 위해 짧은 대기
-            await new Promise(resolve => setTimeout(resolve, 100));
-            
-            // 금칙어 설정 시작
-            socket.emit('start setting word', roomcode);
-        };
-    
-        const testPenalty = () => {
-            handlePenalty();
-        }
+
+    //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
+    const startSettingForbiddenWord = () => {
+        // if (imagesPreloaded) {
+        //     setModal('SettingForbiddenWordModal', true);
+        //     setShowInput(true);
+
+        //     await new Promise(resolve => setTimeout(resolve, 5000));
+
+        //     setModal('SettingForbiddenWordModal', false);
+
+        //     await new Promise(resolve => setTimeout(resolve, 100));
+
+        // } else {
+        //     console.log('이미지 로딩 중입니다...');
+        // }
+        socket.emit('start setting word', roomcode);
+    };
+
+    const testPenalty = () => {
+        handlePenalty();
+    }
+
     // ====================================================== 게임 소켓 서버 API ====================================================== 
     function connectToRoom() {
 
@@ -176,22 +205,31 @@ const GameRoomPage = () => {
         });
 
         // 금칙어 설정 안내 모달 열기
-        _socket.on('open instruction modal', () => {
+        _socket.on('open instruction modal', async () => {
             setModal('SettingForbiddenWordModal', true);
-            setTimeout(() => {
-                setModal('SettingForbiddenWordModal', false);
-            }, 4000);
+            setShowInput(true);
+            // 오디오 파일 재생
+            const audio = new Audio(StartSound); // mp3 파일 경로
+            audio.play();
+
+            await new Promise(resolve => setTimeout(resolve, 8000));
+
+            setModal('SettingForbiddenWordModal', false);
+
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+
         });
-        _socket.on('hit user', (user, occurrences) => {
-             if(user !== username) {
-                  return;
-             }
-            for (let i = 0; i < occurrences; i++) {
-                handlePenalty();
+
+        _socket.on('hit user', (user) => {
+            if (user !== username) {
+                return;
             }
+            handlePenalty();
         });
-        _socket.on('take a picture',(user)=>{
-            if(user==username){
+
+        _socket.on('take a picture', (user) => {
+            if (user == username) {
                 console.log("사진찍힘")
                 sendImage()
             }
@@ -199,8 +237,14 @@ const GameRoomPage = () => {
 
     }
 
-    const handleForbiddenWordUsed = (occurrences) => {
-        socket.emit('forbidden word used', username, occurrences);
+    const handleForbiddenWordUsedCount = (occurrences) => {
+        console.log("금칙어 사용- count", occurrences);
+        socket.emit('forbidden word used count', username, occurrences);
+    };
+
+    const handleForbiddenWordUsedHit = () => {
+        console.log("금칙어 사용 - hit");
+        socket.emit('forbidden word used hit', username);
     };
 
     useEffect(() => {
@@ -215,130 +259,177 @@ const GameRoomPage = () => {
         }
     }, [gameActive, timer]);
 
-    
+
     // ====================================================== take photos ====================================================== 
-    const sendImage= () =>{
+    const sendImage = () => {
         const date = new Date();
-        const nowtime = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
+        const nowtime = `${String(date.getHours()).padStart(2, "0")}-${String(date.getMinutes()).padStart(2, "0")}-${String(date.getSeconds()).padStart(2, "0")}`;
         if (divRef.current) {
             html2canvas(divRef.current).then(canvas => {
                 const imageData = canvas.toDataURL("image/png");
                 // 서버에 이미지 데이터 전송
-                axios.post("http://localhost:3001/upload/api/v1", 
+                axios.post("http://localhost:3001/upload/api/v1",
                     {
                         image: imageData,
-                        filename : `${roomcode}_${nowtime}.png`
+                        filename: `${roomcode}_${nowtime}.png`
                     }
                 ).then(response => {
                     console.log("Image saved on server:", response.data);
                 })
-                .catch(error => {
-                    console.error("Error saving image:", error);
-                });
+                    .catch(error => {
+                        console.error("Error saving image:", error);
+                    });
             });
         }
     };
 
     // ====================================================== detect model load ====================================================== 
-useEffect(() => {
-    if(!hasJoinedSession.current){
-        joinSession(roomcode,username);
-        connectToRoom();
-        hasJoinedSession.current = true;
-    }
-},[])
+    useEffect(() => {
+        if (!hasJoinedSession.current) {
+            joinSession(roomcode, username);
+            connectToRoom();
+            hasJoinedSession.current = true;
+        }
+    }, [])
 
 
     // ====================================================== 음성인식 ====================================================== 
     useEffect(() => {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'ko-KR';
-        recognition.continuous = true;
-        recognition.interimResults = true;
+        let recognition = null;
 
+        try {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ko-KR';
+            recognition.continuous = true;
+            recognition.interimResults = true;
 
-        const handleStart = () => {
-            setIsStoppedManually(false);
-            recognition.start();
-        };
+            const handleStart = () => {
+                setIsStoppedManually(false);
+                recognition.start();
+            };
 
-        recognition.onstart = () => {
-            console.log('녹음이 시작되었습니다.');
-            document.getElementById('startButton').disabled = true;
-            document.getElementById('stopButton').disabled = false;
-        };
+            recognition.onstart = () => {
+                console.log('녹음이 시작되었습니다.');
+                document.getElementById('startButton').disabled = true;
+                document.getElementById('stopButton').disabled = false;
+            };
 
-        recognition.onresult = (event) => {
-            let finalTranscript = '';
-            let interimTranscript = '';
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                let interimTranscript = '';
 
-            for (let i = event.resultIndex; i < event.results.length; ++i) {
-                const result = event.results[i];
-                const transcript = result[0].transcript.trim();
-
-                if (result.isFinal) {
-                    finalTranscript += transcript + ' ';
-                    // 금칙어 카운트 수정
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    const result = event.results[i];
+                    const transcript = result[0].transcript.trim();
                     const word = forbiddenWordlist.find(e => e.nickname === username)?.words;
 
-                    if (word) {
-                        const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
-                        if (occurrences > 0) {
-                            handleForbiddenWordUsed(occurrences);
+                    if (result.isFinal) {
+                        finalTranscript += transcript + ' ';
+                        // 금칙어 카운트 수정
+
+                        if (word) {
+                            const occurrences = (transcript.match(new RegExp(word, 'g')) || []).length;
+                            if (occurrences > 0) {
+                                handleForbiddenWordUsed(occurrences);
+                            }
                         }
+                    } else {
+                        interimTranscript += transcript + ' ';
                     }
-                } else {
-                    interimTranscript += transcript + ' ';
+                }
+
+                const transcriptElement = document.getElementById('subtitles');
+                if (transcriptElement) {
+                    transcriptElement.innerText = finalTranscript + interimTranscript;
+                }
+            };
+
+            const handleStop = () => {
+                setIsStoppedManually(true);
+                // startButton.disabled = false;
+                // stopButton.disabled = true;
+                recognition.stop();
+            };
+
+            recognition.onend = () => {
+                console.log('녹음이 종료되었습니다.');
+                if (!isStoppedManually) {
+                    console.log('자동으로 음성 인식 재시작');
+                    recognition.start();
+                }
+            };
+
+            // 버튼
+            const startButton = document.getElementById('startButton');
+            const stopButton = document.getElementById('stopButton');
+            startButton?.addEventListener('click', handleStart);
+            stopButton?.addEventListener('click', handleStop);
+
+            recognition.onerror = (event) => {
+                console.error('음성 인식 오류:', event.error);
+                if (event.error !== 'no-speech') {
+                    recognition.stop();
+                    recognition.start();
+                }
+            };
+
+            // Clean up 함수 수정
+            return () => {
+                if (recognition) {
+                    recognition.stop();
+                    recognition.onend = null;
+                    recognition.onresult = null;
+                    recognition.onerror = null;
+                    recognition.onstart = null;
+                }
+
+                const startButton = document.getElementById('startButton');
+                const stopButton = document.getElementById('stopButton');
+                if (startButton) startButton.removeEventListener('click', handleStart);
+                if (stopButton) stopButton.removeEventListener('click', handleStop);
+            };
+        } catch (error) {
+            console.error('음성 인식 초기화 오류:', error);
+        }
+    }, [forbiddenWordlist, isStoppedManually, username, socket]);
+
+    // 화면 크기에 따른 sidebar-btn 위치 조정을 위한 useEffect
+    useEffect(() => {
+        const handleResize = () => {
+            const sidebarBtn = document.querySelector('.sidebar-btn');
+            const mainContainer = document.querySelector('#main-container');
+            const gameRoomSidebar = document.querySelector('.gameroom-sidebar');
+
+            if (window.innerWidth <= 1090) {
+                // 1090px 이하일 때 main-container로 이동
+                if (sidebarBtn && mainContainer && sidebarBtn.parentElement === gameRoomSidebar) {
+                    mainContainer.appendChild(sidebarBtn);
+                }
+            } else {
+                // 1090px 초과일 때 원래 위치로 복귀
+                if (sidebarBtn && gameRoomSidebar && sidebarBtn.parentElement === mainContainer) {
+                    gameRoomSidebar.insertBefore(sidebarBtn, gameRoomSidebar.firstChild);
                 }
             }
-
-            const transcriptElement = document.getElementById('subtitles');
-            if (transcriptElement) {
-                transcriptElement.innerText = finalTranscript + interimTranscript;
-            }
         };
 
-        const handleStop = () => {
-            setIsStoppedManually(true);
-            // startButton.disabled = false;
-            // stopButton.disabled = true;
-            recognition.stop();
-        };
+        // 초기 실행
+        handleResize();
 
-        recognition.onend = () => {
-            console.log('녹음이 종료되었습니다.');
-            if (!isStoppedManually) {
-                console.log('자동으로 음성 인식 재시작');
-                recognition.start();
-            }
-        };
+        // resize 이벤트 리스너 추가
+        window.addEventListener('resize', handleResize);
 
-        // 버튼
-        const startButton = document.getElementById('startButton');
-        const stopButton = document.getElementById('stopButton');
-        startButton?.addEventListener('click', handleStart);
-        stopButton?.addEventListener('click', handleStop);
-
-        recognition.onerror = (event) => {
-            console.error('음성 인식 오류:', event.error);
-            if (event.error !== 'no-speech') {
-                recognition.stop();
-                recognition.start();
-            }
-        };
-
-        // Clean up
+        // cleanup
         return () => {
-            recognition.stop();
-            startButton?.removeEventListener('click', handleStart);
-            stopButton?.removeEventListener('click', handleStop);
+            window.removeEventListener('resize', handleResize);
         };
-    }, [forbiddenWordlist, isStoppedManually, username, socket]);
+    }, []);
+
     // ====================================================== return ====================================================== 
     return (
         <>
-            <StatusBar username={username} sessionTime={timer} />
+            <StatusBar username={username} sessionTime={timer} playerNumber={playerNumber} />
             <div id="main-container" className="container">
                 {/* ---------- 대기실 2 ----------*/}
                 <div id="join">
@@ -347,11 +438,9 @@ useEffect(() => {
                 <div id="session" style={{ display: 'none' }}>
                     <div id="session-body">
                         <div className="main-content">
-                            <div className="App">
+                            <div className="test_button_container">
                                 <>
-                                    <button onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
-                                    <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
-                                    {/* <button onClick={disconnectFromRoom}>방 나가기</button> */}
+                                    {/* <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button> */}
                                     <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                     <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
                                     <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>
@@ -365,48 +454,59 @@ useEffect(() => {
                             </div>
                         </div>
                         <div className="gameroom-sidebar">
-                            <div className="sidebar-btn">
-                                {/*여기에 onclick으로 leaveSession하면서 방 나가기 해야될듯*/}
-                                <input className="btn btn-large btn-danger"
-                                                    type="button"
-                                                    id="buttonLeaveSession"
-                                                    onClick={() => quitGame()}
-                                                    value="게임 종료" />
-                            </div>
-                            <div className="sidebar_wordlist">
+                            <div>
+                                {userRole === "host" ? (
+                                    <button className="commonButton settingWordsButton" onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
+                                ) : (
+                                    <button disabled>호스트가 게임을 시작하기를 기다리세요</button>
+                                )}
+                            </div>                            <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
-                                    <table className="user-wordlist-table">
-                                        <tbody>
-                                            <ul>
-                                                {isWordsShown && participantList
-                                                    .filter(user => user !== username)
-                                                    .map(user => (
-                                                        <li key={user}>
-                                                            <div>
-                                                                {user} - {forbiddenWordlist.find(e => e.nickname === user)?.words || '금칙어 없음'}
-                                                                - 금칙어 카운트: {forbiddenWordCount[user] || 0}
-                                                            </div>
-                                                        </li>
-                                                    ))}
-                                            </ul>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div className="sidebar_mymission">
-                                <div className="sidebar_index">나의 미션</div>
-                                    <div className="sidebar_content">
-                                    <div className="footer-input">
-                                    <Input 
-                                        username={username} 
-                                        roomcode={roomcode} 
-                                        participantList={participantList} 
-                                        setParticipantList={setParticipantList}
-                                        />
+                                    <div className="player-cards-container">
+                                        {isWordsShown && participantList
+                                            .filter(user => user !== username)
+                                            .map((user, index) => {
+                                                // 원래 플레이어의 인덱스 찾기
+                                                const originalPlayerIndex = participantList.findIndex(p => p === user);
+                                                return (
+                                                    <PlayerWordCard
+                                                        key={user}
+                                                        user={user}
+                                                        words={forbiddenWordlist.find(e => e.nickname === user)?.words}
+                                                        count={forbiddenWordCount[user]}
+                                                        playerIndex={originalPlayerIndex}
+                                                    />
+                                                );
+                                            })}
                                     </div>
                                 </div>
                             </div>
+                            <div className="sidebar_mymission ">
+                                <div className="sidebar_index">나의 미션</div>
+                                <div className="sidebar_content">
+                                    <div className="footer-input">
+                                        <Input
+                                            username={username}
+                                            roomcode={roomcode}
+                                            participantList={participantList}
+                                            setParticipantList={setParticipantList}
+                                            showInput={showInput}
+                                        />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div className="sidebar-btn">
+                                <input
+                                    className="btn btn-large btn-danger"
+                                    type="button"
+                                    id="buttonLeaveSession"
+                                    onClick={quitGame}
+                                    value="나가기"
+                                />
+                            </div>
+
                             {/* <div className="sidebar_goongye">
                                 <div className="sidebar_index">진행자</div>
                                 <div className="sidebar_content">
@@ -434,29 +534,32 @@ useEffect(() => {
                     />
                 )}
                 {modals.goongYeAnouncingEnd && (
-                    <GoongYeAnouncingEndModal onClose={() => setModal('goongYeAnouncingEnd', false)} />
+                    <GoongYeAnouncingEndModal onClose={() => {
+                        setModal('goongYeAnnouncingEnd', false);
+                        setShowInput(false); // 모달 종료 시 Input 숨기기
+                    }} />
                 )}
                 {modals.goongYeAnnouncingResult && (
-                <GoongYeAnouncingGameEndModal 
-                    finalCounts={finalCountList} 
-                    onClose={() => {
-                        setModal('goongYeAnnouncingResult', false);
-                        // 모달이 닫힌 후 페이지 이동
-                        setTimeout(() => {
-                            navigate('/end', { 
-                                state: { 
-                                    result: finalCountList,
-                                    words: forbiddenWordlist,
-                                    roomCode: roomcode 
-                                }
-                            });
-                            window.location.reload();
-                        }, 3000); // 모달 애니메이션을 위한 지연시간 5초
-                    }} 
-                />
+                    <GoongYeAnouncingGameEndModal
+                        finalCounts={finalCountList}
+                        onClose={() => {
+                            setModal('goongYeAnnouncingResult', false);
+                            setTimeout(() => {
+                                setIsPlay(false);
+                                navigate('/end', {
+                                    state: {
+                                        result: finalCountList,
+                                        words: forbiddenWordlist,
+                                        roomCode: roomcode,
+                                        username: username
+                                    }
+                                });
+                                window.location.reload();
+                            }, 3000);
+                        }}
+                    />
                 )}
             </div>
-            <Footer />
         </>
     );
 }

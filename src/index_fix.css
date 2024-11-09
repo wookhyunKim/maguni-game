@@ -12,6 +12,8 @@ body {
 
 
 :root {
+  background-color: #A2CDCD;
+  /* min-width:990px; */
   width:100vw;
   /* min-height:100vh; */
   height:100%;
@@ -49,4 +51,69 @@ input {
 ul {
   list-style: none;
   padding-left: 0;
+}
+
+@keyframes blinking-border {
+  0% {
+    border-color: red;
+    box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
+  }
+  50% {
+    border-color: transparent;
+    box-shadow: none;
+  }
+  100% {
+    border-color: red;
+    box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5);
+  }
+}
+
+.blinking-border {
+  animation: blinking-border 1s infinite;
+  border-width: 4px;
+  border-style: solid;
+  border-radius: 4px;
+  padding: 8px; /* Adjust this value for the desired spacing */
+  box-sizing: border-box; /* Ensures padding doesn’t increase the input size */
+}
+
+.rule-container {
+  position: relative;
+  display: inline-block;
+}
+
+.ruleDescribe {
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+}
+
+.speech-bubble {
+  position: absolute;
+  top: 30px; /* Adjust as needed to control vertical position */
+  left: -50px; /* Adjust as needed to control horizontal position */
+  width: 200px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  top: -10px; /* Adjust to position the triangle above the bubble */
+  left: 20px; /* Adjust to align the triangle with the left side */
+  transform: rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-left: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+}
+
+.nextButton {
+  height: 36px;
 }

@@ -7,6 +7,9 @@ import MUSTACHE from "../src/assets/images/mustache.png";
 import MUMURI from "../src/assets/images/mumuri.png";
 import DISH from "../src/assets/images/dish.png";
 import GOONGYE from "../src/assets/images/goongYe.png";
+import RCEYE from "../src/assets/images/RCeye.png";
+import SMILEMOUTH from "../src/assets/images/smileMouth2.png";
+import MINIONS from "../src/assets/images/minions.png";
 
 
 var OV;
@@ -226,6 +229,65 @@ function applyEnhancedLensDistortion(ctx, keypoints) {
    ctx.putImageData(imageData, noseCenter.x - radius, noseCenter.y - radius);
 }
 
+function stretchForehead(ctx, keypoints) {
+   const foreheadCenter = keypoints[10]; // 이마 중심 좌표 (이마를 나타내는 키포인트)
+   const radius = 60; // 이마 주변의 효과 범위 조정 반경
+   const stretchFactor = 1.3; // 이마를 위쪽으로 늘리는 강도 (값을 높일수록 늘어남)
+
+   // 이마 주변의 픽셀 데이터를 가져옵니다.
+   const imageData = ctx.getImageData(
+       foreheadCenter.x - radius,
+       foreheadCenter.y - radius,
+       radius * 2,
+       radius * 2
+   );
+
+   const data = imageData.data;
+   const width = imageData.width;
+   const height = imageData.height;
+   const centerX = radius;
+   const centerY = radius;
+
+   // 왜곡된 픽셀 데이터를 저장할 새로운 버퍼 생성
+   const outputData = new Uint8ClampedArray(data);
+
+   // 이마를 위쪽으로 늘리는 왜곡 효과 적용
+   for (let y = 0; y < height; y++) {
+       for (let x = 0; x < width; x++) {
+           const dx = x - centerX;
+           const dy = y - centerY;
+           const dist = Math.sqrt(dx * dx + dy * dy);
+
+           if (dist < radius) {
+               // 중심에서의 거리와 y 위치에 따라 위쪽으로 늘리는 강도 계산
+               const factor = 1 + stretchFactor * (1 - dist / radius);
+               const newX = Math.floor(centerX + dx);
+               const newY = Math.floor(centerY + dy * factor);
+
+               // 새 좌표가 이미지 경계를 벗어나지 않도록 제한
+               if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
+                   const idx = (y * width + x) * 4;
+                   const newIdx = (newY * width + newX) * 4;
+
+                   // 왜곡된 위치로 색상 값을 이동 (outputData에 저장)
+                   outputData[newIdx] = data[idx];
+                   outputData[newIdx + 1] = data[idx + 1];
+                   outputData[newIdx + 2] = data[idx + 2];
+                   outputData[newIdx + 3] = data[idx + 3];
+               }
+           }
+       }
+   }
+
+   // 왜곡된 데이터를 원본 imageData에 복사
+   for (let i = 0; i < data.length; i++) {
+       data[i] = outputData[i];
+   }
+
+   // 왜곡된 이미지 데이터를 캔버스에 다시 그립니다.
+   ctx.putImageData(imageData, foreheadCenter.x - radius, foreheadCenter.y - radius);
+}
+
 const startStreaming = async (session, OV, mediaStream) => {
    // Publisher 화면에 원본 비디오 표시용 `publisherCanvas`
    const publisherCanvas = document.createElement('canvas');
@@ -255,14 +317,21 @@ const filters = [
    { image: new Image(), type: "baldFilter" },
    { image: new Image(), type: "fallingImage" },
    { image: new Image(), type: "goongYe" },
+   { image: new Image(), type: "eyeFilter"},
+   { image: new Image(), type: "mouthFilter"},
+   { image: new Image(), type: "faceOutlineFilter" },
    { type: "noseEnlarge" },
-   {type:"smile"},
+   { type: "smile" },
+   { type: "foreHead" },
  ];
  //filters[0].image.src = SUNGLASS;
  filters[0].image.src = MUSTACHE;
  filters[1].image.src = MUMURI;
  filters[2].image.src = DISH;
  filters[3].image.src = GOONGYE;
+ filters[4].image.src = RCEYE;
+ filters[5].image.src = SMILEMOUTH;
+ filters[6].image.src = MINIONS;
  
  let activeFilters = [];
 
@@ -273,7 +342,7 @@ const IMG_HEIGHT = 120;
 
  // 기존 필터 함수와 별개로 애니메이션을 위한 함수
 function animateImage(ctx, x, yPosition) {
-   ctx.drawImage(filters[3].image, x - IMG_WIDTH / 2, yPosition, IMG_WIDTH, IMG_HEIGHT);
+   ctx.drawImage(filters[2].image, x - IMG_WIDTH / 2, yPosition, IMG_WIDTH, IMG_HEIGHT);
 }
  
  const startFiltering = () => {
@@ -287,6 +356,8 @@ function animateImage(ctx, x, yPosition) {
          case "baldFilter":
          case "fallingImage":
          case "goongYe":
+         case "mouthFilter":
+         case "faceOutlineFilter":
             newFilter.timeoutId = setTimeout(() => {
                activeFilters = activeFilters.filter((f) => f !== newFilter);
             }, 2000);
@@ -294,10 +365,11 @@ function animateImage(ctx, x, yPosition) {
          break;
          case "noseEnlarge":
          case "smile":
+         case "foreHead":
                               // 타이머가 만료되면 필터를 제거
          newFilter.timeoutId = setTimeout(() => {
             activeFilters = activeFilters.filter((f) => f !== newFilter);
-         }, 5000);
+         }, 3000);
 
          activeFilters.push(newFilter);
          break;
@@ -343,11 +415,12 @@ function animateImage(ctx, x, yPosition) {
          if (faces[0]) {
             activeFilters.forEach((filter) => {
               const { x, y, width, height, angle } = calculateFilterPosition(filter.type, faces[0].keypoints);
-          
+
               switch (filter.type) {
                 case "eyeFilter":
                 case "mustacheFilter":
                 case "baldFilter":
+                case "mouthFilter":
                   // 기존 필터의 위치 계산
                   ctx.save();
                   ctx.translate(x + width / 2, y + height / 2);
@@ -358,27 +431,36 @@ function animateImage(ctx, x, yPosition) {
           
                 case "fallingImage":{
                   // 떨어지는 이미지 애니메이션
-                  const fallPosition = calculateFilterPosition(filter.type, faces[0].keypoints);
-                  if (filter.yPosition < fallPosition.y) {
+                  const fallPosition = faces[0].keypoints[10];
+                  if (filter.yPosition < (fallPosition.y + 20))  {
                     filter.yPosition += 5; // 떨어지는 속도 조절
                   }
                   animateImage(ctx, fallPosition.x, filter.yPosition);
                   break;
                 }
           
-                case "goongYe":
+               case "goongYe":
                   // GOONGYE 이미지를 캔버스 전체에 그리기
                   ctx.drawImage(filter.image, 0, 0, compositeCanvas.width, compositeCanvas.height);
                   break;
 
-                  case "noseEnlarge":
-                     //applyNoseEnlargeEffect(ctx, faces[0].keypoints,compositeCanvas); // 코 확대 필터 호출
-                     applyEnhancedLensDistortion(ctx,faces[0].keypoints);
-                     break;
+               case "faceOutlineFilter":
+                  ctx.drawImage(filter.image,x,y,width,height);
+                  break;
+
+               case "noseEnlarge":
+                  //applyNoseEnlargeEffect(ctx, faces[0].keypoints,compositeCanvas); // 코 확대 필터 호출
+                  applyEnhancedLensDistortion(ctx,faces[0].keypoints);
+                  break;
 
                case "smile":
                   applyEnhancedMouthDistortion(ctx,faces[0].keypoints);
                   break;
+
+               case "foreHead":
+                  stretchForehead(ctx,faces[0].keypoints);
+                  break;
+               
           
                 default:
                   console.warn(`Unknown filter type: ${filter.type}`);
@@ -448,12 +530,47 @@ function appendUserData(videoElement, connection) {
       userData = JSON.parse(connection.data).clientData;
       nodeId = connection.connectionId;
    }
-   var dataNode = document.createElement('div');
-   dataNode.className = "data-node";
-   dataNode.id = "data-" + nodeId;
-   dataNode.innerHTML = "<p>" + userData + "</p>";
-   videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
-   addClickListener(videoElement, userData);
+   // var dataNode = document.createElement('div');
+   // dataNode.className = "data-node";
+   // dataNode.id = "data-" + nodeId;
+   // dataNode.innerHTML = "<p>" + userData + "</p>";
+   // videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
+   // addClickListener(videoElement, userData);
+   // var userData;
+   // var nodeId;
+   // if (typeof connection === "string") {
+   //     userData = connection;
+   //     nodeId = connection;
+   // } else {
+   //     userData = JSON.parse(connection.data).clientData;
+   //     nodeId = connection.connectionId;
+   // }
+
+   // // 로딩 컨테이너 생성
+   // const loadingContainer = document.createElement('div');
+   // loadingContainer.className = "loading-container";
+   // loadingContainer.innerHTML = `
+   //     <div class="loading-spinner"></div>
+   //     <div class="loading-text">접속 대기중...</div>
+   // `;
+
+   // // 비디오 요소가 로드되기 전에 로딩 컨테이너를 표시
+   // videoElement.parentNode.insertBefore(loadingContainer, videoElement);
+
+   // // 비디오가 실제로 재생되기 시작할 때 로딩 컨테이너를 제거
+   // videoElement.addEventListener('playing', () => {
+   //     if (loadingContainer.parentNode) {
+   //         loadingContainer.parentNode.removeChild(loadingContainer);
+   //     }
+   //     videoElement.style.display = 'block';
+   // });
+
+   // var dataNode = document.createElement('div');
+   // dataNode.className = "data-node";
+   // dataNode.id = "data-" + nodeId;
+   // dataNode.innerHTML = "<p>" + userData + "</p>";
+   // videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
+   // addClickListener(videoElement, userData);
 }
 
 function removeUserData(connection) {

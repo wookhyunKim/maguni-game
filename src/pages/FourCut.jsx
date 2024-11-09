@@ -10,6 +10,9 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import '../styles/fourcut.css'
 import CommonButton from "../components/CommonButton";
+import {useNavigate} from 'react-router-dom';
+import WallImage from '../assets/images/endPage_bgImage.webp';
+
 
 const FourCut = () => {
     const divRef = useRef(null);
@@ -27,24 +30,24 @@ const FourCut = () => {
         { id: 'frame3', image: YeomjuFrame, name: '염주 안대 프레임' }
     ];
 
-    // 서버에서 이미지 가져오기
-    const fetchImages = async () => {
-        try {
-            const response = await axios.get(`http://localhost:3001/upload/api/v1/${roomCode}`);
-            setImageList(response.data);
-        } catch (error) {
-            console.error("이미지 로딩 실패:", error);
-        }
-    };
+    // // 서버에서 이미지 가져오기
+    // const fetchImages = async () => {
+    //     try {
+    //         const response = await axios.get(`http://localhost:3001/upload/api/v1/${roomCode}`);
+    //         setImageList(response.data);
+    //     } catch (error) {
+    //         console.error("이미지 로딩 실패:", error);
+    //     }
+    // };
 
-    useEffect(() => {
-        fetchImages();
-    },[]);
+    // useEffect(() => {
+    //     fetchImages();
+    // }, []);
 
     // 이미지 다운로드
     const handleDownload = async () => {
         if (!divRef.current) return;
-        
+
         const date = new Date();
         const formattedDate = `${date.getFullYear()}-${String(
             date.getMonth() + 1
@@ -65,10 +68,17 @@ const FourCut = () => {
         } catch (error) {
             console.error("이미지 변환 실패:", error);
         }
-    };
+    };  
+    const navigate = useNavigate();
+
+
+    function quitGame() {
+        navigate('/');
+        window.location.reload();
+    }
 
     return (
-        <div className="take-photos-container">
+        <div className="wallImage" style={{backgroundImage: `url(${WallImage})`}}>
             {/* 프레임 선택 모달 */}
             {showModal && (
                 <div className="modal-overlay">
@@ -131,7 +141,8 @@ const FourCut = () => {
                                         }}
                                     >
                                         <img
-                                            src={`../../backend/src/images/${image}`}
+                                            // src={`../../backend/src/images/${image}`}
+                                            src={`http://localhost:3001/photos/${image}`}
                                             // src={image}
                                             alt={`사진 ${index + 1}`}
                                             style={{
@@ -147,10 +158,22 @@ const FourCut = () => {
                     </div>
 
                     <div className="button-container">
-                        <CommonButton text="프레임 변경" onClick={() => setShowModal(true)}/>
-                        <CommonButton text="이미지 다운로드" onClick={handleDownload}></CommonButton>
-
+                        <button 
+                            className="changeFrameBtn" 
+                            onClick={() => setShowModal(true)}
+                        >
+                            프레임 변경
+                        </button>
+                        <button 
+                            className="downloadBtn" 
+                            onClick={handleDownload}
+                        >
+                            이미지 다운로드
+                        </button>
                     </div>
+
+
+
 
                     {/* 이미지 목록 */}
                     {/* <div className="image-list">
