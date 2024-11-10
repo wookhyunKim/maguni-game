@@ -42,7 +42,7 @@ io.on('connection', (client) => {
       forbiddenWordCounts[username] = 0; // 초기화
     }
     forbiddenWordCounts[username] += occurrences; // 카운트 증가
-    totalCount += 1; //사진찍기 위한 카운트
+    totalCount += occurrences; //사진찍기 위한 카운트
 
     // 모든 클라이언트에 카운트 업데이트
     io.emit('update forbidden word count', forbiddenWordCounts);
