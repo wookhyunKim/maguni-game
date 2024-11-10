@@ -1,28 +1,28 @@
-.stamp-container {
+.fail-stamp-container {
     position: relative;
-  }
+}
   
 
-  .stamp-container::after {
-    content: "참수";
-    font-family: "Arial", sans-serif;
-    color: red;
-    font-weight: 900;
-    font-size: 35px;
-    width: 80px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 10px;
-    left: 100px;
-    border: 3px solid red;
-    border-radius: 5px;
-    transform: rotate(-15deg);
-    opacity: 0;
-    animation: stamp-animation-fail 1s ease forwards;
-  }
+.fail-stamp-container::after {
+  content: "참수";
+  font-family: "Arial", sans-serif;
+  color: red;
+  font-weight: 900;
+  font-size: 35px;
+  width: 80px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  border: 3px solid red;
+  border-radius: 5px;
+  transform: rotate(-15deg);
+  opacity: 0;
+  animation: stamp-animation-fail 1s ease forwards;
+}
   
   /* 도장 찍히는 애니메이션 */
   @keyframes stamp-animation-fail {
@@ -34,4 +34,19 @@
       opacity: 1;
       transform: scale(1) rotate(-30deg);
     }
+  }
+  
+  .fail-stamp-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+  .success-stamp-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }

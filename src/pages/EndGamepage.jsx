@@ -1,6 +1,7 @@
 import { useLocation,useNavigate } from 'react-router-dom';
 import '../styles/endGame.css'
 import WallImage from '../assets/images/endPage_bgImage.webp'
+import hanjiImage from '../assets/images/endpage_hanji.webp'
 import MontageConatainer from '../components/common/montageConatainer';
 import MontageImage from '../assets/images/montage'
 import { useEffect, useContext, useState } from 'react';
@@ -62,19 +63,15 @@ const EndGamepage = () => {
         });
     };
 
-    const getResults = () => {
-        return axios({
-            method: 'GET',
-            url: `http://localhost:3001/member/game/api/v1/${roomCode}`,
-        })
-            .then((res) => {
-                console.log("end game  result : ", res.data)
-                setAnimationResult(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        };
+    const getResults = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3001/member/game/api/v1/${roomCode}`);
+            console.log("서버 응답 데이터:", response.data);
+            setAnimationResult(response.data);
+        } catch (err) {
+            console.error("getResults 에러:", err);
+        }
+    };
 
 
     //유저별로 금칙어 단어, 그리고 위반 횟수 표시
@@ -83,22 +80,29 @@ const EndGamepage = () => {
         
         return words.map(userInfo => {
             const nickname = userInfo.nickname;
-            const forbiddenWord = userInfo.words[0];
+            const forbiddenWord = userInfo.words?.[0] || '';
             const violationCount = result[nickname] || 0;
             
-            // 스탬프 애니메이션을 위한 클래스 추가
-            const stampClass = !showModal && animationResult[nickname] 
-                ? 'stamp-container success-animation'
-                : 'stamp-container fail-animation';
+            // 배열에서 해당 유저의 결과 찾기
+            const userResultObj = animationResult?.find(item => Object.keys(item)[0] === nickname);
+            const userResult = userResultObj ? userResultObj[nickname] : false;
+            
+            console.log(`${nickname}의 결과 객체:`, userResultObj);
+            console.log(`${nickname}의 결과값:`, userResult);
+            
+            const isSuccess = !showModal && userResult === true;
+            
+            // MontageContainer에 적용할 클래스
+            const stampClass = !showModal 
+                ? (isSuccess ? 'success-stamp-container' : 'fail-stamp-container')
+                : '';
+                
+            console.log(`${nickname}의 최종 클래스:`, stampClass);
 
             return (
-                <MontageConatainer 
-                    key={nickname} 
-                    className={`user-result ${!showModal ? stampClass : ''}`}
-                >
-                    <>
+                <div className="hanji" key={nickname} style={{backgroundImage: `url(${hanjiImage})`}}>
+                    <div className={stampClass}>
                         <div className="hanji-text">
-                            <div className="stamp-container"></div>
                             <p className="hanji-forbiddenWord">금칙어: {forbiddenWord}</p>
                             <p className="hanji-count">위반횟수: {violationCount}회</p>
                         </div>
@@ -108,8 +112,8 @@ const EndGamepage = () => {
                         <div className="hanji-username">
                             <p>{nickname}</p>
                         </div>
-                    </>
-                </MontageConatainer>
+                    </div>
+                </div>
             );
         });
     };
@@ -199,7 +203,7 @@ const EndGamepage = () => {
                 <div className="result-container">
                     <div className="result-title">금칙어 위반 역적</div>
                     <div className="hanji-container">
-                    {/* 여기안에 한지 몽타주들 옴 */}
+                    {/* 여기안에 한지 타주들 옴 */}
                     {displayResults()}
                     </div>
                 </div>
