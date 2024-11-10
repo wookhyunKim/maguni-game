@@ -466,7 +466,7 @@ function animateImage(ctx, x, yPosition) {
                   break;
 
                case "faceOutlineFilter":
-                  ctx.drawImage(filter.image,0,0,compositeCanvas.width,compositeCanvas.height);
+                  ctx.drawImage(filter.image,x,y,width,height);
                   break;
 
                case "noseEnlarge":
