@@ -28,7 +28,7 @@ const GoongYeAnouncingGameEndModal = ({finalCounts={},onClose}) => {
         );
 
         let selectedScript = scriptData.goongYeAnnouncingResult[ANNOUNCE_RESULT] + "\n";
-        selectedScript += scriptData.goongYeAnnouncingResult[ANNOUNCE_VICTIM].replace("username", highestUser.username);
+        selectedScript += scriptData.goongYeAnnouncingResult[ANNOUNCE_VICTIM].replace("username", highestUser.username ||"없음");
         setCurrentScript(selectedScript);
 
         // 타이머는 이미지 로딩 상태와 관계없이 즉시 시작
