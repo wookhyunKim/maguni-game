@@ -2,7 +2,6 @@ import { useLocation,useNavigate } from 'react-router-dom';
 import '../styles/endGame.css'
 import WallImage from '../assets/images/endPage_bgImage.webp'
 import hanjiImage from '../assets/images/endpage_hanji.webp'
-import MontageConatainer from '../components/common/montageConatainer';
 import MontageImage from '../assets/images/montage'
 import { useEffect, useContext, useState } from 'react';
 import ENDINGBGM from "../assets/bgm/endbgm.mp3";
@@ -83,8 +82,10 @@ const EndGamepage = () => {
             const forbiddenWord = userInfo.words?.[0] || '';
             const violationCount = result[nickname] || 0;
             
-            // 배열에서 해당 유저의 결과 찾기
-            const userResultObj = animationResult?.find(item => Object.keys(item)[0] === nickname);
+            // animationResult가 배열인지 확인하고, 아니라면 빈 배열을 사용
+            const userResultObj = Array.isArray(animationResult) 
+                ? animationResult.find(item => Object.keys(item)[0] === nickname)
+                : undefined;
             const userResult = userResultObj ? userResultObj[nickname] : false;
             
             console.log(`${nickname}의 결과 객체:`, userResultObj);
