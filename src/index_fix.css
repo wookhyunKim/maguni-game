@@ -90,7 +90,7 @@ ul {
   position:relative;
 }
 
-.speech-bubble {
+.speech-bubble-vertical {
   position: absolute;
   top: 60px;
   left: -100px;
@@ -107,7 +107,7 @@ ul {
   word-wrap: break-word;
 }
 
-.speech-bubble::after {
+.speech-bubble-vertical::after {
   content: '';
   position: absolute;
   bottom: -8px;
@@ -117,7 +117,40 @@ ul {
   border-color: #f9f9f9 transparent transparent transparent;
 }
 
-.rule-container:hover .speech-bubble {
+.speech-bubble-horizontal {
+  position: absolute;
+  bottom: 60px; /* 아래쪽으로 오프셋 설정 */
+  right: -100px; /* 오른쪽으로 오프셋 설정 */
+  width: 300px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  word-wrap: break-word;
+}
+
+.speech-bubble-horizontal::after {
+  content: '';
+  position: absolute;
+  top: 50%; /* 세로 가운데 정렬 */
+  right: -8px; /* 꼬리가 오른쪽에 위치 */
+  transform: translateY(-50%);
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent transparent #f9f9f9;
+}
+
+.rule-container:hover .speech-bubble-vertical {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.rule-container:hover .speech-bubble-horizontal {
   opacity: 1;
   transform: scale(1);
 }
