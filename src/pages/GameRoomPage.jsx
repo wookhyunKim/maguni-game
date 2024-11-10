@@ -188,6 +188,7 @@ const GameRoomPage = () => {
         });
 
         _socket.on('setting word ended', () => {
+            
             forbiddenwordAnouncement();
         });
 
@@ -196,16 +197,13 @@ const GameRoomPage = () => {
             setModal('SettingForbiddenWordModal', true);
             setShowInput(true);
             // 오디오 파일 재생
-            const audio = new Audio(StartSound); // mp3 파일 경로
+            const audio = new Audio(StartSound);
             audio.play();
 
-            await new Promise(resolve => setTimeout(resolve, 8000));
-
-            setModal('SettingForbiddenWordModal', false);
-
-            await new Promise(resolve => setTimeout(resolve, 100));
-
-
+            // 5초 후에 모달 닫기
+            setTimeout(() => {
+                setModal('SettingForbiddenWordModal', false);
+            }, 5000);
         });
 
         _socket.on('hit user', (user) => {
@@ -403,7 +401,7 @@ const GameRoomPage = () => {
                         <div className="main-content">
                             <div className="test_button_container">
                                 <>
-                                    <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
+                                    <button id="penaltyTestButton" onClick={testPenalty} style={{ display: 'none' }}>벌칙 테스트</button>
                                     <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                     <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
                                     <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>
