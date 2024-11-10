@@ -281,3 +281,8 @@
 .guestWaitingBtn {
     border-radius: 10px;
 }
+
+/* 미션 섹션 숨김 상태를 위한 클래스 추가 */
+.sidebar_mymission.hidden {
+    display: none;
+}
