@@ -4,6 +4,9 @@ import * as http from "http";
 
 const app = express();
 const server = http.createServer(app);
+const cors = require('cors');
+app.use(cors({ origin: 'https://main.maguni-game.com' }));
+
 
 const io = new Server(server, {
   cors: {
@@ -73,18 +76,18 @@ io.on('connection', (client) => {
 
   client.on('start setting word', (roomcode) => {
     io.to(roomcode).emit('open instruction modal');
-    
+
     // 모달이 닫히는 시간(12초) 이후에 타이머 시작
     setTimeout(() => {
-        let timer = 20;
-        const countdownInterval = setInterval(() => {
-            io.to(roomcode).emit('timer update', timer);
-            timer--;
-            if (timer < 0) {
-                clearInterval(countdownInterval);
-                io.to(roomcode).emit('setting word ended');
-            }
-        }, 1000);
+      let timer = 20;
+      const countdownInterval = setInterval(() => {
+        io.to(roomcode).emit('timer update', timer);
+        timer--;
+        if (timer < 0) {
+          clearInterval(countdownInterval);
+          io.to(roomcode).emit('setting word ended');
+        }
+      }, 1000);
     }, 13000); // 모달 표시 시간(12초) + 500ms 버퍼
   });
 
