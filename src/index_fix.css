@@ -12,7 +12,7 @@ body {
 
 
 :root {
-  background-color: #A2CDCD;
+  background-color: #F5E6D3;
   /* min-width:990px; */
   width:100vw;
   /* min-height:100vh; */
@@ -87,11 +87,12 @@ ul {
   width: 42px;
   height: 42px;
   cursor: pointer;
+  position:relative;
 }
 
 .speech-bubble {
   position: absolute;
-  top: -160px;
+  top: 60px;
   left: -100px;
   width: 300px;
   padding: 15px;

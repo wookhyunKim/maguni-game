@@ -20,21 +20,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-right: 100px;
     width: 100%;
     max-width: 586px;
     margin: 0 auto;
     height: 44px; /* nicknameInput과 동일한 높이 */
+    padding-right: 70px;
 }
 
 .nicknameRandomBtn {
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
     color: #4A4A4A;
+    font-weight: bold;
     font-family: 'NeoDunggeunmo Pro', sans-serif;
     transition: color 0.3s ease;
     text-decoration: underline;
-    padding: 5px 10px;
+    padding:5px 10px;
+    margin-top: 100px;
     display: flex;
     align-items: center;
     justify-content: center;

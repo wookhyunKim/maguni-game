@@ -12,10 +12,16 @@
 
 #session-title {
     width: 100%;
-    color: white;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: #FFFFFF;
+    text-shadow: 
+        3px 3px 0 #444444,
+        -3px -3px 0 #444444,
+        3px -3px 0 #444444,
+        -3px 3px 0 #444444,
+        2px 2px 0 #444444,
+        -2px -2px 0 #444444,
+        2px -2px 0 #444444,
+        -2px 2px 0 #444444;
 }
 
 .sessionTitleContainer {
@@ -56,4 +62,11 @@
         width: 60px;
         height: 60px;
     }
+}
+
+#sessionTitleContianer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin:0;
 }

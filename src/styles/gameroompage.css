@@ -5,10 +5,8 @@
 }
 
 
-
-
 .status-bar, .main,.footer {
-    background-color: #1E2329;
+    background-color: #E6D5C1;
 }
 .main {
     flex:1;
@@ -53,7 +51,7 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    background-color: #1E2329;
+    background-color: #E6D5C1;
     margin: 0;
     max-width: 100%;
 }
@@ -83,14 +81,15 @@
     height: 100%;
     min-width: 300px; /* 최소 너비 보장 */
     padding: 20px;
-    background-color: #2C3340;
+    background-color: #D4BFA6;
     border-radius: 8px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    color: #E4E6EB;
+    color: #4A4039;
     overflow-y: auto;
     /* font-family: 'Inter', sans-serif; */
+    font-size: 20px;
 }
 
 .sidebar_wordlist,
@@ -102,15 +101,15 @@
 .sidebar_index {
     font-weight: bold;
     padding: 10px;
-    background-color: #363C4A;
+    background-color: #C4AB8D;
     border-radius: 4px 4px 0 0;
-    color: #E4E6EB;
+    color: #4A4039;
 }
 
 .sidebar_content {
     padding: 10px;
-    background-color: #2C3340;
-    border: 1px solid #363C4A;
+    background-color: #D4BFA6;
+    border: 1px solid #C4AB8D;
     border-radius: 0 0 4px 4px;
 }
 
@@ -213,36 +212,7 @@
     /* font-family: 'Inter', sans-serif; */
 }
 
-@media screen and (max-width: 1090px) {
-    #session-body {
-        display: flex;
-        flex-direction: column;
-    }
 
-    .gameroom-sidebar {
-        order: 1;
-        width: 100%;
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        grid-gap: 30px;
-        height: fit-content;
-    }
-
-    .main-content {
-        order: 2;
-    }
-
-    /* main-container에 있을 때의 스타일 */
-    #main-container .sidebar-btn {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-        background-color: #2C3340;
-        border-radius: 8px;
-        padding: 10px;
-    }
-}
 
 /* 로딩 애니메이션을 위한 스타일 */
 .loading-container {
@@ -281,4 +251,33 @@
     padding: 5px 10px;
     margin: 10px 0;
     font-size: 1rem;
+}
+
+.gameroom-sidebar > div {
+    position: relative;
+    padding-bottom: 20px;  /* 각 요소 아래 여백 */
+    margin-bottom: 20px;   /* 구분선과의 간격 */
+}
+
+/* 마지막 요소는 구분선과 여백 제거 */
+.gameroom-sidebar > div:last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+/* 구분선 추가 */
+.gameroom-sidebar > div:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #363C4A;  /* 구분선 색상 */
+}
+
+
+.guestWaitingBtn {
+    border-radius: 10px;
 }

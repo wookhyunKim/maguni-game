@@ -121,22 +121,16 @@ const GameRoomPage = () => {
             setModal('FW', true);
             setShowInput(false);
 
-            // Promise를 사용하여 타이머 완료를 기다림
-            await new Promise(resolve => {
-                setTimeout(() => {
-                    setModal('FW', false);
-                    resolve(); // 타이머 완료 후 Promise 해결
-                }, 5000);
-            });
-
-            // 모달이 완전히 닫힌 후에 사이드바에 금칙어 표시
-            setIsWordsShown(true);
-
-            // 금칙어 안내가 끝난 후 1초 뒤에 자동으로 게임 시작
+            // 5초 후에 모달 닫기
             setTimeout(() => {
-                document.getElementById('startgame').click();
-                //startGame();
-            }, 1000);
+                setModal('FW', false);
+                setIsWordsShown(true);
+                
+                // 모달이 완전히 닫힌 후에 게임 시작
+                setTimeout(() => {
+                    document.getElementById('startgame').click();
+                }, 1000);
+            }, 5000);
 
         } catch (error) {
             console.error('금칙어 안내 모달 창 띄우기 오류:', error);
@@ -187,8 +181,12 @@ const GameRoomPage = () => {
             document.getElementById('stopButton').click();
         });
 
+        // setting word ended 이벤트 핸들러 수정
         _socket.on('setting word ended', () => {
-            forbiddenwordAnouncement();
+            // 이전 모달이 완전히 닫힌 후에만 새 모달 열기
+            setTimeout(() => {
+                forbiddenwordAnouncement();
+            }, 1000);
         });
 
         // 금칙어 설정 안내 모달 열기
@@ -196,16 +194,12 @@ const GameRoomPage = () => {
             setModal('SettingForbiddenWordModal', true);
             setShowInput(true);
             // 오디오 파일 재생
-            const audio = new Audio(StartSound); // mp3 파일 경로
+            const audio = new Audio(StartSound);
             audio.play();
 
+            // 8초 후에 모달 닫기
             await new Promise(resolve => setTimeout(resolve, 8000));
-
             setModal('SettingForbiddenWordModal', false);
-
-            await new Promise(resolve => setTimeout(resolve, 100));
-
-
         });
 
         _socket.on('hit user', (user) => {
@@ -387,37 +381,7 @@ const GameRoomPage = () => {
             console.error('음성 인식 초기화 오류:', error);
         }
     }, [forbiddenWordlist, isStoppedManually, username, socket]);
-    // 화면 크기에 따른 sidebar-btn 위치 조정을 위한 useEffect
-    useEffect(() => {
-        const handleResize = () => {
-            const sidebarBtn = document.querySelector('.sidebar-btn');
-            const mainContainer = document.querySelector('#main-container');
-            const gameRoomSidebar = document.querySelector('.gameroom-sidebar');
 
-            if (window.innerWidth <= 1090) {
-                // 1090px 이하일 때 main-container로 이동
-                if (sidebarBtn && mainContainer && sidebarBtn.parentElement === gameRoomSidebar) {
-                    mainContainer.appendChild(sidebarBtn);
-                }
-            } else {
-                // 1090px 초과일 때 원래 위치로 복귀
-                if (sidebarBtn && gameRoomSidebar && sidebarBtn.parentElement === mainContainer) {
-                    gameRoomSidebar.insertBefore(sidebarBtn, gameRoomSidebar.firstChild);
-                }
-            }
-        };
-
-        // 초기 실행
-        handleResize();
-
-        // resize 이벤트 리스너 추가
-        window.addEventListener('resize', handleResize);
-
-        // cleanup
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
 
     // ====================================================== return ====================================================== 
     return (
@@ -440,7 +404,7 @@ const GameRoomPage = () => {
                                     <div className="time-remained">
                                         남은 시간: {timer}초
                                     </div>
-                                    <div id="subtitles">자막</div>
+                                    {/* <div id="subtitles">자막</div> */}
                                 </>
                             </div>
                             <div id="video-container" className="col-md-6" ref={divRef}>
@@ -451,9 +415,10 @@ const GameRoomPage = () => {
                                 {userRole === "host" ? (
                                     <button className="commonButton settingWordsButton" onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
                                 ) : (
-                                    <button disabled>호스트가 게임을 시작하기를 기다리세요</button>
+                                    <button className="guestWaitingBtn" disabled>호스트가 게임을 시작하기를 기다리세요</button>
                                 )}
-                            </div>                            <div className="sidebar_wordlist">
+                            </div>
+                            <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
                                     <div className="player-cards-container">
