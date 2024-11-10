@@ -121,16 +121,22 @@ const GameRoomPage = () => {
             setModal('FW', true);
             setShowInput(false);
 
-            // 5초 후에 모달 닫기
-            setTimeout(() => {
-                setModal('FW', false);
-                setIsWordsShown(true);
-                
-                // 모달이 완전히 닫힌 후에 게임 시작
+            // Promise를 사용하여 타이머 완료를 기다림
+            await new Promise(resolve => {
                 setTimeout(() => {
-                    document.getElementById('startgame').click();
-                }, 1000);
-            }, 5000);
+                    setModal('FW', false);
+                    resolve(); // 타이머 완료 후 Promise 해결
+                }, 5000);
+            });
+
+            // 모달이 완전히 닫힌 후에 사이드바에 금칙어 표시
+            setIsWordsShown(true);
+
+            // 금칙어 안내가 끝난 후 1초 뒤에 자동으로 게임 시작
+            setTimeout(() => {
+                document.getElementById('startgame').click();
+                //startGame();
+            }, 1000);
 
         } catch (error) {
             console.error('금칙어 안내 모달 창 띄우기 오류:', error);
@@ -181,12 +187,8 @@ const GameRoomPage = () => {
             document.getElementById('stopButton').click();
         });
 
-        // setting word ended 이벤트 핸들러 수정
         _socket.on('setting word ended', () => {
-            // 이전 모달이 완전히 닫힌 후에만 새 모달 열기
-            setTimeout(() => {
-                forbiddenwordAnouncement();
-            }, 1000);
+            forbiddenwordAnouncement();
         });
 
         // 금칙어 설정 안내 모달 열기
@@ -194,12 +196,16 @@ const GameRoomPage = () => {
             setModal('SettingForbiddenWordModal', true);
             setShowInput(true);
             // 오디오 파일 재생
-            const audio = new Audio(StartSound);
+            const audio = new Audio(StartSound); // mp3 파일 경로
             audio.play();
 
-            // 8초 후에 모달 닫기
             await new Promise(resolve => setTimeout(resolve, 8000));
+
             setModal('SettingForbiddenWordModal', false);
+
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+
         });
 
         _socket.on('hit user', (user) => {
