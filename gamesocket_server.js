@@ -7,7 +7,7 @@ import cors from 'cors';
 const app = express();
 
 // CORS 설정 - 특정 도메인만 허용
-app.use(cors({ origin: 'https://main.maguni-game.com' }));
+app.use(cors({ origin: '*' }));
 
 // HTTP 서버 생성
 const server = http.createServer(app);
@@ -15,10 +15,10 @@ const server = http.createServer(app);
 // Socket.IO 설정 - 동일한 도메인만 허용
 const io = new Server(server, { 
   cors: {
-    origin: 'https://main.maguni-game.com',
-    methods: ['GET', 'POST'], // 필요한 메소드만 허용
+      origin: '*',
   }
 });
+
 
 
 
