@@ -14,7 +14,7 @@ import '../styles/HostGuestPage.css'
 import '../styles/beforeGameRoom.css'
 import Profile from '../components/common/Profile';
 import CommonButton from '../components/CommonButton';
-import RuleDescriber from '../components/common/RuleDescriber';
+import RuleDescriber from '../components/common/RuleDescriber.jsx';
 import GameLayout from '../components/layout/GameLayout';
 import { find_my_index } from '../assets/utils/findMyIndex';
 import HostImage from '../assets/images/hostAvatar.png';
@@ -377,7 +377,7 @@ const HostGuestPage = () => {
                                 onClick={() => { Gotogameroompage(); setUserRole(role); }} 
                                 text="시작하기"
                             />
-                            <RuleDescriber />
+                            <RuleDescriber direction='speech-bubble-horizontal'/>
                         </div>
                     </div>
                 </div>

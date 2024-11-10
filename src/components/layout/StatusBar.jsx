@@ -3,7 +3,7 @@ import ProfileCard from '../common/ProfileCard';
 import SessionBar from '../common/SessionBar';
 import '../../styles/statusBar.css';
 import PropTypes from 'prop-types';
-import RuleDescriber from '../common/RuleDescriber';
+import RuleDescriber from '../common/RuleDescriber.jsx';
 
 const StatusBar = ({ sessionTime, username, roomcode, playerNumber}) => {
   return (
