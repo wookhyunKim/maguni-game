@@ -52,18 +52,19 @@ io.on('connection', (client) => {
       forbiddenWordCounts[username] = 0; // 초기화
     }
     forbiddenWordCounts[username] += occurrences; // 카운트 증가
-    totalCount += occurrences; //사진찍기 위한 카운트
+     //사진찍기 위한 카운트
 
     // 모든 클라이언트에 카운트 업데이트
     io.emit('update forbidden word count', forbiddenWordCounts);
 
-    if (totalCount % 3 == 0) {
-      io.emit('take a picture', username);
-    }
   });
 
   client.on('forbidden word used hit', (username) => {
     io.emit('hit user', username);
+    totalCount += 1;
+    if (totalCount % 3 == 0) {
+      io.emit('take a picture', username);
+    }
   });
 
   // 금칙어 설정 후 게임 시작하게 하는 함수
