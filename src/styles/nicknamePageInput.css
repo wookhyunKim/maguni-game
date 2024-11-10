@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-width: 586px;
+    width: 700px;
     margin: 0 auto;
 }
 
@@ -19,7 +19,7 @@
 .nicknameRandomBtnContainer {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
     max-width: 586px;
     margin: 0 auto;
@@ -28,12 +28,16 @@
 
 .nicknameRandomBtn {
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
+    color: #4A4A4A;
+    font-family: 'NeoDunggeunmo Pro', sans-serif;
     transition: color 0.3s ease;
+    text-decoration: underline;
+    padding: 5px 10px;
 }
 
 .nicknameRandomBtn:hover {
-    color: #666;
+    color: #666666;
 }
 
 /* 다음 버튼 이미지 스타일링 */

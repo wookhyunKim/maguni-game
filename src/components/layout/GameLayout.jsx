@@ -2,8 +2,9 @@ import PropTypes from 'prop-types';
 import { useState  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/beforeGameRoom.css';
-import SOUNDON from "../../assets/images/SoundOnIcon.png"
-import SOUNDOFF from "../../assets/images/SoundOffIcon.png"
+import SOUNDON from "../../assets/images/volumeUp.svg"
+import SOUNDOFF from "../../assets/images/volumeMute.svg"
+import backgroundImage from "../../assets/images/endPage_bgImage.webp"
 
 
 const GameLayout = ({ children, title, subtitle }) => {
@@ -27,7 +28,7 @@ const GameLayout = ({ children, title, subtitle }) => {
     };
   return (
     <>
-      <div className="beforeGameRoomBody">
+      <div className="beforeGameRoomBody" style={{backgroundImage: `url(${backgroundImage})`}}>
         <div className="game-title">
           <h1>{title || "금칙어 게임"}</h1>
           <h5>{subtitle || "Never, say The word"}</h5>

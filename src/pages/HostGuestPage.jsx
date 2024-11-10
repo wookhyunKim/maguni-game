@@ -6,7 +6,7 @@ import { UsePlayerStore } from '../components/store/playerStore.js';
 import { io } from "socket.io-client";
 import detectModelStore from '../components/store/faceDetectModel';
 import { loadDetectionModel } from '../../filter/load-detection-model';
-import mainCharacter from '../assets/images/mainImage.png'
+import mainCharacter from '../assets/images/mainCharacterColored.png'
 import { Context } from '../../IntroMusicContainer';
 import Swal from "sweetalert2";
 

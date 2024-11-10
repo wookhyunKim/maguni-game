@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import '../styles/beforeGameRoom.css'
 import CommonButton from '../components/CommonButton'
-import mainCharacter from '../assets/images/mainImage.png'
+import mainCharacter from '../assets/images/mainCharacterColored.png'
 import GameLayout from '../components/layout/GameLayout.jsx';
 
 const HomePage = () => {

@@ -1,8 +1,8 @@
 
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import SOUNDON from "../../assets/images/SoundOnIcon.png"
-import SOUNDOFF from "../../assets/images/SoundOffIcon.png"
+import SOUNDON from "../../assets/images/volumeUp.svg"
+import SOUNDOFF from "../../assets/images/volumeMute.svg"
 
 
 // const BeforeGameRoom = ({children}) => {

@@ -1,6 +1,6 @@
 import '../../styles/footer.css'
-import soundOnIcon from '../../assets/images/SoundOnIcon.png';
-import soundOffIcon from '../../assets/images/SoundOffIcon.png';
+import soundOnIcon from "../../assets/images/volumeUp.svg"
+import soundOffIcon from "../../assets/images/volumeMute.svg"
 import treasureCardsIcon from '../../assets/images/treasureCardsIcon.png';
 import {useNavigate} from 'react-router-dom';
 

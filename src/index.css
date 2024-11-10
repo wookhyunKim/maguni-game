@@ -36,6 +36,10 @@
   min-height:100vh;
   /* 최대 높이는 컨텐츠에 맞춤 */
   max-height:fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 /* HTML 요소 스타일 */
