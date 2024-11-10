@@ -13,13 +13,14 @@
     padding: 0 15px;
     border-radius: 4px;
     border: 1px solid #ccc;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 .nicknameRandomBtnContainer {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
+    padding-right: 100px;
     width: 100%;
     max-width: 586px;
     margin: 0 auto;
@@ -28,12 +29,15 @@
 
 .nicknameRandomBtn {
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
     color: #4A4A4A;
     font-family: 'NeoDunggeunmo Pro', sans-serif;
     transition: color 0.3s ease;
     text-decoration: underline;
     padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nicknameRandomBtn:hover {

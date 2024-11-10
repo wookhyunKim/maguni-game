@@ -17,6 +17,7 @@ import CommonButton from '../components/CommonButton';
 import RuleDescriber from '../components/common/RuleDescriber';
 import GameLayout from '../components/layout/GameLayout';
 import { find_my_index } from '../assets/utils/findMyIndex';
+import HostImage from '../assets/images/hostAvatar.png';
 
 const HostGuestPage = () => {
     const navigate = useNavigate();
@@ -236,14 +237,12 @@ const HostGuestPage = () => {
     const shareKakao = () => {
         const linkUrl = `https://main.maguni-game.com`;
         if (window.Kakao) {
-            window.Kakao.Share.createDefaultButton({
-                container: "#kakaotalk-sharing-btn",
+            window.Kakao.Share.sendDefault({
                 objectType: "feed",
                 content: {
                     title: "📧 초대장",
                     description: `당신은 마구니 게임에 초대되었습니다!\n참여 코드: ${roomcode}`,
-                    imageUrl:
-                        mainCharacter,
+                    imageUrl: mainCharacter,
                     link: {
                         mobileWebUrl: linkUrl,
                         webUrl: linkUrl,
@@ -308,6 +307,7 @@ const HostGuestPage = () => {
                                                 btnName={"방 만들기"}
                                                 setRole={setRole}
                                                 withInput={false}
+                                                roomcode={roomcode}
                                             />
                                         </div>
                                         <div className='guestProfile'>
@@ -316,6 +316,7 @@ const HostGuestPage = () => {
                                                 btnName={"코드 입력"}
                                                 setRole={setRole}
                                                 withInput={false}
+                                                roomcode={roomcode}
                                             />
                                         </div>
                                     </div>
@@ -327,11 +328,36 @@ const HostGuestPage = () => {
             ) : (
                 <div className="afterToggleContainer">
                     <div className="connectedUserList">
-                        <Profile
-                            role={"HOST"}
-                            btnName={``}
-                            setRole={setRole}
+                    <div className='profileContainer'>
+                        <img className="image" 
+                        src={HostImage} 
+                        style={{ 
+                        width: '150px', 
+                        height: '150px'
+                        }}
                         />
+                        <div className="descript">
+                                <>
+                                    <div className="identity">
+                                        <span className='identityText'>
+                                            대기실
+                                        </span>
+                                    </div>
+                                    <div className="border-line"/>
+                                    <div className='underBorderlineContainer'>
+                                        <div className='kakaotalk-share-btn-code'>코드 : {roomcode}</div>
+                                        <button className="commonButton kakaotalk-share-btn" onClick={shareKakao}>
+                                            <img 
+                                                src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" 
+                                                alt="next" 
+                                                className="button-image" 
+                                            />
+                                            공유하기
+                                        </button> 
+                                    </div>
+                                </>
+                        </div>
+                    </div>
                         <div className="stonewallcontainer">
                             <div className="table table-bordered table-hover">
                                 {userList.map((word, index) => (
@@ -345,14 +371,6 @@ const HostGuestPage = () => {
                     </div>
 
                     <div className="startGameSection">
-                        <button id="kakaotalk-sharing-btn" onClick={shareKakao} className='commonButton'>
-                            <div>{roomcode}</div>
-                            <img
-                                src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
-                                alt="카카오톡 공유 보내기 버튼"
-                            // style={{ width: "50px", cursor: "pointer" }}
-                            />
-                        </button>
                         <div className='gameControlSection'>
                             <CommonButton
                                 className="startGameBtn commonButton"

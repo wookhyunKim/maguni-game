@@ -192,19 +192,6 @@ padding: 20px;
 }
 
 
-#kakaotalk-sharing-btn {
-  width: 586px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
-
-#kakaotalk-sharing-btn img {
-  width: 40px;
-  height: 40px;
-  margin: 0 10px;
-}
 
 .startGameSection {
   display: flex;
@@ -217,7 +204,34 @@ padding: 20px;
   width: 586px;
   padding: 10px 0;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.kakaotalk-share-btn {
+  width: 300px;
+  background-color: #FEE500;  /* 카카오톡 브랜드 노란색 */
+  border: none;
+  color: #3C1E1E;  /* 어두운 갈색 텍스트 */
+  font-weight: bold;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;  /* 이미지와 텍스트 사이 간격 */
+  padding: 8px 16px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.kakaotalk-share-btn:hover {
+  background-color: #FFD700;  /* 호버 시 약간 더 진한 노란색 */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.kakaotalk-share-btn img {
+  width: 24px;
+  height: 24px;
 }

@@ -90,7 +90,7 @@
     flex-direction: column;
     color: #E4E6EB;
     overflow-y: auto;
-    font-family: 'Inter', sans-serif;
+    /* font-family: 'Inter', sans-serif; */
 }
 
 .sidebar_wordlist,
@@ -210,7 +210,7 @@
 }
 
 #buttonLeaveSession {
-    font-family: 'Inter', sans-serif;
+    /* font-family: 'Inter', sans-serif; */
 }
 
 @media screen and (max-width: 1090px) {
@@ -269,7 +269,7 @@
 .loading-text {
     margin-top: 15px;
     color: #E4E6EB;
-    font-family: 'Inter', sans-serif;
+    /* font-family: 'Inter', sans-serif; */
 }
 
 @keyframes spin {
