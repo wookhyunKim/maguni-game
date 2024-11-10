@@ -62,7 +62,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 5
+    const startTime = 400000000
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -200,10 +200,12 @@ const GameRoomPage = () => {
             const audio = new Audio(StartSound);
             audio.play();
 
-            // 5초 후에 모달 닫기
-            setTimeout(() => {
-                setModal('SettingForbiddenWordModal', false);
-            }, 5000);
+            // 타이머 초기화 (모달이 열릴 때)
+            setTimer(20);
+
+            // 모달이 닫히기를 기다림
+            await new Promise(resolve => setTimeout(resolve, 12000));
+            setModal('SettingForbiddenWordModal', false);
         });
 
         _socket.on('hit user', (user) => {

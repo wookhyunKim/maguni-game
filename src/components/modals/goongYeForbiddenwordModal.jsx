@@ -24,7 +24,7 @@ const SettingForbiddenWordModal = ({onClose }) => {
 
         const timer = setTimeout(() => {
             onClose();
-        }, 5000); // 5초로 고정
+        }, 12000); // 8초로 고정
 
         return () => clearTimeout(timer);
     }, [onClose]);
@@ -45,7 +45,7 @@ const SettingForbiddenWordModal = ({onClose }) => {
                     <div 
                         className="progress-bar" 
                         style={{
-                            animation: 'progress 5s linear'
+                            animation: 'progress 12s linear'
                         }}
                     />
                 </div>
