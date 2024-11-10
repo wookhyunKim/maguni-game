@@ -1,6 +1,7 @@
 import { Server } from 'socket.io';
 import express from "express";
 import * as http from "http";
+import cors from 'cors';
 
 const app = express();
 const server = http.createServer(app);
@@ -8,7 +9,7 @@ const cors = require('cors');
 app.use(cors({ origin: 'https://main.maguni-game.com' }));
 
 
-const io = new Server(server, {
+const io = new Server(server, { 
   cors: {
     origin: "*"
   }
