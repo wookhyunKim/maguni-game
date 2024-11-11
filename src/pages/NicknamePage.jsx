@@ -4,16 +4,21 @@ import '../styles/nicknamePageInput.css'
 import nextButton from '../assets/images/nextButton.png'
 import {nicknames} from "../assets/utils/nicknames.js"
 import GameLayout from '../components/layout/GameLayout';
+import { useState } from 'react';
 
 const NicknamePage = () => {
     const navigate = useNavigate();
     const username = UsePlayerStore(state=>state.username);
     const setUsername = UsePlayerStore(state=>state.setUsername);
+    const [isExiting, setIsExiting] = useState(false);
   
     const handleSubmit = (e) => {
         e.preventDefault();
         if (username.trim()) {
-            navigate('/hostguest');
+            setIsExiting(true);
+            setTimeout(() => {
+                navigate('/hostguest');
+            }, 500);
         }
     };
 
@@ -33,7 +38,7 @@ const NicknamePage = () => {
   
     return (
         <GameLayout>
-            <div className="nickname-page">
+            <div className={`nickname-page ${isExiting ? 'page-exit-active' : ''}`}>
                 <form className='nicknameInputContainer' onSubmit={handleSubmit}>
                     <input 
                         className='nicknameInput'

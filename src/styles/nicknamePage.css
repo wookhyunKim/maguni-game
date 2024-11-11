@@ -10,3 +10,10 @@
         transform: scale(1);
     }
 }
+
+/* 페이지 나가는 애니메이션 추가 */
+.page-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 500ms, transform 500ms;
+}

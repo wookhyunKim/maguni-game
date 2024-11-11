@@ -235,3 +235,16 @@ padding: 20px;
   width: 24px;
   height: 24px;
 }
+
+.hostguest-page {
+    opacity: 0;
+    transform: scale(1.1);
+    animation: fadeIn 500ms forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
