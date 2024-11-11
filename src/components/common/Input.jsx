@@ -4,7 +4,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types'; 
 import { UsePlayerStore } from '../store/playerStore';
 
-function Input({ username, roomcode, showInput }) {
+function Input({ username, roomcode, showInput, onComplete }) {
   const [inputValue, setInputValue] = useState('');
   const [getCode, setGetCode] = useState('');
   const [gamers, setGamers] = useState([]);
@@ -76,6 +76,7 @@ const handleSubmit = (e) => {
     e.preventDefault(); // 폼 기본 동작 방지
     if (inputValue.trim()) { // 입력값이 있을 때만 전송
         insertWord();
+        onComplete(); // 완료 버튼 클릭 시 콜백 함수 호출
     }
 };
 
@@ -105,6 +106,7 @@ Input.propTypes = {
   username: PropTypes.string.isRequired,
   roomcode: PropTypes.string.isRequired,
   showInput: PropTypes.bool.isRequired, // Make showInput required
+  onComplete: PropTypes.func.isRequired,
 };
 
 export default Input;

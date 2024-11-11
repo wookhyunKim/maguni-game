@@ -62,7 +62,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 120
+    const startTime = 400000000
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -73,6 +73,9 @@ const GameRoomPage = () => {
     // Input 컴포넌트 표시 여부 상태
     const [showInput, setShowInput] = useState(false);
 
+    //sidebar 미션 섹션 표시 여부 상태
+    const [showMission, setShowMission] = useState(false);
+
     // 사진용 div
     const divRef = useRef(null);
 
@@ -82,11 +85,17 @@ const GameRoomPage = () => {
         const event = new CustomEvent('startPenaltyFilter');
         window.dispatchEvent(event);
     };
+    
 
     function quitGame() {
         navigate('/');
         window.location.reload();
     }
+
+    //==========================input.jsx에서 완료 버튼 클릭 시 호출할 콜백 함수===============
+    const handleInputComplete = () => {
+        setShowMission(false); // sidebar_mymission 숨김
+    };
 
 
 
@@ -145,6 +154,7 @@ const GameRoomPage = () => {
 
     //===========================금칙어 설정하기---> 5초 안내 후 20초 설정단계 ===========================
     const startSettingForbiddenWord = () => {
+        setShowMission(true); // sidebar_mymission 표시
         socket.emit('start setting word', roomcode);
     };
 
@@ -446,7 +456,7 @@ const GameRoomPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="sidebar_mymission ">
+                            <div className={`sidebar_mymission ${showMission ? 'show' : ''}`}>
                                 <div className="sidebar_index">나의 미션</div>
                                 <div className="sidebar_content">
                                     <div className="footer-input">
@@ -456,6 +466,7 @@ const GameRoomPage = () => {
                                             participantList={participantList}
                                             setParticipantList={setParticipantList}
                                             showInput={showInput}
+                                            onComplete={handleInputComplete}
                                         />
                                     </div>
                                 </div>
