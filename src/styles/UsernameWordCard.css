@@ -1,0 +1,34 @@
+.username-word-card {
+    padding: 14px; /* 기존 10px에서 40% 증가 */
+    border-radius: 10px; /* 기존보다 약간 더 둥글게 */
+    margin-bottom: 11px; /* 기존 8px에서 증가 */
+    color: #fff;
+    transition: transform 0.2s ease;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* 그림자도 조금 더 크게 */
+    font-size: 1.4rem; /* 카드 전체 크기 조정을 위한 기본 폰트 크기 증가 */
+}
+
+.username-word-card:hover {
+    transform: translateY(-3px); /* hover 효과도 조금 더 확대 */
+}
+
+.username {
+    font-size: 1.4rem; /* 기존 1rem에서 40% 증가 */
+    font-weight: 600;
+    margin-bottom: 8px; /* 기존 6px에서 증가 */
+    padding-bottom: 8px; /* 기존 6px에서 증가 */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.word-info {
+    font-size: 1.2rem; /* 기존 0.85rem에서 증가 */
+}
+
+.forbidden-word, .word-count {
+    margin: 3px 0; /* 기존 2px에서 증가 */
+}
+
+.forbidden-word span, .word-count span {
+    opacity: 0.8;
+    margin-right: 8px; /* 기존 6px에서 증가 */
+}
