@@ -10,7 +10,6 @@ import GOONGYE from "../src/assets/images/goongYe.png";
 import RCEYE from "../src/assets/images/RCeye.png";
 import SMILEMOUTH from "../src/assets/images/smileMouth2.png";
 import MINIONS from "../src/assets/images/minions.png";
-import MAGUNI from "../src/assets/images/maguni.gif";
 
 
 var OV;
@@ -22,24 +21,6 @@ var FRAME_RATE = 30;
 let gMediaStream;
 let compositeStream;
 let publisher;
-
-function drawGIFOnCanvas(ctx, gifSrc, x, y, width, height) {
-   // gifSrc는 이미지 파일 경로
-   const gifImage = new Image();
-   gifImage.src = gifSrc; // MAGUNI 경로를 gifImage에 설정
-
-   // 이미지가 로드된 후에 그리기 시작
-   gifImage.onload = () => {
-       const interval = setInterval(() => {
-           ctx.clearRect(0, 0, width, height); // 이전 프레임 제거
-           ctx.drawImage(gifImage, x, y, width, height); // 새로운 프레임 그리기
-       }, 1000 / FRAME_RATE);
-   };
-
-   gifImage.onerror = () => {
-       console.error("GIF 이미지를 불러오는 데 실패했습니다:", gifSrc);
-   };
-}
 
 /* OPENVIDU METHODS */
 
@@ -342,7 +323,6 @@ const filters = [
    { type: "noseEnlarge" },
    { type: "smile" },
    { type: "foreHead" },
-   { type: "gifPlay" }
  ];
  //filters[0].image.src = SUNGLASS;
  filters[0].image.src = MUSTACHE;
@@ -378,7 +358,6 @@ function animateImage(ctx, x, yPosition) {
          case "goongYe":
          case "mouthFilter":
          case "faceOutlineFilter":
-         case "gifPlay":
             newFilter.timeoutId = setTimeout(() => {
                activeFilters = activeFilters.filter((f) => f !== newFilter);
             }, 2000);
@@ -395,23 +374,6 @@ function animateImage(ctx, x, yPosition) {
          activeFilters.push(newFilter);
          break;
        }
-       
-      //  if(filter.type !== "noseEnlarge"){
-      //    // 타이머가 만료되면 필터를 제거
-      //    newFilter.timeoutId = setTimeout(() => {
-      //       activeFilters = activeFilters.filter((f) => f !== newFilter);
-      //    }, 2000);
-
-      //    activeFilters.push(newFilter);
-      //  }
-      //  else{
-      //             // 타이머가 만료되면 필터를 제거
-      //    newFilter.timeoutId = setTimeout(() => {
-      //       activeFilters = activeFilters.filter((f) => f !== newFilter);
-      //    }, 10000);
-
-      //    activeFilters.push(newFilter);
-      //  }
        
      };
  
@@ -480,11 +442,6 @@ function animateImage(ctx, x, yPosition) {
 
                case "foreHead":
                   stretchForehead(ctx,faces[0].keypoints);
-                  break;
-
-               case "gifPlay":
-                  console.log("check gif");
-                  drawGIFOnCanvas(ctx,MAGUNI,x,y,width,height);
                   break;
                
                 default:
@@ -555,47 +512,6 @@ function appendUserData(videoElement, connection) {
       userData = JSON.parse(connection.data).clientData;
       nodeId = connection.connectionId;
    }
-   // var dataNode = document.createElement('div');
-   // dataNode.className = "data-node";
-   // dataNode.id = "data-" + nodeId;
-   // dataNode.innerHTML = "<p>" + userData + "</p>";
-   // videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
-   // addClickListener(videoElement, userData);
-   // var userData;
-   // var nodeId;
-   // if (typeof connection === "string") {
-   //     userData = connection;
-   //     nodeId = connection;
-   // } else {
-   //     userData = JSON.parse(connection.data).clientData;
-   //     nodeId = connection.connectionId;
-   // }
-
-   // // 로딩 컨테이너 생성
-   // const loadingContainer = document.createElement('div');
-   // loadingContainer.className = "loading-container";
-   // loadingContainer.innerHTML = `
-   //     <div class="loading-spinner"></div>
-   //     <div class="loading-text">접속 대기중...</div>
-   // `;
-
-   // // 비디오 요소가 로드되기 전에 로딩 컨테이너를 표시
-   // videoElement.parentNode.insertBefore(loadingContainer, videoElement);
-
-   // // 비디오가 실제로 재생되기 시작할 때 로딩 컨테이너를 제거
-   // videoElement.addEventListener('playing', () => {
-   //     if (loadingContainer.parentNode) {
-   //         loadingContainer.parentNode.removeChild(loadingContainer);
-   //     }
-   //     videoElement.style.display = 'block';
-   // });
-
-   // var dataNode = document.createElement('div');
-   // dataNode.className = "data-node";
-   // dataNode.id = "data-" + nodeId;
-   // dataNode.innerHTML = "<p>" + userData + "</p>";
-   // videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
-   // addClickListener(videoElement, userData);
 }
 
 function removeUserData(connection) {
