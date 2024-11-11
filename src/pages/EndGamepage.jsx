@@ -7,9 +7,10 @@ import { useEffect, useContext, useState } from 'react';
 import ENDINGBGM from "../assets/bgm/endbgm.mp3";
 import { Context } from '../../IntroMusicContainer';
 import axios from 'axios';
-
+import Goon from "../assets/images/goongYeBGremoved.png"
 import '../styles/failStampAni.css'
 import '../styles/successStampAni.css'
+import UrgeWithPleasureComponent from '../components/common/UrgeWithPleasureComponet.jsx';
 
 const EndGamepage = () => {
     const [showModal, setShowModal] = useState(true);
@@ -19,6 +20,7 @@ const EndGamepage = () => {
     const { result, words, roomCode, username } = location.state || {};
     const { setIsPlay } = useContext(Context);
     const [animationResult, setAnimationResult] = useState({});
+    const [showInput, setShowInput] = useState(true);
 
     //추억 남기기 버튼 눌렀을 때, 다른 페이지로 이동함
     const gotoFourcut = ()=>{
@@ -38,6 +40,8 @@ const EndGamepage = () => {
     const checkAnswer = () => {
         const inputValue = document.getElementById('input-forbiddenWord').value;
         if (!inputValue.trim()) return;  // 빈 입력값 체크
+        
+        setShowInput(false); // 입력창 숨기기
         
         return axios({
             method: 'POST',
@@ -169,26 +173,40 @@ const EndGamepage = () => {
             <div className="endGame-container">
                 <div className="wallImage" style={{backgroundImage: `url(${WallImage})`}}>
                 {showModal && (
-                <div className="input-modal">
-                    <div className="end-game-modal-content">
-                        <div className="timer">{timeLeft}초</div>
-                        <h2 className="modal-title">석방 기회</h2>
-                        <input 
-                            id="input-forbiddenWord" 
-                            type="text" 
-                            placeholder="추정되는 자신의 금칙어를 입력해주세요" 
-                            autoComplete="off"
-                            autoFocus
-                            onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                    checkAnswer();
-                                }
-                            }}
-                        />
-                        <button onClick={checkAnswer}>확인</button>
+                    <div className="input-modal">
+                        <div className="end-game-modal-content">
+                            <img className="endgameGoongyeImg" src={Goon} alt="궁예" />
+                            <h2 className="modal-title">석방 기회</h2>
+                            <p className="modal-message">
+                                너희 마구니들이 살 마지막 기회를 주겠다!!!!
+                                <br />
+                                네 잘못이 무엇인지 네가 말해보거라!
+                            </p>
+                            {showInput ? (
+                                <div className="input-wrapper">
+                                    <input 
+                                        id="input-forbiddenWord" 
+                                        type="text" 
+                                        placeholder="추정되는 자신의 금칙어를 입력해주세요" 
+                                        autoComplete="off"
+                                        autoFocus
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter') {
+                                                checkAnswer();
+                                            }
+                                        }}
+                                    />
+                                    <button onClick={checkAnswer}>확인</button>
+                                </div>
+                            ) : (
+                                <div className="loading-wrapper">
+                                    <div className="loading-dots">대기해주세요</div>
+                                </div>
+                            )}
+                            <UrgeWithPleasureComponent duration={20} />
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
                 <div className="result-container">
                     <div className="result-title">금칙어 위반 역적</div>
                     <div className="hanji-container">

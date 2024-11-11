@@ -107,11 +107,12 @@
 }
 
 .input-modal {
+    width: 100%;
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
@@ -119,26 +120,31 @@
     z-index: 1000;
 }
 
-.modal-content {
-    background-color: #F5E6D3;
-    padding: 30px;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 500px;
-    text-align: center;
+.end-game-modal-content {
     position: relative;
-    border: 3px solid #8B4513;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    padding: 2rem;
+    border-radius: 20px;
+    width: 95%;
+    max-width: 1250px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.end-game-modal-content h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
     color: #000;
 }
 
-.modal-title {
-    color: #000 !important;
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-}
-
-.modal-content input {
+.end-game-modal-content input {
     width: 90%;
     padding: 12px;
     margin: 15px 0;
@@ -149,31 +155,19 @@
     color: #000;
 }
 
-.modal-content input::placeholder {
-    color: #666;
-}
-
-.modal-content button {
-    background-color: #8B4513;
+.end-game-modal-content button {
+    background-color: #8B2424;
     color: white;
     padding: 12px 30px;
     border: none;
     border-radius: 8px;
     font-size: 1.2rem;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
 }
 
-.modal-content button:hover {
-    background-color: #6B3410;
-}
-
-.timer {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #8B4513;
-    font-size: 1.2rem;
+.end-game-modal-content button:hover {
+    opacity: 0.9;
 }
 
 .user-result {
@@ -201,4 +195,81 @@
 
 .gotofourcutBtn {
     width:280px;
+}
+
+/* timer-wrapper 스타일 추가 */
+.end-game-modal-content .timer-wrapper {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: auto;
+    height: auto;
+}
+
+
+.endgameGoongyeImg {
+    width: auto;
+    max-width: 300px;
+    min-width: auto;
+    height: auto;
+    margin: 0 auto 1rem auto;
+    display: block;
+    object-fit: contain;
+}
+
+.end-game-modal-content p {
+    font-size: 1.5rem;
+}
+
+
+.input-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    transition: opacity 0.3s ease;
+}
+
+.input-wrapper.hidden {
+    display: none;
+}
+
+.loading-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    animation: fadeIn 0.5s ease;
+}
+
+.loading-dots {
+    font-size: 1.5rem;
+    color: #8B2424;
+    position: relative;
+}
+
+.loading-dots::after {
+    content: '';
+    animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
