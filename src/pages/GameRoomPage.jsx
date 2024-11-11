@@ -204,6 +204,7 @@ const GameRoomPage = () => {
 
         // 금칙어 설정 안내 모달 열기
         _socket.on('open instruction modal', async () => {
+            setShowMission(true);
             setModal('SettingForbiddenWordModal', true);
             setShowInput(true);
             // 오디오 파일 재생
