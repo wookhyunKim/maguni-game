@@ -212,8 +212,13 @@ const HostGuestPage = () => {
 
         if (result){
             if(role=='participant'){
-                connectToChatServer();
-                setIsToggled(true);
+                const beforeContainer = document.querySelector('.beforeToggleContainer');
+                beforeContainer.classList.add('fade-exit');
+                
+                setTimeout(() => {
+                    connectToChatServer();
+                    setIsToggled(true);
+                }, 500);
             }else{
                 // 있는 방 코드에 방장이 들어가려고 하면 실패 alert
                 alertFunc(icon,title,message)
@@ -223,8 +228,13 @@ const HostGuestPage = () => {
                 // 없는 방을 게스트가 참가하려고 해서 alert
                 alertFunc(icon,title,message)
             }else{
-                connectToChatServer();
-                setIsToggled(true);
+                const beforeContainer = document.querySelector('.beforeToggleContainer');
+                beforeContainer.classList.add('fade-exit');
+                
+                setTimeout(() => {
+                    connectToChatServer();
+                    setIsToggled(true);
+                }, 500);
             }
         }
     }
@@ -263,6 +273,17 @@ const HostGuestPage = () => {
 
     ///////////////////////////////////////////////////////
 
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [showNewProfile, setShowNewProfile] = useState(false);
+
+    const handleRoleSelect = (newRole) => {
+        setIsTransitioning(true);
+        setTimeout(() => {
+            setRole(newRole);
+            setShowNewProfile(true);
+        }, 500);
+    };
+
     return (
 
         <GameLayout>
@@ -275,37 +296,27 @@ const HostGuestPage = () => {
                             </>
                         ) : (
                             <>
-                                {role === 'host' ? (
-                                    <>
+                                {role === 'host' || role === 'participant' ? (
+                                    <div className={`profile-container-enter ${showNewProfile ? 'profile-container-enter-active' : ''}`}>
                                         <Profile
-                                            role={"HOST"}
-                                            btnName={"접속하기"}
+                                            role={role === "host" ? "HOST" : "GUEST"}
+                                            btnName={role === "host" ? "방 만들기" : "코드 입력"}
                                             setRole={setRole}
                                             withInput={true}
                                             generatedCode={generatedCode}
                                             generateRoomCode={generateRoomCode}
                                             connectBtnHandler={connectBtnHandler}
-                                        />
-                                    </>
-                                ) : role === 'participant' ? (
-                                    <>
-                                        <Profile
-                                            role={"GUEST"}
-                                            btnName={"코드 입력"}
-                                            setRole={setRole}
-                                            withInput={true}
-                                            connectBtnHandler={connectBtnHandler}
                                             roomcode={roomcode}
                                             setRoomcode={setRoomcode}
                                         />
-                                    </>
+                                    </div>
                                 ) : (
-                                    <div className='hostGuestProfileContainer'>
+                                    <div className={`hostGuestProfileContainer ${isTransitioning ? 'fade-exit-active' : ''}`}>
                                         <div className='hostProfile'>
                                             <Profile
                                                 role={"HOST"}
                                                 btnName={"방 만들기"}
-                                                setRole={setRole}
+                                                setRole={() => handleRoleSelect('host')}
                                                 withInput={false}
                                                 roomcode={roomcode}
                                             />
@@ -314,7 +325,7 @@ const HostGuestPage = () => {
                                             <Profile
                                                 role={"GUEST"}
                                                 btnName={"코드 입력"}
-                                                setRole={setRole}
+                                                setRole={() => handleRoleSelect('participant')}
                                                 withInput={false}
                                                 roomcode={roomcode}
                                             />

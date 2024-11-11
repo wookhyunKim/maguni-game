@@ -3,7 +3,15 @@
     color: #ffffff;
     top: 0;
     width: 100%;
-  }
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 500ms, transform 500ms;
+}
+
+.beforeToggleContainer.fade-exit {
+    opacity: 0;
+    transform: scale(0.95);
+}
 
 .afterToggleContainer {
 display: flex; 
@@ -13,6 +21,20 @@ flex-direction:column;
 height:fit-content;
 width: 100%;
 /* background-color: #333; */
+opacity: 0;
+transform: scale(1.05);
+animation: slideIn 500ms forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* hostguestbtn안 profile가운데 정렬 위해 */
@@ -246,5 +268,72 @@ padding: 20px;
     to {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+/* 프로필 전환 애니메이션 */
+.fade-exit {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 500ms, transform 500ms;
+}
+
+.fade-enter {
+    opacity: 0;
+    transform: scale(1.1);
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 500ms, transform 500ms;
+}
+
+/* 프로필 컨테이너 애니메이션 */
+.profile-container-enter {
+    opacity: 0;
+    transform: scale(1.1);
+}
+
+.profile-container-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 500ms, transform 500ms;
+}
+
+/* 컨테이너 내부 요소들의 순차적 애니메이션 */
+.profileContainer,
+.stonewallcontainer,
+.gameControlSection {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 500ms forwards;
+}
+
+.profileContainer {
+    animation-delay: 100ms;
+}
+
+.stonewallcontainer {
+    animation-delay: 300ms;
+}
+
+.gameControlSection {
+    animation-delay: 500ms;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
