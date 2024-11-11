@@ -13,7 +13,6 @@ const NicknamePage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (username.trim()) {
-            console.log("유저네임: "+username);
             navigate('/hostguest');
         }
     };
