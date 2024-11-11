@@ -3,12 +3,22 @@ import GuestImage from '../../assets/images/guestAvatar.png';
 import PropTypes from 'prop-types';
 import '../../styles/profile.css';
 import nextButton from '../../assets/images/nextButton.png';
+import { useEffect, useState } from 'react';
 
 const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoomCode, connectBtnHandler, roomcode, setRoomcode}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     connectBtnHandler();
   };
+
+  const [RC,setRC] = useState(roomcode)
+
+  // role이 GUEST일 때 roomcode를 초기화
+  useEffect(() => {
+    if (role === "GUEST") {
+        setRC('');
+    }
+  }, []);
 
   return (
     <div className='profileContainer'>
@@ -49,7 +59,7 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
                     (
                         <form className='profileInputContainer' onSubmit={handleSubmit}>
                             <input
-                            value={roomcode}
+                            value={RC}
                             onChange={(e) => setRoomcode(e.target.value.toUpperCase())}
                             placeholder="방 코드를 입력하세요"
                             className="room-code-input"
