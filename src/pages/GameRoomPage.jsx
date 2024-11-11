@@ -66,7 +66,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 400000000
+    const startTime = 3
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -230,8 +230,8 @@ const GameRoomPage = () => {
         });
 
         _socket.on('hit user', (user) => {
-            const audio = new Audio(SPRING);
-            audio.play();
+            // const audio = new Audio(SPRING);
+            // audio.play();
             if (user !== username) {
                 return;
             }
