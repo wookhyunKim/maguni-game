@@ -59,7 +59,10 @@ const FourCut = () => {
         )}:${String(date.getSeconds()).padStart(2, "0")}`;
 
         try {
-            const canvas = await html2canvas(divRef.current, { scale: 2 });
+            const canvas = await html2canvas(divRef.current, {     
+                scale: 2,
+                useCORS: true, 
+            });
             canvas.toBlob((blob) => {
                 if (blob) {
                     saveAs(blob, `${formattedDate}.png`);
@@ -150,6 +153,7 @@ const FourCut = () => {
                                                 height: "256px",
                                                 objectFit: "cover"
                                             }}
+                                            crossOrigin="anonymous"
                                         />
                                     </div>
                                 ))}
