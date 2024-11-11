@@ -15,6 +15,7 @@ app.use(
         ], // 특정 도메인만 허용
         methods: ["GET", "POST", "PATCH", "DELETE"], // 특정 HTTP 메서드만 허용
         credentials: true, // 쿠키 공유가 필요한 경우 설정
+        exposedHeaders: ["Content-Disposition"], // 필요시 설정
     })
 );
 
@@ -23,10 +24,16 @@ const PORT = 3001;
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
-
 // 절대 경로로 이미지 디렉토리 설정
 const imagesPath = path.resolve(__dirname, "../src/images");
-app.use("/photos", express.static(imagesPath));
+app.use("/photos", express.static(imagesPath, {
+    setHeaders: (res) => {
+        // CORS 헤더 추가
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    }
+}));
 
 const roomRouter = require("./routes/roomRoute");
 app.use("/room", roomRouter);
