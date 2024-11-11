@@ -170,7 +170,7 @@ const EndGamepage = () => {
                 <div className="wallImage" style={{backgroundImage: `url(${WallImage})`}}>
                 {showModal && (
                 <div className="input-modal">
-                    <div className="modal-content">
+                    <div className="end-game-modal-content">
                         <div className="timer">{timeLeft}초</div>
                         <h2 className="modal-title">석방 기회</h2>
                         <input 

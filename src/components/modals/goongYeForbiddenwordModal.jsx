@@ -32,6 +32,7 @@ const SettingForbiddenWordModal = ({onClose }) => {
     return (
         <div className="modal-overlay">
             <div className="modal-content">
+                {/* 카운트 하는 애니메이션 추가 예정 */}
                 <img 
                     src={Goon} 
                     alt="궁예"
@@ -39,7 +40,6 @@ const SettingForbiddenWordModal = ({onClose }) => {
                         height: 'auto',
                     }}
                 />
-                <h2>금칙어 세팅 5초</h2>
                 <p>{currentScript}</p>
                 <div className="timer">
                     <div 
