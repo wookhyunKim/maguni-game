@@ -430,7 +430,7 @@ const GameRoomPage = () => {
                         <div className="gameroom-sidebar">
                             <div>
                                 {userRole === "host" ? (
-                                    <button className="commonButton settingWordsButton" onClick={startSettingForbiddenWord}>금칙어 설정하기</button>
+                                    <button className="commonButton settingWordsButton" onClick={startSettingForbiddenWord}>게임 시작</button>
                                 ) : (
                                     <button className="guestWaitingBtn" disabled>호스트가 게임을 시작하기를 기다리세요</button>
                                 )}
