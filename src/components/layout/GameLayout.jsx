@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState  } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/beforeGameRoom.css';
 import SOUNDON from "../../assets/images/volumeUp.svg"
 import SOUNDOFF from "../../assets/images/volumeMute.svg"
@@ -11,6 +11,9 @@ const GameLayout = ({ children, title, subtitle }) => {
 
     const [music, setMusic] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+    const isHomePage = location.pathname === '/';
+
     const playMusic = () => {
       const audio = document.getElementById('beginbgm');
       setMusic(!music)
@@ -38,7 +41,7 @@ const GameLayout = ({ children, title, subtitle }) => {
         </div>
         <div className="beforeGameRoomFooter">
             <button 
-                className="backButton beforeGameRoomFooterBtn" 
+                className={`backButton beforeGameRoomFooterBtn ${isHomePage ? 'invisible' : ''}`}
                 onClick={() => navigate(-1)}
             >
                 뒤로가기
@@ -53,7 +56,6 @@ const GameLayout = ({ children, title, subtitle }) => {
                   />  
               </div>
             </div>
-
         </div>
       </div>
       
