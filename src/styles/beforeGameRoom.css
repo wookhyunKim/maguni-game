@@ -62,7 +62,7 @@
 
 .main-character {
     width: 600px;
-    margin-bottom:1rem;
+    margin-bottom:1.5rem;
     height: fit-content;
     animation: swing 3s ease-in-out infinite;
     transform-origin: top;

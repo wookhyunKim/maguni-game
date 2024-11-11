@@ -100,6 +100,7 @@
 
 .sidebar_index {
     font-weight: bold;
+    font-size: 1.5rem;
     padding: 10px;
     background-color: #C4AB8D;
     border-radius: 4px 4px 0 0;
@@ -209,7 +210,7 @@
 }
 
 #buttonLeaveSession {
-    /* font-family: 'Inter', sans-serif; */
+    font-size: 1.5rem;
 }
 
 
@@ -250,7 +251,7 @@
 .settingWordsButton {
     padding: 5px 10px;
     margin: 10px 0;
-    font-size: 1rem;
+    font-size: 1.5rem;
 }
 
 .gameroom-sidebar > div {
@@ -280,4 +281,12 @@
 
 .guestWaitingBtn {
     border-radius: 10px;
+}
+
+.sidebar_mymission {
+    display: none; /* 기본적으로 숨김 */
+}
+
+.sidebar_mymission.show {
+    display: block; /* show 클래스가 있을 때만 표시 */
 }

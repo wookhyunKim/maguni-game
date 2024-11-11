@@ -43,8 +43,9 @@ input {
   background-color: #AC2F2F;
   border: 1px solid white;
   color: white;
-  height: 40px;
-  width:300px
+  height: 44px;
+  width:300px;
+  font-size: 1.5rem;
 
 }
 
