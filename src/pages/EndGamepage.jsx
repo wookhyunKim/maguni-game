@@ -39,12 +39,6 @@ const EndGamepage = () => {
         const inputValue = document.getElementById('input-forbiddenWord').value;
         if (!inputValue.trim()) return;  // 빈 입력값 체크
         
-        console.log('보내는 데이터:', {
-            roomCode: roomCode,
-            nickname: username,
-            word: inputValue,
-        });
-
         return axios({
             method: 'POST',
             url: 'http://localhost:3001/member/game/api/v1',
@@ -65,7 +59,6 @@ const EndGamepage = () => {
     const getResults = async () => {
         try {
             const response = await axios.get(`http://localhost:3001/member/game/api/v1/${roomCode}`);
-            console.log("서버 응답 데이터:", response.data);
             setAnimationResult(response.data);
         } catch (err) {
             console.error("getResults 에러:", err);
@@ -88,9 +81,6 @@ const EndGamepage = () => {
                 : undefined;
             const userResult = userResultObj ? userResultObj[nickname] : false;
             
-            console.log(`${nickname}의 결과 객체:`, userResultObj);
-            console.log(`${nickname}의 결과값:`, userResult);
-            
             const isSuccess = !showModal && userResult === true;
             
             // MontageContainer에 적용할 클래스
@@ -98,8 +88,6 @@ const EndGamepage = () => {
                 ? (isSuccess ? 'success-stamp-container' : 'fail-stamp-container')
                 : '';
                 
-            console.log(`${nickname}의 최종 클래스:`, stampClass);
-
             return (
                 <div className="hanji" key={nickname} style={{backgroundImage: `url(${hanjiImage})`}}>
                     <div className={stampClass}>
