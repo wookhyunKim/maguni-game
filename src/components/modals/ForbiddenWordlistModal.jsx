@@ -27,8 +27,8 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
     }, [onClose]);
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
+        <div className="goongye-modal-overlay">
+            <div className="goongye-modal-content">
                 <img 
                     src={Goon} 
                     alt="궁예"

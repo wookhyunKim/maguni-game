@@ -1,4 +1,4 @@
-.modal-overlay {
+.goongye-modal-overlay {
     width: 100%;
     position: fixed;
     top: 0;
@@ -12,15 +12,14 @@
     z-index: 1000;
 }
 
-.modal-content {
+.goongye-modal-content {
     position: relative;
     background-color: white;
     padding: 2rem;
     border-radius: 20px;
-    /* width: 95%; */
-    width:200px;
+    width: 95%;
+    max-width: 500px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -30,7 +29,7 @@
     overflow-y: auto;
 }
 
-.modal-content img {
+.goongye-modal-content img {
     width: auto;
     max-width: 300px;
     min-width: auto;
@@ -45,7 +44,7 @@
     padding: 2rem;
     border-radius: 10px;
     margin: 1.5rem 0;
-    font-size: 1.5rem;
+    font-size: 4rem;
     line-height: 1.6;
     text-align: center;
     border: 2px solid #ddd;
@@ -130,25 +129,62 @@
 
 .forbidden-word-table {
     width: 100%;
-    margin: 1rem 0;
-    border-collapse: collapse;
-    font-size: 0.9rem;
+    margin: 1.5rem 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .forbidden-word-table th,
 .forbidden-word-table td {
-    padding: 0.8rem 1rem;
-    border: 1px solid #ddd;
+    padding: 1rem 1.5rem;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    font-size:1.5rem;
 }
 
-.modal-content h2 {
-    font-size: 1.3rem;
+.forbidden-word-table th {
+    background-color: #8B2424;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    letter-spacing: 0.1em;
+}
+
+.forbidden-word-table tr:last-child td {
+    border-bottom: none;
+}
+
+.forbidden-word-table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.forbidden-word-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.forbidden-word-table td:first-child {
+    font-weight: 500;
+    color: #333;
+}
+
+.forbidden-word-table td:last-child {
+    color: #8B2424;
+    font-weight: bold;
+}
+
+.goongye-modal-content h2 {
+    font-size: 3rem;
     margin-bottom: 1rem;
     font-weight: bold;
 }
 
-.modal-content p {
-    font-size: 1.2rem;
+.goongye-modal-content p {
+    font-size: 1.5rem;
     line-height: 1.4;
     margin-bottom: 1rem;
 } 
@@ -161,4 +197,3 @@
     width: auto;
     height: auto;
 }
-

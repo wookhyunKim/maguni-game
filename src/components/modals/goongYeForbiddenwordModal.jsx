@@ -30,8 +30,8 @@ const SettingForbiddenWordModal = ({onClose }) => {
     }, [onClose]);
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
+        <div className="goongye-modal-overlay">
+            <div className="goongye-modal-content">
                 {/* 카운트 하는 애니메이션 추가 예정 */}
                 <img className="goong-ye-img"
                     src={Goon} 
