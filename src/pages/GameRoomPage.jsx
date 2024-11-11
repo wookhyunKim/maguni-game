@@ -73,9 +73,6 @@ const GameRoomPage = () => {
     // Input 컴포넌트 표시 여부 상태
     const [showInput, setShowInput] = useState(false);
 
-    //sidebar 미션 섹션 표시 여부 상태
-    const [showMission, setShowMission] = useState(false);
-
     // 사진용 div
     const divRef = useRef(null);
 
@@ -85,7 +82,6 @@ const GameRoomPage = () => {
         const event = new CustomEvent('startPenaltyFilter');
         window.dispatchEvent(event);
     };
-    
 
     function quitGame() {
         navigate('/');
@@ -119,7 +115,6 @@ const GameRoomPage = () => {
     //===========================금칙어 안내 모달 창 띄우기===========================
     const forbiddenwordAnouncement = async () => {
         try {
-            setShowMission(false);
             // 먼저 플레이어 리스트 가져오기
             await getPlayersInfo();
             // 데이터를 가져온 후 모달 창 띄우기
@@ -451,7 +446,7 @@ const GameRoomPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className={`sidebar_mymission ${showMission ? '' : 'hidden'}`}>
+                            <div className="sidebar_mymission ">
                                 <div className="sidebar_index">나의 미션</div>
                                 <div className="sidebar_content">
                                     <div className="footer-input">
