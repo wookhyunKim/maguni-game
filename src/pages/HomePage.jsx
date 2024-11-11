@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import '../styles/beforeGameRoom.css'
 import CommonButton from '../components/CommonButton'
@@ -6,16 +7,18 @@ import GameLayout from '../components/layout/GameLayout.jsx';
 
 const HomePage = () => {
     const navigate = useNavigate();
-    // const [music, setMusic] = useState(false);
+    const [isExiting, setIsExiting] = useState(false);
 
-    const  goToNickname = () => {
-        
-        navigate('/nickname');
+    const goToNickname = () => {
+        setIsExiting(true);
+        setTimeout(() => {
+            navigate('/nickname');
+        }, 500);
+    }
 
-        }
     return (
         <GameLayout>
-            <div className="game-content">
+            <div className={`game-content ${isExiting ? 'page-exit-active' : ''}`}>
                 <div className="character-container">
                     <img src={mainCharacter} alt="mainCharacter" className="main-character"/>
                 </div>

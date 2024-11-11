@@ -33,29 +33,31 @@ const NicknamePage = () => {
   
     return (
         <GameLayout>
-            <form className='nicknameInputContainer' onSubmit={handleSubmit}>
-                <input 
-                    className='nicknameInput'
-                    type="text"
-                    value={username||""}
-                    onChange={handleInputChange}
-                    placeholder="사용자 이름을 입력하세요 (최대 10글자)"
-                    maxLength={10}
-                />
-                <img 
-                    src={nextButton} 
-                    alt="다음" 
-                    onClick={handleSubmit}
-                    className='nextButton'
-                />
-            </form>
-            <div className='nicknameRandomBtnContainer'>
-                <a 
-                    className='nicknameRandomBtn' 
-                    onClick={createNickName}
-                >
-                    랜덤 닉네임 생성하기 >>
-                </a>
+            <div className="nickname-page">
+                <form className='nicknameInputContainer' onSubmit={handleSubmit}>
+                    <input 
+                        className='nicknameInput'
+                        type="text"
+                        value={username||""}
+                        onChange={handleInputChange}
+                        placeholder="사용자 이름을 입력하세요 (최대 10글자)"
+                        maxLength={10}
+                    />
+                    <img 
+                        src={nextButton} 
+                        alt="다음" 
+                        onClick={handleSubmit}
+                        className='nextButton'
+                    />
+                </form>
+                <div className='nicknameRandomBtnContainer'>
+                    <a 
+                        className='nicknameRandomBtn' 
+                        onClick={createNickName}
+                    >
+                        랜덤 닉네임 생성하기
+                    </a>
+                </div>
             </div>
         </GameLayout>
     );
