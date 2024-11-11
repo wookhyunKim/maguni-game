@@ -13,6 +13,7 @@
 }
 
 .modal-content {
+    position: relative;
     background-color: white;
     padding: 2rem;
     border-radius: 20px;
@@ -151,3 +152,13 @@
     line-height: 1.4;
     margin-bottom: 1rem;
 } 
+
+
+.timer-wrapper {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: auto;
+    height: auto;
+}
+

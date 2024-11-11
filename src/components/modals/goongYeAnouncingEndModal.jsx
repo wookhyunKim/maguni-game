@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import '../../styles/modals.css';
 import { useEffect, useState } from 'react';
 import useGameStageStore from '../store/gameStage.js';
-import Goon from "../../assets/images/goongYeImage.webp"
+import Goon from "../../assets/images/goongYeBGremoved.png"
 import { scriptData } from '../../assets/utils/gameScripts.js';
 
 // 이미지 미리 로딩
@@ -39,13 +39,6 @@ const GoongYeAnouncingEndModal = ({onClose}) => {
                 />
                 <h2>게임 종료</h2>
                 <p>{currentScript}</p>
-                <div className="timer">
-                    <div className="progress-bar" 
-                        style={{
-                            animation: 'progress 5s linear'
-                        }}
-                    />
-                </div>
             </div>
         </div>
     );
