@@ -88,14 +88,14 @@
 }
 
 .beforeGameRoomFooter {
+    width: 100%;
     position: absolute;
     bottom: 0;
     padding: 1rem;
     margin-top: auto;
-}
-
-.beforeGameRoomFooterBtn {
-    margin-left: 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .nicknameRandomBtnContainer {
@@ -106,13 +106,6 @@
 .nicknameRandomBtn {
     margin-top: 10px;
 }
-
-.beforeGameRoomFooter {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
 
 .soundBtnContainer {
     padding: 0 20px;

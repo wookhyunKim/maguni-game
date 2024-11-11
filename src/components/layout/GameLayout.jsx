@@ -43,14 +43,17 @@ const GameLayout = ({ children, title, subtitle }) => {
             >
                 뒤로가기
             </button>
-            <div className="soundBtnContainer">
-                <img 
-                src={music?SOUNDON:SOUNDOFF} 
-                alt="" 
-                onClick={playMusic} 
-                style={{ width: '50px', height: '50px', cursor: 'pointer' }} 
-                />  
+            <div className="soundcontrolSection">
+              <div className="soundBtnContainer">
+                  <img 
+                  src={music?SOUNDON:SOUNDOFF} 
+                  alt="" 
+                  onClick={playMusic} 
+                  style={{ width: '50px', height: '50px', cursor: 'pointer' }} 
+                  />  
+              </div>
             </div>
+
         </div>
       </div>
       
