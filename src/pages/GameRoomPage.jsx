@@ -21,7 +21,7 @@ import { UsePlayerStore } from '../components/store/playerStore.js';
 import { useModalStore } from '../components/store/modalStore.js';
 
 // 오픈비두 관련 import
-import { joinSession } from '../../openvidu/app_openvidu.js';
+import { joinSession } from '../../openvidu/app_openvidu.jsx';
 import html2canvas from "html2canvas";
 import Goon from "../assets/images/goongYeImage.webp";
 

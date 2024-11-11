@@ -10,7 +10,8 @@ import GOONGYE from "../src/assets/images/goongYe.png";
 import RCEYE from "../src/assets/images/RCeye.png";
 import SMILEMOUTH from "../src/assets/images/smileMouth2.png";
 import MINIONS from "../src/assets/images/minions.png";
-import MAGUNI from "../src/assets/images/maguni.gif";
+import { createRoot } from 'react-dom/client';
+import UsernameWordCard from '../src/components/common/UsernameWordCard.jsx';
 
 
 var OV;
@@ -22,28 +23,13 @@ var FRAME_RATE = 30;
 let gMediaStream;
 let compositeStream;
 let publisher;
-
-function drawGIFOnCanvas(ctx, gifSrc, x, y, width, height) {
-   // gifSrc는 이미지 파일 경로
-   const gifImage = new Image();
-   gifImage.src = gifSrc; // MAGUNI 경로를 gifImage에 설정
-
-   // 이미지가 로드된 후에 그리기 시작
-   gifImage.onload = () => {
-       const interval = setInterval(() => {
-           ctx.clearRect(0, 0, width, height); // 이전 프레임 제거
-           ctx.drawImage(gifImage, x, y, width, height); // 새로운 프레임 그리기
-       }, 1000 / FRAME_RATE);
-   };
-
-   gifImage.onerror = () => {
-       console.error("GIF 이미지를 불러오는 데 실패했습니다:", gifSrc);
-   };
-}
+let myName;
 
 /* OPENVIDU METHODS */
 
 export function joinSession(mySessionId,myUserName) {
+
+   myName = myUserName;
 
    // --- 1) Get an OpenVidu object ---
 
@@ -64,6 +50,14 @@ export function joinSession(mySessionId,myUserName) {
       //등록하되 생성하진 않음
       let subscriber = session.subscribe(event.stream, 'video-container');
 
+      // connection.data를 통해 사용자 이름과 같은 정보 가져오기
+      const connectionData = event.stream.connection.data;
+      console.log("Connection Data: ",connectionData);
+      const parsedData = JSON.parse(connectionData);
+      console.log("Parsed Data: ",parsedData);
+      const username = parsedData.clientData; // 예: { "username": "사용자 이름" }
+      console.log("Name: ",username);
+
       subscribers = [...subscribers,subscriber];
 
       //const videoContainer = document.getElementById('video-container');
@@ -75,6 +69,54 @@ export function joinSession(mySessionId,myUserName) {
       //   const videoElement = event.element;
       //   // 이벤트 발생 시 videoElement를 콜백으로 호출
       //   handleVideoElementCreated(videoElement, subscriber.stream.connection);
+         let subscriber_video = event.element;
+
+         // 개별 subscriber 비디오 요소를 담을 컨테이너 생성
+         const individualContainer = document.createElement('div');
+         individualContainer.style.position = 'relative';
+         individualContainer.style.display = 'inline-block'; // 비디오 컨테이너 스타일 지정
+         individualContainer.className = 'subscriber-container';
+
+         // video-container에 새 컨테이너 추가
+         document.getElementById('video-container').appendChild(individualContainer);
+
+         // 새 컨테이너에 비디오 요소 추가
+         individualContainer.appendChild(subscriber_video);
+
+          // PlayerWordCard를 위한 컨테이너 생성
+         // const playerCardContainer = document.createElement('div');
+         // playerCardContainer.style.position = 'absolute';
+         // playerCardContainer.style.top = '10px'; // 위쪽 위치
+         // playerCardContainer.style.left = '10px'; // 왼쪽 위치
+         // playerCardContainer.style.width = 'auto';
+         // //playerCardContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // 가독성을 위한 반투명 배경
+         // playerCardContainer.style.padding = '5px';
+         // playerCardContainer.style.borderRadius = '8px';
+
+         // PlayerWordCard를 위한 컨테이너 생성
+         const playerCardContainer = document.createElement('div');
+         playerCardContainer.style.position = 'absolute';
+         playerCardContainer.style.top = '-60px'; // canvas 위쪽 위치
+         playerCardContainer.style.left = '50%'; // 수평 중앙 기준점
+         playerCardContainer.style.transform = 'translateX(-50%)'; // 가로축 중앙 정렬
+         playerCardContainer.style.width = 'auto';
+         playerCardContainer.style.padding = '5px';
+         playerCardContainer.style.borderRadius = '8px';
+      
+
+         // 개별 비디오 컨테이너에 PlayerWordCard 추가
+      individualContainer.insertBefore(playerCardContainer, subscriber_video);
+
+      console.log("Username: ",username);
+
+         // React 18에서 PlayerWordCard 컴포넌트를 `playerCardContainer`에 렌더링
+         const root = createRoot(playerCardContainer);
+         root.render(
+            <UsernameWordCard 
+               user={username} 
+            />
+         );
+
 
          // Add a new <p> element for the user's nickname just below its video
          appendUserData(event.element, subscriber.stream.connection);
@@ -308,10 +350,21 @@ function stretchForehead(ctx, keypoints) {
 
 const startStreaming = async (session, OV, mediaStream) => {
 
-   // Publisher 화면에 원본 비디오 표시용 `publisherCanvas`
+   // Publisher 화면에 원본 비디오 표시용 publisherCanvasContainer 생성
+   const publisherCanvasContainer = document.createElement('div');
+   publisherCanvasContainer.style.position = 'relative';
+   // publisherCanvasContainer.style.width = '640px'; // 고정된 크기 설정
+   // publisherCanvasContainer.style.height = '480px'; // 고정된 크기 설정
+   publisherCanvasContainer.width = 640;
+   publisherCanvasContainer.height = 480;
+
+   // Publisher 화면에 원본 비디오 표시용 publisherCanvas 생성
    const publisherCanvas = document.createElement('canvas');
    publisherCanvas.width = 640;
    publisherCanvas.height = 480;
+   
+   publisherCanvasContainer.appendChild(publisherCanvas);
+
    const publisherCtx = publisherCanvas.getContext('2d');
 
    // 필터 적용 후 Subscriber에게 전송할 `compositeCanvas`
@@ -326,8 +379,30 @@ const startStreaming = async (session, OV, mediaStream) => {
    video.autoplay = true;
    video.playsInline = true;
 
+   //UsernameWordCard를 표시할 컨테이너 생성
+   const playerCardContainer = document.createElement('div');
+   playerCardContainer.style.position = 'absolute';
+   playerCardContainer.style.top = '-60px'; // canvas 위쪽 위치
+   playerCardContainer.style.left = '50%'; // 수평 중앙 기준점
+   playerCardContainer.style.transform = 'translateX(-50%)'; // 가로축 중앙 정렬
+   playerCardContainer.style.width = 'auto';
+   playerCardContainer.style.padding = '5px';
+   playerCardContainer.style.borderRadius = '8px';
+
+   
+
    // Publisher 화면에 원본 비디오 표시
-   document.getElementById('video-container').appendChild(publisherCanvas);
+   document.getElementById('video-container').appendChild(publisherCanvasContainer);
+   // Publisher Canvas에 UsernameWordCard 추가
+   publisherCanvasContainer.appendChild(playerCardContainer);
+
+   // React 18에서 UsernameWordCard 컴포넌트를 `playerCardContainer`에 렌더링
+   const root = createRoot(playerCardContainer);
+   root.render(
+      <UsernameWordCard 
+          user={myName} 
+      />
+  );
 
 // 이미지와 필터 타입 배열
 const filters = [
@@ -342,7 +417,6 @@ const filters = [
    { type: "noseEnlarge" },
    { type: "smile" },
    { type: "foreHead" },
-   { type: "gifPlay" }
  ];
  //filters[0].image.src = SUNGLASS;
  filters[0].image.src = MUSTACHE;
@@ -378,7 +452,6 @@ function animateImage(ctx, x, yPosition) {
          case "goongYe":
          case "mouthFilter":
          case "faceOutlineFilter":
-         case "gifPlay":
             newFilter.timeoutId = setTimeout(() => {
                activeFilters = activeFilters.filter((f) => f !== newFilter);
             }, 2000);
@@ -395,23 +468,6 @@ function animateImage(ctx, x, yPosition) {
          activeFilters.push(newFilter);
          break;
        }
-       
-      //  if(filter.type !== "noseEnlarge"){
-      //    // 타이머가 만료되면 필터를 제거
-      //    newFilter.timeoutId = setTimeout(() => {
-      //       activeFilters = activeFilters.filter((f) => f !== newFilter);
-      //    }, 2000);
-
-      //    activeFilters.push(newFilter);
-      //  }
-      //  else{
-      //             // 타이머가 만료되면 필터를 제거
-      //    newFilter.timeoutId = setTimeout(() => {
-      //       activeFilters = activeFilters.filter((f) => f !== newFilter);
-      //    }, 10000);
-
-      //    activeFilters.push(newFilter);
-      //  }
        
      };
  
@@ -480,11 +536,6 @@ function animateImage(ctx, x, yPosition) {
 
                case "foreHead":
                   stretchForehead(ctx,faces[0].keypoints);
-                  break;
-
-               case "gifPlay":
-                  console.log("check gif");
-                  drawGIFOnCanvas(ctx,MAGUNI,x,y,width,height);
                   break;
                
                 default:
@@ -555,47 +606,6 @@ function appendUserData(videoElement, connection) {
       userData = JSON.parse(connection.data).clientData;
       nodeId = connection.connectionId;
    }
-   // var dataNode = document.createElement('div');
-   // dataNode.className = "data-node";
-   // dataNode.id = "data-" + nodeId;
-   // dataNode.innerHTML = "<p>" + userData + "</p>";
-   // videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
-   // addClickListener(videoElement, userData);
-   // var userData;
-   // var nodeId;
-   // if (typeof connection === "string") {
-   //     userData = connection;
-   //     nodeId = connection;
-   // } else {
-   //     userData = JSON.parse(connection.data).clientData;
-   //     nodeId = connection.connectionId;
-   // }
-
-   // // 로딩 컨테이너 생성
-   // const loadingContainer = document.createElement('div');
-   // loadingContainer.className = "loading-container";
-   // loadingContainer.innerHTML = `
-   //     <div class="loading-spinner"></div>
-   //     <div class="loading-text">접속 대기중...</div>
-   // `;
-
-   // // 비디오 요소가 로드되기 전에 로딩 컨테이너를 표시
-   // videoElement.parentNode.insertBefore(loadingContainer, videoElement);
-
-   // // 비디오가 실제로 재생되기 시작할 때 로딩 컨테이너를 제거
-   // videoElement.addEventListener('playing', () => {
-   //     if (loadingContainer.parentNode) {
-   //         loadingContainer.parentNode.removeChild(loadingContainer);
-   //     }
-   //     videoElement.style.display = 'block';
-   // });
-
-   // var dataNode = document.createElement('div');
-   // dataNode.className = "data-node";
-   // dataNode.id = "data-" + nodeId;
-   // dataNode.innerHTML = "<p>" + userData + "</p>";
-   // videoElement.parentNode.insertBefore(dataNode, videoElement.nextSibling);
-   // addClickListener(videoElement, userData);
 }
 
 function removeUserData(connection) {
