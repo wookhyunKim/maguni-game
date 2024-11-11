@@ -93,7 +93,7 @@ ul {
 .speech-bubble-vertical {
   position: absolute;
   top: 60px;
-  left: -100px;
+  left: -300px;
   width: 300px;
   padding: 15px;
   background-color: #f9f9f9;
@@ -119,8 +119,8 @@ ul {
 
 .speech-bubble-horizontal {
   position: absolute;
-  bottom: 60px; /* 아래쪽으로 오프셋 설정 */
-  right: -100px; /* 오른쪽으로 오프셋 설정 */
+  bottom: 10px; /* 아래쪽으로 오프셋 설정 */
+  right: -400px; /* 오른쪽으로 오프셋 설정 */
   width: 300px;
   padding: 15px;
   background-color: #f9f9f9;

@@ -140,15 +140,15 @@ const EndGamepage = () => {
     //     setShowModal(false);
     // }
     
-    useEffect(() => {
-        // 기존 audio 태그 중지 또는 음소거
-        const existingAudio = document.getElementById('bgm');
-        if (existingAudio) {
-            existingAudio.pause();  // 중지
-            existingAudio.muted = true;  // 음소거
-        }
+    // useEffect(() => {
+    //     // 기존 audio 태그 중지 또는 음소거
+    //     const existingAudio = document.getElementById('bgm');
+    //     if (existingAudio) {
+    //         existingAudio.pause();  // 중지
+    //         existingAudio.muted = true;  // 음소거
+    //     }
 
-    }, []);
+    // }, []);
 
 
     useEffect(() => {
