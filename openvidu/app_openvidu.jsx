@@ -52,11 +52,8 @@ export function joinSession(mySessionId,myUserName) {
 
       // connection.data를 통해 사용자 이름과 같은 정보 가져오기
       const connectionData = event.stream.connection.data;
-      console.log("Connection Data: ",connectionData);
       const parsedData = JSON.parse(connectionData);
-      console.log("Parsed Data: ",parsedData);
       const username = parsedData.clientData; // 예: { "username": "사용자 이름" }
-      console.log("Name: ",username);
 
       subscribers = [...subscribers,subscriber];
 
@@ -75,48 +72,13 @@ export function joinSession(mySessionId,myUserName) {
          const individualContainer = document.createElement('div');
          individualContainer.style.position = 'relative';
          individualContainer.style.display = 'inline-block'; // 비디오 컨테이너 스타일 지정
-         individualContainer.className = 'subscriber-container';
+         individualContainer.className = username;
 
          // video-container에 새 컨테이너 추가
          document.getElementById('video-container').appendChild(individualContainer);
 
          // 새 컨테이너에 비디오 요소 추가
          individualContainer.appendChild(subscriber_video);
-
-          // PlayerWordCard를 위한 컨테이너 생성
-         // const playerCardContainer = document.createElement('div');
-         // playerCardContainer.style.position = 'absolute';
-         // playerCardContainer.style.top = '10px'; // 위쪽 위치
-         // playerCardContainer.style.left = '10px'; // 왼쪽 위치
-         // playerCardContainer.style.width = 'auto';
-         // //playerCardContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // 가독성을 위한 반투명 배경
-         // playerCardContainer.style.padding = '5px';
-         // playerCardContainer.style.borderRadius = '8px';
-
-         // PlayerWordCard를 위한 컨테이너 생성
-         const playerCardContainer = document.createElement('div');
-         playerCardContainer.style.position = 'absolute';
-         playerCardContainer.style.top = '-60px'; // canvas 위쪽 위치
-         playerCardContainer.style.left = '50%'; // 수평 중앙 기준점
-         playerCardContainer.style.transform = 'translateX(-50%)'; // 가로축 중앙 정렬
-         playerCardContainer.style.width = 'auto';
-         playerCardContainer.style.padding = '5px';
-         playerCardContainer.style.borderRadius = '8px';
-      
-
-         // 개별 비디오 컨테이너에 PlayerWordCard 추가
-      individualContainer.insertBefore(playerCardContainer, subscriber_video);
-
-      console.log("Username: ",username);
-
-         // React 18에서 PlayerWordCard 컴포넌트를 `playerCardContainer`에 렌더링
-         const root = createRoot(playerCardContainer);
-         root.render(
-            <UsernameWordCard 
-               user={username} 
-            />
-         );
-
 
          // Add a new <p> element for the user's nickname just below its video
          appendUserData(event.element, subscriber.stream.connection);
@@ -353,10 +315,9 @@ const startStreaming = async (session, OV, mediaStream) => {
    // Publisher 화면에 원본 비디오 표시용 publisherCanvasContainer 생성
    const publisherCanvasContainer = document.createElement('div');
    publisherCanvasContainer.style.position = 'relative';
-   // publisherCanvasContainer.style.width = '640px'; // 고정된 크기 설정
-   // publisherCanvasContainer.style.height = '480px'; // 고정된 크기 설정
    publisherCanvasContainer.width = 640;
    publisherCanvasContainer.height = 480;
+   publisherCanvasContainer.className = myName;
 
    // Publisher 화면에 원본 비디오 표시용 publisherCanvas 생성
    const publisherCanvas = document.createElement('canvas');
@@ -378,31 +339,11 @@ const startStreaming = async (session, OV, mediaStream) => {
    video.srcObject = mediaStream;
    video.autoplay = true;
    video.playsInline = true;
-
-   //UsernameWordCard를 표시할 컨테이너 생성
-   const playerCardContainer = document.createElement('div');
-   playerCardContainer.style.position = 'absolute';
-   playerCardContainer.style.top = '-60px'; // canvas 위쪽 위치
-   playerCardContainer.style.left = '50%'; // 수평 중앙 기준점
-   playerCardContainer.style.transform = 'translateX(-50%)'; // 가로축 중앙 정렬
-   playerCardContainer.style.width = 'auto';
-   playerCardContainer.style.padding = '5px';
-   playerCardContainer.style.borderRadius = '8px';
-
    
 
    // Publisher 화면에 원본 비디오 표시
    document.getElementById('video-container').appendChild(publisherCanvasContainer);
-   // Publisher Canvas에 UsernameWordCard 추가
-   publisherCanvasContainer.appendChild(playerCardContainer);
 
-   // React 18에서 UsernameWordCard 컴포넌트를 `playerCardContainer`에 렌더링
-   const root = createRoot(playerCardContainer);
-   root.render(
-      <UsernameWordCard 
-          user={myName} 
-      />
-  );
 
 // 이미지와 필터 타입 배열
 const filters = [

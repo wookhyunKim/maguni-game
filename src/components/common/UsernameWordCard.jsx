@@ -1,7 +1,7 @@
 import { PROFILE_COLORS_ARRAY } from '../../constants/colors';
 import '../../styles/UsernameWordCard.css'
 import PropTypes from 'prop-types';
-const UsernameWordCard = ({ user, words = '', count = 0, playerIndex = 0}) => {
+const UsernameWordCard = ({ user, words = '', playerIndex = 0}) => {
     return (
         <div 
             className="username-word-card"
