@@ -250,7 +250,7 @@ const GameRoomPage = () => {
                     nextIndex = index + 1;
                 }
 
-                socket.emit('do take photo', participantList[nextIndex]);
+                _socket.emit('do take photo', participantList[nextIndex]);
             }
 
 
