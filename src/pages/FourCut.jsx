@@ -84,8 +84,8 @@ const FourCut = () => {
         <div className="wallImage" style={{backgroundImage: `url(${WallImage})`}}>
             {/* 프레임 선택 모달 */}
             {showModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
+                <div className="fourcut-modal-overlay">
+                    <div className="fourcut-modal-content">
                         <h2>프레임을 선택해주세요</h2>
                         <div className="frame-options">
                             {frameOptions.map((frame) => (

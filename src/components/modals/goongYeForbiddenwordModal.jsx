@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import '../../styles/modals.css';
 import { useEffect, useState } from 'react';
 import useGameStageStore from '../store/gameStage.js';
-import Goon from "../../assets/images/goongYeImage.webp"
+import Goon from "../../assets/images/goongYeBGremoved.png"
 import { scriptData } from '../../assets/utils/gameScripts.js';
-
+import UrgeWithPleasureComponent from '../common/UrgeWithPleasureComponet.jsx';
 // 이미지 미리 로딩
 const preloadImage = new Image();
 preloadImage.src = Goon;
@@ -30,10 +30,10 @@ const SettingForbiddenWordModal = ({onClose }) => {
     }, [onClose]);
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
+        <div className="goongye-modal-overlay">
+            <div className="goongye-modal-content">
                 {/* 카운트 하는 애니메이션 추가 예정 */}
-                <img 
+                <img className="goong-ye-img"
                     src={Goon} 
                     alt="궁예"
                     style={{ 
@@ -41,14 +41,7 @@ const SettingForbiddenWordModal = ({onClose }) => {
                     }}
                 />
                 <p>{currentScript}</p>
-                <div className="timer">
-                    <div 
-                        className="progress-bar" 
-                        style={{
-                            animation: 'progress 12s linear'
-                        }}
-                    />
-                </div>
+                <UrgeWithPleasureComponent duration={12} />
             </div>
         </div>
     );

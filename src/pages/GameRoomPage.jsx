@@ -26,6 +26,10 @@ import html2canvas from "html2canvas";
 import Goon from "../assets/images/goongYeImage.webp";
 
 import StartSound from '../assets/bgm/game_start.wav'; 
+import GameStartSound from '../assets/bgm/start_game_bell.wav'; 
+import BombSound from '../assets/bgm/bomb.wav'; 
+import SPRING from '../assets/bgm/spring.mp3'; 
+
 
 
 // 다른 모달에서 사용하는 이미지들도 import
@@ -64,7 +68,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 400000000
+    const startTime = 3
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -193,15 +197,21 @@ const GameRoomPage = () => {
         });
         // 게임 종료 처리
         _socket.on('game ended', (finalCounts) => {
+            const audio = new Audio(BombSound);
+            audio.play();
             setGameActive(false);
             setModal('goongYeAnnouncingResult', true);
             setFinalCountList(finalCounts);
             document.getElementById('stopButton').click();
+            //여기요
         });
 
         _socket.on('setting word ended', () => {
             
-            forbiddenwordAnouncement();
+            forbiddenwordAnouncement().then(()=>{
+                const audio = new Audio(GameStartSound);
+                audio.play();
+            })
         });
 
         // 금칙어 설정 안내 모달 열기
@@ -222,6 +232,8 @@ const GameRoomPage = () => {
         });
 
         _socket.on('hit user', (user) => {
+            // const audio = new Audio(SPRING);
+            // audio.play();
             if (user !== username) {
                 return;
             }
@@ -509,7 +521,6 @@ const GameRoomPage = () => {
                                         />
                                     </div>
                                 </div>
-
                             </div>
                             <div className="sidebar-btn">
                                 <input
@@ -520,19 +531,6 @@ const GameRoomPage = () => {
                                     value="나가기"
                                 />
                             </div>
-
-                            {/* <div className="sidebar_goongye">
-                                <div className="sidebar_index">진행자</div>
-                                <div className="sidebar_content">
-                                    <table className="user-wordlist-table">
-                                        <tbody>
-                                            <tr>
-                                                <td>진행자 정보</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div> */}
                         </div>
                     </div>
                 </div>

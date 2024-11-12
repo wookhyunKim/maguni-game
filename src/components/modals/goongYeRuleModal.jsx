@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import '../../styles/modals.css';
 import { useEffect } from 'react';
 import useGameStageStore from '../store/gameStage.js';
-import Goon from "../../assets/images/goongYeImage.webp"
+import Goon from "../../assets/images/goongYeBGremoved.png"
+import UrgeWithPleasureComponent from '../common/UrgeWithPleasureComponet.jsx';
 
 const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose }) => {
     const { goongYeRevealForbiddenWord } = useGameStageStore();
@@ -16,8 +17,8 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
     }, [onClose]);
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
+        <div className="goongye-modal-overlay">
+            <div className="goongye-modal-content">
                 <img src={Goon} alt="궁예" />
                 <h2>금칙어 공개</h2>
                 <table className="forbidden-word-table">
@@ -36,9 +37,7 @@ const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose })
                         ))}
                     </tbody>
                 </table>
-                <div className="timer">
-                    <div className="progress-bar" />
-                </div>
+                <UrgeWithPleasureComponent duration={12} />
             </div>
         </div>
     );

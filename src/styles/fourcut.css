@@ -3,7 +3,8 @@
     min-height: 100vh;
 }
 
-.modal-overlay {
+.fourcut-modal-overlay {
+    width: 100%;
     position: fixed;
     top: 0;
     left: 0;
@@ -16,14 +17,37 @@
     z-index: 1000;
 }
 
-.end-game-modal-content {
+.fourcut-modal-content {
+    position: relative;
     background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    max-width: 1000px;
+    padding: 2rem;
+    border-radius: 20px;
     width: 95%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
     max-height: 90vh;
     overflow-y: auto;
+}
+
+.fourcut-modal-content h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.fourcut-modal-content img {
+    width: auto;
+    max-width: 300px;
+    min-width: auto;
+    height: auto;
+    margin: 0 auto 1rem auto;
+    display: block;
+    object-fit: contain;
 }
 
 .frame-options {
@@ -158,13 +182,6 @@
     object-fit: cover;
     border-radius: 5px;
 }
-
-.modal-content h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-}
-
 
 .changeFrameBtn, .downloadBtn {
     border-radius:4px;
