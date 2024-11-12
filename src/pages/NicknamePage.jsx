@@ -5,6 +5,7 @@ import nextButton from '../assets/images/nextButton.png'
 import {nicknames} from "../assets/utils/nicknames.js"
 import GameLayout from '../components/layout/GameLayout';
 import { useState } from 'react';
+import CLICKSOUND from '../assets/bgm/click.mp3';
 
 const NicknamePage = () => {
     const navigate = useNavigate();
@@ -15,6 +16,10 @@ const NicknamePage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (username.trim()) {
+            const audio = new Audio(CLICKSOUND);
+            audio.volume = 1.0;
+            audio.play();
+            
             setIsExiting(true);
             setTimeout(() => {
                 navigate('/hostguest');
