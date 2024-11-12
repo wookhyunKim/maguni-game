@@ -71,7 +71,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 20
+    const startTime = 100;
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);

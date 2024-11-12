@@ -88,8 +88,6 @@
     flex-direction: column;
     color: #4A4039;
     overflow-y: auto;
-    /* font-family: 'Inter', sans-serif; */
-    font-size: 20px;
 }
 
 .sidebar_wordlist,
@@ -100,11 +98,11 @@
 
 .sidebar_index {
     font-weight: bold;
-    font-size: 1.5rem;
     padding: 10px;
     background-color: #C4AB8D;
     border-radius: 4px 4px 0 0;
     color: #4A4039;
+    font-size: 1.7rem;
 }
 
 .sidebar_content {
@@ -210,7 +208,8 @@
 }
 
 #buttonLeaveSession {
-    font-size: 1.5rem;
+    padding: 0;
+    font-size: 1.7rem;
 }
 
 
