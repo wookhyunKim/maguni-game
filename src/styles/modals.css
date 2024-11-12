@@ -18,6 +18,7 @@
     padding: 2rem;
     border-radius: 20px;
     width: 95%;
+    max-height: 90vh;
     max-width: 500px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     display: flex;
