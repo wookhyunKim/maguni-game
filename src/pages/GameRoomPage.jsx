@@ -32,6 +32,8 @@ import StartSound from '../assets/bgm/game_start.wav';
 
 import { Context } from '../../IntroMusicContainer';
 import { useContext } from 'react';
+import UsernameWordCard from '../components/common/UsernameWordCard.jsx';
+import ReactDOM from 'react-dom';
 
 const GameRoomPage = () => {
     const navigate = useNavigate();
@@ -258,6 +260,17 @@ const GameRoomPage = () => {
     }, [gameActive, timer]);
 
 
+    // useEffect(() => {
+    //     // 금칙어를 각 유저의 비디오 컨테이너에 추가
+    //     participantList
+    //         .filter(user => user !== username)
+    //         .forEach((user) => {
+    //             // video-container 내에서 유저 이름을 클래스명으로 가지는 컨테이너를 찾음
+    //             const userContainer = document.querySelector(`#video-container .${user}`);
+    //             const words = forbiddenWordlist.find(e => e.nickname === user)?.words;
+    //         });
+    // }, [participantList, forbiddenWordlist]); // `participantList`와 `forbiddenWordlist`가 변경될 때마다 실행
+    
     // ====================================================== take photos ====================================================== 
     const sendImage = () => {
         const date = new Date();
@@ -425,6 +438,31 @@ const GameRoomPage = () => {
                                 </>
                             </div>
                             <div id="video-container" className="col-md-6" ref={divRef}>
+                            {/* {isWordsShown && participantList
+                                .filter(user => user !== username)
+                                .map((user, index) => {
+                                    const words = forbiddenWordlist.find(e => e.nickname === user)?.words;
+                                    
+                                    // 해당 유저의 container가 존재하는지 확인 후, 포털로 추가
+                                    const userContainer = document.querySelector(`.${user}`);
+                                    
+                                    return userContainer ? (
+                                        ReactDOM.createPortal(
+                                            <UsernameWordCard
+                                                key={user}
+                                                user={user}
+                                                words={words}
+                                                playerIndex={index}
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    left: 0,
+                                                }}
+                                            />,
+                                            userContainer
+                                        )
+                                    ) : null;
+                                })} */}
                             </div>
                         </div>
                         <div className="gameroom-sidebar">
@@ -438,7 +476,7 @@ const GameRoomPage = () => {
                             <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
-                                    <div className="player-cards-container">
+                                    {/* <div className="player-cards-container">
                                         {isWordsShown && participantList
                                             .filter(user => user !== username)
                                             .map((user, index) => {
@@ -454,7 +492,7 @@ const GameRoomPage = () => {
                                                     />
                                                 );
                                             })}
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                             <div className={`sidebar_mymission ${showMission ? 'show' : ''}`}>
