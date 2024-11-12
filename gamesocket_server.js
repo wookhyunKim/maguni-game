@@ -62,7 +62,7 @@ io.on('connection', (client) => {
   });
 
   client.on('forbidden word used hit', (username) => {
-    io.emit('hit user', username);
+    io.emit('hit user', username,users);
     
   });
 
