@@ -215,6 +215,7 @@ const GameRoomPage = () => {
                 const audio = new Audio(GameStartSound);
                 audio.play();
             })
+            setShowMission(false);
         });
 
         // 금칙어 설정 안내 모달 열기
