@@ -53,7 +53,7 @@ io.on('connection', (client) => {
     }
     forbiddenWordCounts[username] += occurrences; // 카운트 증가
      //사진찍기 위한 카운트
-    totalCount += 1;
+    // totalCount += 1;
     if (occurrences >= 2) {
       io.emit('sound on');
     }

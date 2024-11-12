@@ -236,8 +236,6 @@ const GameRoomPage = () => {
         });
 
         _socket.on('hit user', (user) => {
-            // const audio = new Audio(SPRING);
-            // audio.play();
             if (user !== username) {
                 return;
             }
@@ -256,7 +254,11 @@ const GameRoomPage = () => {
             }
 
 
-            
+        _socket.on('sound on',()=>{
+            const audio = new Audio(SPRING);
+            audio.play();
+        })
+        
 
 
         });
