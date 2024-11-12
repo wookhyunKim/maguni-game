@@ -12,7 +12,14 @@ function Input({ username, roomcode, showInput, onComplete }) {
   const [index, setIndex] = useState(-1);
 
   const handleInputChange = (e) => {
-    setInputValue(e.target.value);
+    const newValue = e.target.value;
+    // 한글만 허용하는 정규식 (자음, 모음, 완성된 한글)
+    const koreanOnly = /^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*$/;
+
+    // 한글만 있고 공백이 없는 경우에만 입력값 업데이트
+    if (koreanOnly.test(newValue) && !newValue.includes(' ')) {
+      setInputValue(newValue);
+    }
   };
 
   const insertWord = () => {
@@ -89,7 +96,8 @@ return (
                 className="form-control"
                 value={inputValue}
                 onChange={handleInputChange}
-                placeholder="메시지를 입력하세요"
+                placeholder="한글만 입력 가능합니다"
+                pattern="[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]+"
             />
             <button 
                 type="submit"
