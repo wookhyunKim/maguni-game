@@ -26,10 +26,7 @@ import html2canvas from "html2canvas";
 import Goon from "../assets/images/goongYeImage.webp";
 
 import StartSound from '../assets/bgm/game_start.wav'; 
-import GameStartSound from '../assets/bgm/start_game_bell.wav'; 
-import BombSound from '../assets/bgm/bomb.wav'; 
-import SPRING from '../assets/bgm/spring.mp3'; 
-
+import '../styles/UsernameWordCard.css'
 
 
 // 다른 모달에서 사용하는 이미지들도 import
@@ -68,7 +65,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 3
+    const startTime = 400000000
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -197,21 +194,15 @@ const GameRoomPage = () => {
         });
         // 게임 종료 처리
         _socket.on('game ended', (finalCounts) => {
-            const audio = new Audio(BombSound);
-            audio.play();
             setGameActive(false);
             setModal('goongYeAnnouncingResult', true);
             setFinalCountList(finalCounts);
             document.getElementById('stopButton').click();
-            //여기요
         });
 
         _socket.on('setting word ended', () => {
             
-            forbiddenwordAnouncement().then(()=>{
-                const audio = new Audio(GameStartSound);
-                audio.play();
-            })
+            forbiddenwordAnouncement();
         });
 
         // 금칙어 설정 안내 모달 열기
@@ -232,8 +223,6 @@ const GameRoomPage = () => {
         });
 
         _socket.on('hit user', (user) => {
-            // const audio = new Audio(SPRING);
-            // audio.play();
             if (user !== username) {
                 return;
             }
@@ -272,17 +261,17 @@ const GameRoomPage = () => {
     }, [gameActive, timer]);
 
 
-    // useEffect(() => {
-    //     // 금칙어를 각 유저의 비디오 컨테이너에 추가
-    //     participantList
-    //         .filter(user => user !== username)
-    //         .forEach((user) => {
-    //             // video-container 내에서 유저 이름을 클래스명으로 가지는 컨테이너를 찾음
-    //             const userContainer = document.querySelector(`#video-container .${user}`);
-    //             const words = forbiddenWordlist.find(e => e.nickname === user)?.words;
-    //         });
-    // }, [participantList, forbiddenWordlist]); // `participantList`와 `forbiddenWordlist`가 변경될 때마다 실행
-    
+    useEffect(() => {
+        // 금칙어를 각 유저의 비디오 컨테이너에 추가
+        participantList
+            .filter(user => user !== username)
+            .forEach((user) => {
+                // video-container 내에서 유저 이름을 클래스명으로 가지는 컨테이너를 찾음
+                const userContainer = document.querySelector(`#video-container .${user}`);
+                const words = forbiddenWordlist.find(e => e.nickname === user)?.words;
+            });
+    }, [participantList, forbiddenWordlist]); // `participantList`와 `forbiddenWordlist`가 변경될 때마다 실행
+
     // ====================================================== take photos ====================================================== 
     const sendImage = () => {
         const date = new Date();
@@ -450,10 +439,11 @@ const GameRoomPage = () => {
                                 </>
                             </div>
                             <div id="video-container" className="col-md-6" ref={divRef}>
-                            {/* {isWordsShown && participantList
-                                .filter(user => user !== username)
+                            {isWordsShown && participantList
+                                //.filter(user => user !== username)
                                 .map((user, index) => {
                                     const words = forbiddenWordlist.find(e => e.nickname === user)?.words;
+                                    const isHost = (user === username);
                                     
                                     // 해당 유저의 container가 존재하는지 확인 후, 포털로 추가
                                     const userContainer = document.querySelector(`.${user}`);
@@ -464,6 +454,7 @@ const GameRoomPage = () => {
                                                 key={user}
                                                 user={user}
                                                 words={words}
+                                                isHost={isHost}
                                                 playerIndex={index}
                                                 style={{
                                                     position: 'absolute',
@@ -474,7 +465,7 @@ const GameRoomPage = () => {
                                             userContainer
                                         )
                                     ) : null;
-                                })} */}
+                                })}
                             </div>
                         </div>
                         <div className="gameroom-sidebar">
@@ -521,6 +512,7 @@ const GameRoomPage = () => {
                                         />
                                     </div>
                                 </div>
+
                             </div>
                             <div className="sidebar-btn">
                                 <input
@@ -531,6 +523,19 @@ const GameRoomPage = () => {
                                     value="나가기"
                                 />
                             </div>
+
+                            {/* <div className="sidebar_goongye">
+                                <div className="sidebar_index">진행자</div>
+                                <div className="sidebar_content">
+                                    <table className="user-wordlist-table">
+                                        <tbody>
+                                            <tr>
+                                                <td>진행자 정보</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
