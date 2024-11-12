@@ -15,6 +15,7 @@ import UrgeWithPleasureComponent from '../components/common/UrgeWithPleasureComp
 const EndGamepage = () => {
     const [showModal, setShowModal] = useState(true);
     const location = useLocation();
+    const [timeLeft, setTimeLeft] = useState(20);
     const navigate = useNavigate();
     const { result, words, roomCode, username } = location.state || {};
     const { setIsPlay } = useContext(Context);
