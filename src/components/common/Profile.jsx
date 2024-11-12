@@ -79,7 +79,11 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
                         <form className='profileInputContainer' onSubmit={handleSubmit}>
                             <input
                             value={RC}
-                            onChange={(e) => setRoomcode(e.target.value.toUpperCase())}
+                            onChange={(e) => {
+                                const newValue = e.target.value.toUpperCase();
+                                setRoomcode(newValue); // roomcode 업데이트
+                                setRC(newValue);       // RC 상태도 업데이트하여 화면에 반영
+                            }}
                             placeholder="방 코드를 입력하세요"
                             className="room-code-input"
                             />
