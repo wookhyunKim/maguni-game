@@ -29,6 +29,9 @@ import Goon from "../assets/images/goongYeImage.webp";
 import StartSound from '../assets/bgm/game_start.wav'; 
 import WHO from '../assets/bgm/gichim.wav'; 
 import '../styles/UsernameWordCard.css'
+import GameStartSound from '../assets/bgm/start_game_bell.wav'; 
+import BombSound from '../assets/bgm/bomb.wav'; 
+import SPRING from '../assets/bgm/spring.mp3'; 
 
 
 
@@ -197,15 +200,21 @@ const GameRoomPage = () => {
         });
         // 게임 종료 처리
         _socket.on('game ended', (finalCounts) => {
+            const audio = new Audio(BombSound);
+            audio.play();
             setGameActive(false);
             setModal('goongYeAnnouncingResult', true);
             setFinalCountList(finalCounts);
             document.getElementById('stopButton').click();
+            //여기요
         });
 
         _socket.on('setting word ended', () => {
             
-            forbiddenwordAnouncement();
+            forbiddenwordAnouncement().then(()=>{
+                const audio = new Audio(GameStartSound);
+                audio.play();
+            })
         });
 
         // 금칙어 설정 안내 모달 열기
@@ -226,6 +235,8 @@ const GameRoomPage = () => {
         });
 
         _socket.on('hit user', (user) => {
+            // const audio = new Audio(SPRING);
+            // audio.play();
             if (user !== username) {
                 return;
             }
