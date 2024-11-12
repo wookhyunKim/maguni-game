@@ -75,6 +75,10 @@ io.on('connection', (client) => {
       io.to(roomcode).emit('timer update', timer);
       timer--;
 
+      if (timer==50){
+        io.to(roomcode).emit('who');
+      }
+        
       if (timer < 0) {
         clearInterval(countdownInterval);
         io.to(roomcode).emit('game ended', forbiddenWordCounts); // 게임 종료 및 최종 결과 전송

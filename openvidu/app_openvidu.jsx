@@ -82,6 +82,7 @@ export function joinSession(mySessionId,myUserName) {
 
          // Add a new <p> element for the user's nickname just below its video
          appendUserData(event.element, subscriber.stream.connection);
+         appendCanvas(event.element, subscriber.stream.connection);
       });
    });
 
@@ -319,10 +320,15 @@ const startStreaming = async (session, OV, mediaStream) => {
    publisherCanvasContainer.height = 480;
    publisherCanvasContainer.className = myName;
 
+
    // Publisher 화면에 원본 비디오 표시용 publisherCanvas 생성
    const publisherCanvas = document.createElement('canvas');
    publisherCanvas.width = 640;
    publisherCanvas.height = 480;
+   publisherCanvas.id ="canvas_"+myName
+   publisherCanvas.className ="canvasChild"
+   
+   
    
    publisherCanvasContainer.appendChild(publisherCanvas);
 
@@ -547,6 +553,35 @@ function appendUserData(videoElement, connection) {
       userData = JSON.parse(connection.data).clientData;
       nodeId = connection.connectionId;
    }
+}
+function appendCanvas(videoElement, connection) {
+    let userData;
+    if (typeof connection === "string") {
+        userData = connection;
+    } else {
+        userData = JSON.parse(connection.data).clientData;
+    }
+
+    // 공통 부모 요소를 생성합니다.
+    const container = document.createElement('div');
+    container.style.position = "relative";
+    container.style.width = 640;
+    container.style.height = 480;
+
+    // 기존 비디오 요소를 부모 요소로 이동합니다.
+    videoElement.parentNode.insertBefore(container, videoElement);
+    container.appendChild(videoElement);
+
+    const canvas = document.createElement('canvas');
+    canvas.className = "canvas";
+    canvas.id = "canvas_" + userData;
+    canvas.width = 640;
+    canvas.height = 480;
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.zIndex = '1';
+    container.appendChild(canvas);
 }
 
 function removeUserData(connection) {
