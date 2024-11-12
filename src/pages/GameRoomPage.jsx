@@ -26,7 +26,9 @@ import html2canvas from "html2canvas";
 import Goon from "../assets/images/goongYeImage.webp";
 
 import StartSound from '../assets/bgm/game_start.wav'; 
+import WHO from '../assets/bgm/gichim.wav'; 
 import '../styles/UsernameWordCard.css'
+
 
 
 // 다른 모달에서 사용하는 이미지들도 import
@@ -65,7 +67,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 400000000
+    const startTime = 100
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -169,6 +171,7 @@ const GameRoomPage = () => {
     function connectToRoom() {
 
         const _socket = io('https://maguni-game-websocket2.onrender.com', {
+        // const _socket = io('http://localhost:3002', {
             autoConnect: false,
             query: {
                 username,
@@ -235,6 +238,14 @@ const GameRoomPage = () => {
                 sendImage()
             }
         })
+
+        // 타이머 업데이트
+        _socket.on('who', () => {
+            // 모달 띄우기 
+            const audio = new Audio(WHO);
+            audio.play();
+            //모달 끄기 4초후
+        });
 
     }
 
