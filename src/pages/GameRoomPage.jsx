@@ -68,7 +68,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 60
+    const startTime = 20
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -478,6 +478,7 @@ const GameRoomPage = () => {
                                                     top: 0,
                                                     left: 0,
                                                 }}
+                                                count={forbiddenWordCount[user]}
                                             />,
                                             userContainer
                                         )
@@ -496,7 +497,7 @@ const GameRoomPage = () => {
                             <div className="sidebar_wordlist">
                                 <div className="sidebar_index">금칙어 목록</div>
                                 <div className="sidebar_content">
-                                    {/* <div className="player-cards-container">
+                                    <div className="player-cards-container">
                                         {isWordsShown && participantList
                                             .filter(user => user !== username)
                                             .map((user, index) => {
@@ -512,7 +513,7 @@ const GameRoomPage = () => {
                                                     />
                                                 );
                                             })}
-                                    </div> */}
+                                    </div>
                                 </div>
                             </div>
                             <div className={`sidebar_mymission ${showMission ? 'show' : ''}`}>

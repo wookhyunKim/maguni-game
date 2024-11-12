@@ -1,23 +1,25 @@
 import { PROFILE_COLORS_ARRAY } from '../../constants/colors';
 import PropTypes from 'prop-types';
-const UsernameWordCard = ({ user, words = '', playerIndex = 0,isHost = false}) => {
+const UsernameWordCard = ({ user, words = '',count, playerIndex = 0,isHost = false}) => {
     return (
-        <div 
-            className="username-word-card"
-            style={{ backgroundColor: PROFILE_COLORS_ARRAY[(playerIndex)] }}
-        >
-            <div className="username">{user}</div>
-            {!isHost &&
-                <div className="word-info">
-                <div className="forbidden-word">
-                    <span>금칙어:</span> {words || '금칙어 없음'}
+        !isHost && (
+            <div 
+                className="username-word-card"
+                style={{ backgroundColor: PROFILE_COLORS_ARRAY[playerIndex] }}
+            >
+                <div className="username">{user}</div>
+                <div className="username-word-info">
+                    <div className="username-forbidden-word">
+                        {/* <span>|</span>  */}
+                        <div className="forbidden-word-text">{words || '금칙어 없음'}</div>
+                    </div>
                 </div>
-                {/* <div className="word-count">
-                    <span>사용 횟수:</span> {count || 0}
-                </div> */}
-             </div>
-            }
-        </div>
+                <div className="word-count">
+                    {/* <span>|</span> */}
+                    <span>{count || 0}회</span> 
+                </div>
+            </div>
+        )
     );
 };
 
