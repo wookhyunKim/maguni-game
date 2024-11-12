@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import '../../styles/modals.css';
 import { useEffect } from 'react';
 import useGameStageStore from '../store/gameStage.js';
-import Goon from "../../assets/images/goongYeBGremoved.png"
+import Goon from "../../assets/images/goongYeBGremoved.webp"
 import UrgeWithPleasureComponent from '../common/UrgeWithPleasureComponet.jsx';
 
 const ForbiddenWordlistModal = ({ participantList, forbiddenWordlist, onClose }) => {
