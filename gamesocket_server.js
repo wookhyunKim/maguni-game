@@ -24,7 +24,7 @@ const io = new Server(server, {
 
 // 금칙어 사용 카운트 저장 객체
 const forbiddenWordCounts = {};
-let totalCount = 1;
+// let totalCount = 1;
 
 io.on('connection', (client) => {
   console.log('사용자가 들어왔습니다!');
@@ -52,11 +52,11 @@ io.on('connection', (client) => {
       forbiddenWordCounts[username] = 0; // 초기화
     }
     forbiddenWordCounts[username] += occurrences; // 카운트 증가
-     //사진찍기 위한 카운트
-    totalCount += 1;
-    if (occurrences >= 2) {
-      io.emit('take a picture', username);
-    }
+    //  //사진찍기 위한 카운트
+    // totalCount += 1;
+    // if (occurrences >= 2) {
+    //   io.emit('take a picture', username);
+    // }
 
     // 모든 클라이언트에 카운트 업데이트
     io.emit('update forbidden word count', forbiddenWordCounts);
@@ -65,6 +65,11 @@ io.on('connection', (client) => {
 
   client.on('forbidden word used hit', (username) => {
     io.emit('hit user', username);
+    
+  });
+
+  client.on('do take photo', (username) => {
+    io.emit('take a picture', username);
     
   });
 
