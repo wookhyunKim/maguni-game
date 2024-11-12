@@ -14,6 +14,7 @@
 }
 
 .afterToggleContainer {
+z-index: 2;
 display: flex; 
 flex-direction:column;
 /* align-items: center; */
@@ -210,6 +211,7 @@ padding: 20px;
 
 
 .startGameSection {
+  z-index: inherit;
   padding: 10px 0;
 }
 
@@ -223,6 +225,8 @@ padding: 20px;
 }
 
 .gameControlSection {
+  position: relative;
+  z-index:3;
   width: 586px;
   padding: 10px 0;
   display: flex;
