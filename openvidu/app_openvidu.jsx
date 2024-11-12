@@ -395,7 +395,7 @@ function animateImage(ctx, x, yPosition) {
          case "faceOutlineFilter":
             newFilter.timeoutId = setTimeout(() => {
                activeFilters = activeFilters.filter((f) => f !== newFilter);
-            }, 2000);
+            }, 4000);
             activeFilters.push(newFilter);
          break;
          case "noseEnlarge":
@@ -404,7 +404,7 @@ function animateImage(ctx, x, yPosition) {
                               // 타이머가 만료되면 필터를 제거
          newFilter.timeoutId = setTimeout(() => {
             activeFilters = activeFilters.filter((f) => f !== newFilter);
-         }, 3000);
+         }, 5000);
 
          activeFilters.push(newFilter);
          break;
