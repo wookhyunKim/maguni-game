@@ -24,7 +24,6 @@ const io = new Server(server, {
 
 // 금칙어 사용 카운트 저장 객체
 const forbiddenWordCounts = {};
-// let totalCount = 1;
 
 io.on('connection', (client) => {
   console.log('사용자가 들어왔습니다!');
@@ -53,8 +52,7 @@ io.on('connection', (client) => {
     }
     forbiddenWordCounts[username] += occurrences; // 카운트 증가
      //사진찍기 위한 카운트
-    // totalCount += 1;
-    if (occurrences >= 2) {
+    if (occurrences >= 3) {
       io.emit('sound on');
     }
 
