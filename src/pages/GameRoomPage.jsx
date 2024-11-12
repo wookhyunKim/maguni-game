@@ -84,10 +84,9 @@ const GameRoomPage = () => {
 
     // 사진용 div
     const divRef = useRef(null);
+    const [ablePic,setablePic]= useState(false)
 
     const handlePenalty = () => {
-        // Emit an event that the filter should display for 2 seconds
-        console.log('penalty');
         const event = new CustomEvent('startPenaltyFilter');
         window.dispatchEvent(event);
     };
@@ -231,6 +230,23 @@ const GameRoomPage = () => {
                 return;
             }
             handlePenalty();
+            let nextIndex;
+            if(!ablePic){
+                setablePic(true);
+                const index = participantList.indexOf(user);
+                if (index == participantList.length-1){
+                    nextIndex = 0;
+                }else{
+                    nextIndex = index + 1;
+                }
+
+                socket.emit('do take photo', participantList[nextIndex]);
+            }
+
+
+            
+
+
         });
 
         _socket.on('take a picture', (user) => {
@@ -261,7 +277,6 @@ const GameRoomPage = () => {
     };
 
     const handleForbiddenWordUsedHit = () => {
-        console.log("금칙어 사용 - hit");
         socket.emit('forbidden word used hit', username);
     };
 
