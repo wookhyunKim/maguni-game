@@ -3,13 +3,13 @@ import html2canvas from "html2canvas";
 import saveAs from "file-saver";
 // 프레임들
 import BasicFrame from "../assets/images/photo_frame/frame1.png";
-import GoongYeFrame from "../assets/images/photo_frame/frame2.png";
+import GoongYeFrameBlack from "../assets/images/photo_frame/frame2.png";
 import YeomjuFrame from "../assets/images/photo_frame/frame3.png";
-// import image_prac from "../assets/images/profile_images/one.png";
+import GoongYeFrameBeige from "../assets/images/photo_frame/frame4.png";
+import image_prac from "../assets/images/profile_images/one.png";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import '../styles/fourcut.css'
-import CommonButton from "../components/CommonButton";
 import {useNavigate} from 'react-router-dom';
 import WallImage from '../assets/images/endPage_bgImage.webp';
 
@@ -18,16 +18,17 @@ const FourCut = () => {
     const divRef = useRef(null);
     const [showModal, setShowModal] = useState(true); // 초기에 모달 표시
     const [selectedFrame, setSelectedFrame] = useState(null);
-    // const [imageList, setImageList] = useState([image_prac, image_prac, image_prac, image_prac]);
-    const [imageList, setImageList] = useState([]);
+    const [imageList, setImageList] = useState([image_prac, image_prac, image_prac, image_prac]);
+    // const [imageList, setImageList] = useState([]);
     const location = useLocation();
     const roomCode = location.state.roomCode;
 
     // 프레임 옵션
     const frameOptions = [
         { id: 'frame1', image: BasicFrame, name: '기본 프레임' },
-        { id: 'frame2', image: GoongYeFrame, name: '궁예 프레임' },
-        { id: 'frame3', image: YeomjuFrame, name: '염주 안대 프레임' }
+        { id: 'frame2', image: GoongYeFrameBlack, name: '궁예 프레임 블랙' },
+        { id: 'frame3', image: GoongYeFrameBeige, name: '궁예 프레임 베이지' },
+        { id: 'frame4', image: YeomjuFrame, name: '염주 안대 프레임' }
     ];
 
     // 서버에서 이미지 가져오기
@@ -145,8 +146,8 @@ const FourCut = () => {
                                     >
                                         <img
                                             // src={`../../backend/src/images/${image}`}
-                                            src={`http://localhost:3001/photos/${image}`}
-                                            // src={image}
+                                            // src={`http://localhost:3001/photos/${image}`}
+                                            src={image}
                                             alt={`사진 ${index + 1}`}
                                             style={{
                                                 width: "428px",

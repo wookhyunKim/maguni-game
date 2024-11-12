@@ -4,11 +4,30 @@ import PropTypes from 'prop-types';
 import '../../styles/profile.css';
 import nextButton from '../../assets/images/nextButton.png';
 import { useEffect, useState } from 'react';
+import CLICKSOUND from '../../assets/bgm/click.mp3';
 
 const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoomCode, connectBtnHandler, roomcode, setRoomcode}) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     connectBtnHandler();
+  };
+
+  const playClickSound = () => {
+    const audio = new Audio(CLICKSOUND);
+    audio.volume = 1.0;
+    audio.play();
+  };
+
+  // HOST 버튼 핸들러
+  const handleHostClick = () => {
+    playClickSound();
+    setRole('host');
+  };
+
+  // GUEST 버튼 핸들러
+  const handleGuestClick = () => {
+    playClickSound();
+    setRole('participant');
   };
 
   const [RC,setRC] = useState(roomcode)
@@ -85,12 +104,12 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
                     {role === "HOST" ? 
 
                         (
-                            <button className="commonButton" onClick={() => setRole('host')}>{btnName}</button> 
+                            <button className="commonButton" onClick={handleHostClick}>{btnName}</button> 
                         )
                         : 
 
                         (
-                            <button className="commonButton" onClick={() => setRole('participant')}>{btnName}</button>
+                            <button className="commonButton" onClick={handleGuestClick}>{btnName}</button>
                         )}
                     </div>
                 </>

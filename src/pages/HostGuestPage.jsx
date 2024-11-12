@@ -18,6 +18,7 @@ import RuleDescriber from '../components/common/RuleDescriber.jsx';
 import GameLayout from '../components/layout/GameLayout';
 import { find_my_index } from '../assets/utils/findMyIndex';
 import HostImage from '../assets/images/hostAvatar.png';
+import CLICKSOUND from '../assets/bgm/click.mp3';
 
 const HostGuestPage = () => {
     const navigate = useNavigate();
@@ -210,11 +211,16 @@ const HostGuestPage = () => {
         let title = "방 입장 오류";
         let message =  "없는 방입니다.";
 
+        //버튼 눌렀을 떼ㅐ
+        const audio = new Audio(CLICKSOUND);
+        audio.volume = 1.0;
+        audio.play();
+    
+
         if (result){
             if(role=='participant'){
                 const beforeContainer = document.querySelector('.beforeToggleContainer');
                 beforeContainer.classList.add('fade-exit');
-                
                 setTimeout(() => {
                     connectToChatServer();
                     setIsToggled(true);
