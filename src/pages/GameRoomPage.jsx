@@ -14,6 +14,7 @@ import ForbiddenWordlistModal from '../components/modals/ForbiddenWordlistModal.
 import SettingForbiddenWordModal from '../components/modals/goongYeForbiddenwordModal.jsx';
 import GoongYeAnouncingEndModal from '../components/modals/goongYeAnouncingEndModal.jsx';
 import GoongYeAnouncingGameEndModal from '../components/modals/GoongYeAnouncingGameEndModal.jsx';
+import GoongYeWhoModal from '../components/modals/GoongYeWhoModal.jsx';
 
 // 스토어 import
 import useRoomStore from '../components/store/roomStore.js';
@@ -67,7 +68,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 100
+    const startTime = 60
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -240,11 +241,16 @@ const GameRoomPage = () => {
         })
 
         // 타이머 업데이트
-        _socket.on('who', () => {
+        _socket.on('who', async() => {
             // 모달 띄우기 
             const audio = new Audio(WHO);
+            // audio.volume = 1.5; // 음량을 20%로 설정
             audio.play();
+            setModal('WhoModal',true)
             //모달 끄기 4초후
+            // 모달이 닫히기를 기다림
+            await new Promise(resolve => setTimeout(resolve, 4000));
+            setModal('WhoModal', false);
         });
 
     }
@@ -567,6 +573,11 @@ const GameRoomPage = () => {
                         setShowInput(false); // 모달 종료 시 Input 숨기기
                     }} />
                 )}
+                {modals.WhoModal && (
+                    <GoongYeWhoModal onClose={() => {
+                        setModal('WhoModal', false);
+                    }} />
+                )}
                 {modals.goongYeAnnouncingResult && (
                     <GoongYeAnouncingGameEndModal
                         finalCounts={finalCountList}
@@ -587,6 +598,7 @@ const GameRoomPage = () => {
                         }}
                     />
                 )}
+                
             </div>
         </>
     );

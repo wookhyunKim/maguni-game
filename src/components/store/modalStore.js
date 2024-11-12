@@ -10,6 +10,7 @@ export const useModalStore = create((set) => ({
         gameResult: false,
         goongYeAnouncingEnd: false,
         goongYeAnnouncingResult: false,
+        whoModal: false,
 
     },
     setModal: (modalName, isOpen) => 
