@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import '../../styles/modals.css';
 import { useEffect, useState } from 'react';
 import useGameStageStore from '../store/gameStage.js';
-import Goon from "../../assets/images/goongYeBGremoved.png"
+import Goon from "../../assets/images/goongYeBGremoved.webp"
 import { scriptData } from '../../assets/utils/gameScripts.js';
 import UrgeWithPleasureComponent from '../common/UrgeWithPleasureComponet.jsx';
 // 이미지 미리 로딩
