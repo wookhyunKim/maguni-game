@@ -196,8 +196,7 @@ const EndGamepage = () => {
                 <div className="result-container">
                     <div className="result-title">금칙어 위반 역적</div>
                     <div className="hanji-container">
-                    {/* 여기안에 한지 타주들 옴 */}
-                    {displayResults()}
+                        {displayResults()}
                     </div>
                 </div>
                 <div className="endPageFooter">

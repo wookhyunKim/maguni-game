@@ -23,7 +23,7 @@
     width: 100%;
     max-width: 586px;
     margin: 0 auto;
-    height: 44px; /* nicknameInput과 동일한 높이 */
+    height: 44px;
     padding-right: 70px;
 }
 
@@ -50,7 +50,7 @@
 .nicknameInputContainer img {
     cursor: pointer;
     margin-left: 10px;
-    height: 44px; /* 입력창과 동일한 높이 */
+    height: 44px;
     width: auto;
 }
 
@@ -61,10 +61,10 @@
     color: #F5F5F0; 
 }
 
-.nicknameInput:-ms-input-placeholder { /* Internet Explorer 10-11 */
+.nicknameInput:-ms-input-placeholder {
     color: #F5F5F0; 
 }
 
-.nicknameInput::-ms-input-placeholder { /* Microsoft Edge */
+.nicknameInput::-ms-input-placeholder {
     color: #F5F5F0; 
 }

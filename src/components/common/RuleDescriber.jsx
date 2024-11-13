@@ -30,6 +30,7 @@ const RuleDescriber = ({direction = "speech-bubble-vertical"}) =>{
             )}
       </div>
     )
+
 }
 
 export default RuleDescriber;

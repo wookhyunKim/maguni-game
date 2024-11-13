@@ -3,16 +3,15 @@ import { scriptData } from "../../assets/utils/gameScripts";
 
 // 전체 시간 스토어
 const useStoreTime = create((set) => ({
-    time: 0, // 초기값을 0으로 설정
+    time: 0,
     incrementTime: () => set((state) => ({ 
-        time: state.time + 1  // 감소가 아닌 증가로 변경
+        time: state.time + 1
     })),
     resetTime: () => set({ time: 0 }),
 }));
 
 // 게임 정보 스토어
 const useGameStore = create((set) => ({
-    // 플레이어와 단어 정보 초기화
     players: [],
     words: [],
 

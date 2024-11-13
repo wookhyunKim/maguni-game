@@ -2,7 +2,6 @@
 
 .session-bar-container {
     width: 100%;
-    /* font-family: 'Inter', sans-serif; */
 }
 
 
@@ -49,7 +48,7 @@
 /*남은 시간 텍스트*/
 .timeRemainedText {
     position: absolute !important;
-    right: 30px !important; /* 오른쪽 여백 조정 */
+    right: 30px !important;
     transform: translateY(-50%) !important;
     top: 50% !important;
     color: white;

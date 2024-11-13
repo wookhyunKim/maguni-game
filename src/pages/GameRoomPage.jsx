@@ -24,19 +24,12 @@ import { useModalStore } from '../components/store/modalStore.js';
 // 오픈비두 관련 import
 import { joinSession } from '../../openvidu/app_openvidu.jsx';
 import html2canvas from "html2canvas";
-import Goon from "../assets/images/goongYeImage.webp";
-
 import StartSound from '../assets/bgm/game_start.wav'; 
 import WHO from '../assets/bgm/gichim.wav'; 
 import '../styles/UsernameWordCard.css'
 import GameStartSound from '../assets/bgm/start_game_bell.wav'; 
 import BombSound from '../assets/bgm/bomb.wav'; 
 import SPRING from '../assets/bgm/spring.mp3'; 
-
-
-
-// 다른 모달에서 사용하는 이미지들도 import
-
 import { Context } from '../../IntroMusicContainer';
 import { useContext } from 'react';
 import UsernameWordCard from '../components/common/UsernameWordCard.jsx';
@@ -52,16 +45,13 @@ const GameRoomPage = () => {
 
     const { setIsPlay } = useContext(Context);
 
-    // console.log(playerNumber);
-
     //게임진행 소켓 상태관리
     const [socket, setSocket] = useState(null);
-    const [participantList, setParticipantList] = useState([]); //유저네임 리스트
-    const [forbiddenWordCount, setForbiddenWordCount] = useState({}); //유저별 금칙어 사용횟수
-    //DB에서 가져온 유저별 금칙어 리스트
+    const [participantList, setParticipantList] = useState([]); 
+    const [forbiddenWordCount, setForbiddenWordCount] = useState({});
     const [forbiddenWordlist, setForbiddenWordlist] = useState([]);
     // 음성인식 관련 상태
-    const [isStoppedManually, setIsStoppedManually] = useState(false); //수동 종료
+    const [isStoppedManually, setIsStoppedManually] = useState(false);
     //소켓에서 받아온 금칙어 횟수 리스트
     const [finalCountList, setFinalCountList] = useState([]);
     //모달 관련 상태
@@ -69,15 +59,12 @@ const GameRoomPage = () => {
     //사이드바에 금칙어 보이는 여부
     const [isWordsShown, setIsWordsShown] = useState(false);
 
-    const [timer, setTimer] = useState(20); // 타이머 상태
+    const [timer, setTimer] = useState(20);
     // 금칙어 설정 후 말하는 시간
     const startTime = 100;
-    const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
+    const [gameActive, setGameActive] = useState(false);
 
     const hasJoinedSession = useRef(false);
-
-    //이미지 프리로딩 상태
-    const [imagesPreloaded, setImagesPreloaded] = useState(false);
 
     // Input 컴포넌트 표시 여부 상태
     const [showInput, setShowInput] = useState(false);
@@ -102,10 +89,8 @@ const GameRoomPage = () => {
 
     //==========================input.jsx에서 완료 버튼 클릭 시 호출할 콜백 함수===============
     const handleInputComplete = () => {
-        setShowMission(false); // sidebar_mymission 숨김
+        setShowMission(false);
     };
-
-
 
 
     // ========================== 금칙어 설정 완료 ================
@@ -126,7 +111,7 @@ const GameRoomPage = () => {
         // 게임 시작 요청
         socket.emit('start game', roomcode, startTime);
         setGameActive(true);
-        setTimer(startTime); // 타이머 초기화
+        setTimer(startTime);
         document.getElementById('startButton').click();
     }
     //===========================금칙어 안내 모달 창 띄우기===========================
@@ -174,7 +159,6 @@ const GameRoomPage = () => {
     function connectToRoom() {
 
         const _socket = io('https://maguni-game-websocket2.onrender.com', {
-        // const _socket = io('http://localhost:3002', {
             autoConnect: false,
             query: {
                 username,
@@ -206,7 +190,6 @@ const GameRoomPage = () => {
             setModal('goongYeAnnouncingResult', true);
             setFinalCountList(finalCounts);
             document.getElementById('stopButton').click();
-            //여기요
         });
 
         _socket.on('setting word ended', () => {
@@ -286,7 +269,6 @@ const GameRoomPage = () => {
     }
 
     const handleForbiddenWordUsedCount = (occurrences) => {
-        console.log("금칙어 사용- count", occurrences);
         socket.emit('forbidden word used count', username, occurrences);
     };
 
@@ -302,7 +284,7 @@ const GameRoomPage = () => {
             }, 1000);
             return () => clearInterval(countdown);
         } else if (timer === 0) {
-            socket.emit('end game', roomcode); // 타이머가 끝나면 게임 종료 요청
+            socket.emit('end game', roomcode);
         }
     }, [gameActive, timer]);
 
@@ -481,12 +463,10 @@ const GameRoomPage = () => {
                                     <div className="time-remained">
                                         남은 시간: {timer}초
                                     </div>
-                                    {/* <div id="subtitles">자막</div> */}
                                 </>
                             </div>
                             <div id="video-container" className="col-md-6" ref={divRef}>
                             {isWordsShown && participantList
-                                //.filter(user => user !== username)
                                 .map((user, index) => {
                                     const words = forbiddenWordlist.find(e => e.nickname === user)?.words;
                                     const isHost = (user === username);
@@ -529,7 +509,7 @@ const GameRoomPage = () => {
                                     <div className="player-cards-container">
                                         {isWordsShown && participantList
                                             .filter(user => user !== username)
-                                            .map((user, index) => {
+                                            .map((user) => {
                                                 // 원래 플레이어의 인덱스 찾기
                                                 const originalPlayerIndex = participantList.findIndex(p => p === user);
                                                 return (
@@ -570,19 +550,6 @@ const GameRoomPage = () => {
                                     value="나가기"
                                 />
                             </div>
-
-                            {/* <div className="sidebar_goongye">
-                                <div className="sidebar_index">진행자</div>
-                                <div className="sidebar_content">
-                                    <table className="user-wordlist-table">
-                                        <tbody>
-                                            <tr>
-                                                <td>진행자 정보</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -600,7 +567,7 @@ const GameRoomPage = () => {
                 {modals.goongYeAnouncingEnd && (
                     <GoongYeAnouncingEndModal onClose={() => {
                         setModal('goongYeAnnouncingEnd', false);
-                        setShowInput(false); // 모달 종료 시 Input 숨기기
+                        setShowInput(false);
                     }} />
                 )}
                 {modals.WhoModal && (

@@ -1,7 +1,6 @@
 .profileContainer {
   margin-bottom: 12px;
     display: flex;
-    /* width: 100%; */
     width: 586px;
     flex-direction: row;
     align-items: center;
@@ -40,7 +39,6 @@
     font-size: 4rem;
 }
 
-/* borderlind과 그 바로 밑의 내용물 간격을 주기 위함 */
 .underBorderlineContainer {
   display: flex;
   flex-direction: row;
@@ -69,15 +67,12 @@
 
 .guest-text {
   width: 150px;
-  /* 필요한 경우 추가 스타일 지정 */
 }
 
 input {
-  /* font-family: 'Inter', sans-serif; */
   vertical-align: middle;
   text-align: center;
   line-height: normal;
-  
 }
 
 .identity {
@@ -88,23 +83,21 @@ input {
 }
 
 .room-code-input {
-    /* 기존 스타일 유지 */
-    color: #fff;  /* 입력된 텍스트 색상 */
+    color: #fff;
 }
 
 .room-code-input::placeholder {
-    color: #fff;  /* placeholder 텍스트 색상 */
-    opacity: 0.8; /* placeholder 투명도 (선택사항) */
+    color: #fff;
+    opacity: 0.8;
 }
 
-/* 다양한 브라우저 지원을 위한 벤더 프리픽스 */
-.room-code-input::-webkit-input-placeholder { /* Chrome/Safari/Opera */
+.room-code-input::-webkit-input-placeholder {
     color: #fff;
 }
-.room-code-input::-moz-placeholder { /* Firefox */
+.room-code-input::-moz-placeholder {
     color: #fff;
 }
-.room-code-input:-ms-input-placeholder { /* IE/Edge */
+.room-code-input:-ms-input-placeholder {
     color: #fff;
 }
 
@@ -117,9 +110,9 @@ input {
 }
 
 .button-image {
-    width: 20px;  /* 원하는 크기로 조정 */
+    width: 20px;
     height: 20px;
-    margin-right: 8px;  /* 이미지와 텍스트 사이 간격 */
+    margin-right: 8px;
     vertical-align: middle;
 }
 
@@ -127,15 +120,15 @@ input {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;  /* 이미지와 텍스트 사이 간격의 다른 방법 */
+    gap: 8px;
 }
 
 
 .kakaotalk-share-btn {
   width: 200px;
-  background-color: #FEE500;  /* 카카오톡 브랜드 컬러 */
+  background-color: #FEE500;
   border: none;
-  color: #3C1E1E;  /* 어두운 갈색 텍스트 */
+  color: #3C1E1E;
   font-weight: bold;
   transition: all 0.3s ease;
   display: flex;
@@ -148,14 +141,14 @@ input {
 }
 
 .kakaotalk-share-btn:hover {
-  background-color: #FFD700;  /* 호버 시 약간 더 진한 노란색 */
+  background-color: #FFD700;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .kakaotalk-share-btn-code {
   font-size: 1.8rem;
-  color: #3C1E1E;  /* 코드 텍스트 색상도 맞춤 */
-  margin-right: 16px;  /* 코드와 버튼 사이 간격 */
+  color: #3C1E1E;
+  margin-right: 16px;
 }
 

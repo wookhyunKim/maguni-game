@@ -1,4 +1,3 @@
-// useGameStageStore.js
 import { create } from "zustand";
 import { scriptData } from "../../assets/utils/gameScripts";
 

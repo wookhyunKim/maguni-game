@@ -7,7 +7,6 @@
     border-bottom: 1px solid #363C4A;
     padding: 0 20px;
     gap: 10px;
-    /* padding-right: 5px; */
 }
 
 #session-title {
@@ -38,7 +37,6 @@
 /* 화면이 작아질 때 3컬럼만 남기기 */
 @media screen and (max-width: 1090px) {
     .status-bar {
-        /* 로고, 세션바, 타이머만 남김 */
         grid-template-columns: auto auto 1fr auto;
         padding: 0 10px;
         gap: 30px;

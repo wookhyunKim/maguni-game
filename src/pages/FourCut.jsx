@@ -6,7 +6,6 @@ import BasicFrame from "../assets/images/photo_frame/frame1.png";
 import GoongYeFrameBlack from "../assets/images/photo_frame/frame2.png";
 import YeomjuFrame from "../assets/images/photo_frame/frame3.png";
 import GoongYeFrameBeige from "../assets/images/photo_frame/frame4.png";
-import image_prac from "../assets/images/profile_images/one.png";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import '../styles/fourcut.css'
@@ -18,8 +17,7 @@ const FourCut = () => {
     const divRef = useRef(null);
     const [showModal, setShowModal] = useState(true); // 초기에 모달 표시
     const [selectedFrame, setSelectedFrame] = useState(null);
-    const [imageList, setImageList] = useState([image_prac, image_prac, image_prac, image_prac]);
-    // const [imageList, setImageList] = useState([]);
+    const [imageList, setImageList] = useState([]);
     const location = useLocation();
     const roomCode = location.state.roomCode;
 
@@ -73,17 +71,10 @@ const FourCut = () => {
             console.error("이미지 변환 실패:", error);
         }
     };  
-    const navigate = useNavigate();
 
-
-    function quitGame() {
-        navigate('/');
-        window.location.reload();
-    }
 
     return (
         <div className="wallImage" style={{backgroundImage: `url(${WallImage})`}}>
-            {/* 프레임 선택 모달 */}
             {showModal && (
                 <div className="fourcut-modal-overlay">
                     <div className="fourcut-modal-content">
@@ -107,7 +98,6 @@ const FourCut = () => {
                 </div>
             )}
 
-            {/* 메인 콘텐츠 */}
             {!showModal && (
                 <>
                     <div className="frame-container-wrapper">
@@ -122,14 +112,12 @@ const FourCut = () => {
                                 margin: 0
                             }}
                         >
-                            {/* 선택된 프레임 표시 */}
                             <img
                                 src={frameOptions.find(f => f.id === selectedFrame)?.image}
                                 alt="프레임"
                                 className="frame-image"
                             />
 
-                            {/* 이미지 그리드 */}
                             <div className="image-grid">
                                 {imageList.slice(0, 4).map((image, index) => (
                                     <div
@@ -145,9 +133,7 @@ const FourCut = () => {
                                         }}
                                     >
                                         <img
-                                            // src={`../../backend/src/images/${image}`}
-                                            // src={`http://localhost:3001/photos/${image}`}
-                                            src={image}
+                                            src={`http://localhost:3001/photos/${image}`}
                                             alt={`사진 ${index + 1}`}
                                             style={{
                                                 width: "428px",

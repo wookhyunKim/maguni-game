@@ -1,20 +1,20 @@
 .username-word-card {
     position: absolute;
-    top: 10px; /* 비디오 또는 캔버스 위쪽 위치 */
-    left: 32%; /* 가로 중앙 정렬 */
-    transform: translateX(-50%); /* 수평 중앙 기준점 */
-    padding: 4px; /* 기존 10px에서 40% 증가 */
-    border-radius: 10px; /* 기존보다 약간 더 둥글게 */
+    top: 10px;
+    left: 32%;
+    transform: translateX(-50%);
+    padding: 4px;
+    border-radius: 10px;
     color: #1F2937;
     transition: transform 0.2s ease;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* 그림자도 조금 더 크게 */
-    font-size: 1.4rem; /* 카드 전체 크기 조정을 위한 기본 폰트 크기 증가 */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    font-size: 1.4rem;
     width: 60%;
-    text-align: center; /* 텍스트 중앙 정렬 */
-    z-index: 10; /* 비디오 위에 오도록 설정 */
+    text-align: center;
+    z-index: 10;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    font-size: 2rem; /* 기존 1rem에서 40% 증가 */
+    font-size: 2rem;
 }
 
 .username {
@@ -30,12 +30,12 @@
 }
 
 .forbidden-word, .word-count {
-    margin: 3px 0; /* 기존 2px에서 증가 */
+    margin: 3px 0;
 }
 
 .forbidden-word span, .word-count span {
     opacity: 0.8;
-    margin-right: 8px; /* 기존 6px에서 증가 */
+    margin-right: 8px;
 }
 
 .username-forbidden-word {

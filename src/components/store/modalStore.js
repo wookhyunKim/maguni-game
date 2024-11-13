@@ -5,8 +5,7 @@ export const useModalStore = create((set) => ({
 
         instructionModal: false,
         SettingForbiddenWordModal: false,
-        FW: false,
-        //게임 결과 안내 모달
+        FW: false,//ForbiddenWordList 모달
         gameResult: false,
         goongYeAnouncingEnd: false,
         goongYeAnnouncingResult: false,

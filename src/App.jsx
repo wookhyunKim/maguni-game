@@ -14,7 +14,6 @@ function App() {
                 <Route path="/hostguest" element={<HostGuestPage/>}/>
                 <Route path='/gameroom' element={<GameRoomPage/>}/>
                 <Route path='/end' element={<EndGamepage/>}/>
-                {/* <Route path="/" element={<Test/>}/> */}
                 <Route path='/fourcut' element={<FourCut/>}/>
             </Routes>
         </BrowserRouter>

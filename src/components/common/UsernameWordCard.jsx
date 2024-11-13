@@ -10,12 +10,10 @@ const UsernameWordCard = ({ user, words = '',count, playerIndex = 0,isHost = fal
                 <div className="username">{user}</div>
                 <div className="username-word-info">
                     <div className="username-forbidden-word">
-                        {/* <span>|</span>  */}
                         <div className="forbidden-word-text">{words || '금칙어 없음'}</div>
                     </div>
                 </div>
                 <div className="word-count">
-                    {/* <span>|</span> */}
                     <span>{count || 0}회</span> 
                 </div>
             </div>
@@ -28,7 +26,7 @@ UsernameWordCard.propTypes = {
     words: PropTypes.string,
     count: PropTypes.number,
     playerIndex: PropTypes.number.isRequired,
-    isHost: PropTypes.bool, // 추가: isHost를 boolean 타입으로 설정
+    isHost: PropTypes.bool,
 };
 
 export default UsernameWordCard; 

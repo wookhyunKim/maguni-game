@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 // import { useStoreTime } from '../store/gameInfoStore';
 import ProgressBar from "@ramonak/react-progress-bar";
 import '../../styles/sessionBar.css';
@@ -13,7 +13,7 @@ const SessionBar = ({sessionTime}) => {
 
     // 최대 시간을 상태로 관리
     const [maxTime, setMaxTime] = useState(sessionTime);
-    const [progress, setProgress] = useState(sessionTime);
+    const [progress,setProgress] = useState(sessionTime);
 
     useEffect(() => {
         // sessionTime이 현재 maxTime보다 크면 maxTime 업데이트

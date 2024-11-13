@@ -51,7 +51,7 @@ Button.propTypes = {
 Button.defaultProps = {
   onClick: () => {},
   disabled: false,
-  variant: 'red',  // 기본값 변경
+  variant: 'red',
   size: 'medium',
   isLoading: false,
   className: ''

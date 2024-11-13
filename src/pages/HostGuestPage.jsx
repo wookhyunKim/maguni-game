@@ -31,8 +31,6 @@ const HostGuestPage = () => {
 
     //username을 usePlayerStore에서 가져옴
     const username = UsePlayerStore(state => state.username)
-    console.log("유저네임 호스트게스트 페이지: "+username);
-
     const setUserRole = UsePlayerStore(state => state.setUserRole)
 
 
@@ -109,7 +107,7 @@ const HostGuestPage = () => {
                 "nickname": username,
             },
         }).then((res) => {
-            // console.log(res.data['success'])
+            console.log(res.data['success'])
         }).catch((err) => {
             console.log(err)
         })
@@ -124,7 +122,7 @@ const HostGuestPage = () => {
                 "nickname": username,
             },
         }).then((res) => {
-            // console.log(res.data['success'])
+            console.log(res.data['success'])
         }).catch((err) => {
             console.log(err)
         })
