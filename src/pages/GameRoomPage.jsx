@@ -29,6 +29,9 @@ import Goon from "../assets/images/goongYeImage.webp";
 import StartSound from '../assets/bgm/game_start.wav'; 
 import WHO from '../assets/bgm/gichim.wav'; 
 import '../styles/UsernameWordCard.css'
+import GameStartSound from '../assets/bgm/start_game_bell.wav'; 
+import BombSound from '../assets/bgm/bomb.wav'; 
+import SPRING from '../assets/bgm/spring.mp3'; 
 
 
 
@@ -68,7 +71,7 @@ const GameRoomPage = () => {
 
     const [timer, setTimer] = useState(20); // 타이머 상태
     // 금칙어 설정 후 말하는 시간
-    const startTime = 20
+    const startTime = 100;
     const [gameActive, setGameActive] = useState(false); // 게임 활성화 상태
 
     const hasJoinedSession = useRef(false);
@@ -88,6 +91,14 @@ const GameRoomPage = () => {
 
     const handlePenalty = () => {
         const event = new CustomEvent('startPenaltyFilter');
+        window.dispatchEvent(event);
+    };
+
+    // 메세지 보내기 - filterType을 포함하여 전송
+    const handleTestPenalty = (filterType) => {
+        const event = new CustomEvent('testPenaltyFilter', {
+            detail: { filterType }
+        });
         window.dispatchEvent(event);
     };
     
@@ -163,8 +174,8 @@ const GameRoomPage = () => {
         socket.emit('start setting word', roomcode);
     };
 
-    const testPenalty = () => {
-        handlePenalty();
+    const testPenalty = (filterType) => {
+        handleTestPenalty(filterType);
     }
 
     // ====================================================== 게임 소켓 서버 API ====================================================== 
@@ -197,15 +208,22 @@ const GameRoomPage = () => {
         });
         // 게임 종료 처리
         _socket.on('game ended', (finalCounts) => {
+            const audio = new Audio(BombSound);
+            audio.play();
             setGameActive(false);
             setModal('goongYeAnnouncingResult', true);
             setFinalCountList(finalCounts);
             document.getElementById('stopButton').click();
+            //여기요
         });
 
         _socket.on('setting word ended', () => {
             
-            forbiddenwordAnouncement();
+            forbiddenwordAnouncement().then(()=>{
+                const audio = new Audio(GameStartSound);
+                audio.play();
+            })
+            setShowMission(false);
         });
 
         // 금칙어 설정 안내 모달 열기
@@ -240,11 +258,15 @@ const GameRoomPage = () => {
                     nextIndex = index + 1;
                 }
 
-                socket.emit('do take photo', participantList[nextIndex]);
+                _socket.emit('do take photo', participantList[nextIndex]);
             }
 
 
-            
+        _socket.on('sound on',()=>{
+            const audio = new Audio(SPRING);
+            audio.play();
+        })
+        
 
 
         });
@@ -460,7 +482,18 @@ const GameRoomPage = () => {
                         <div className="main-content">
                             <div className="test_button_container">
                                 <>
-                                    <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button>
+                                    {/* <button id="penaltyTestButton" onClick={testPenalty}>벌칙 테스트</button> */}
+                                    <button id="penaltyTestButton" onClick={() => testPenalty('eyeFilter')}>눈 필터 테스트</button>
+                                    <button id="penaltyTestButton" onClick={() => testPenalty('mustacheFilter')}>수염 테스트</button>
+                                    <button id="penaltyTestButton" onClick={() => testPenalty('baldFilter')}>머리 테스트</button>
+                                    <button id="penaltyTestButton" onClick={() => testPenalty('fallingImage')}>접시 테스트</button>
+                                    <button id="penaltyTestButton" onClick={() => testPenalty('goongYe')}>배경 테스트</button>
+                                    <button id="penaltyTestButton" onClick={() => testPenalty('mouthFilter')}>입 테스트</button>
+                                    <button id="penaltyTestButton" onClick={() => testPenalty('faceOutlineFilter')}>얼굴외각 테스트</button>
+                                    <button id="penaltyTestButton" onClick={() => testPenalty('noseEnlarge')}>코 왜곡 테스트</button>
+                                    <button id="penaltyTestButton" onClick={() => testPenalty('smile')}>입 왜곡 테스트</button>
+                                    <button id="penaltyTestButton" onClick={() => testPenalty('foreHead')}>이마 왜곡 테스트</button>
+                                            
                                     <button id="startButton" style={{ display: 'none' }}>음성인식시작</button>
                                     <button id="stopButton" style={{ display: 'none' }} disabled>음성 인식 종료</button>
                                     <button id="startgame" onClick={startGame} style={{ display: 'none' }} disabled={gameActive}>게임 시작</button>
