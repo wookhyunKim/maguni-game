@@ -95,7 +95,7 @@ return (
                 className="form-control"
                 value={inputValue}
                 onChange={handleInputChange}
-                placeholder="한글만 입력 가능합니다"
+                placeholder="한글만 입력 가능"
                 pattern="[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]+"
             />
             <button 
