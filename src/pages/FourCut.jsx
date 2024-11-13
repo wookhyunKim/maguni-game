@@ -177,7 +177,7 @@ const FourCut = () => {
                             이미지 다운로드
                         </button>
                         <button 
-                            className="deleteRoom" 
+                            className="deleteRoomBtn" 
                             onClick={out}
                         >
                             나가기

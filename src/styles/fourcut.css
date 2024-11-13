@@ -146,11 +146,11 @@
 }
 
 .button-container {
-    width: 586px;
+    width: 1200px;
     margin: 20px 0;
     display: flex;
     gap: 10px;
-    justify-content: center;
+    justify-content: space-around;
 }
 
 
@@ -183,12 +183,12 @@
     border-radius: 5px;
 }
 
-.changeFrameBtn, .downloadBtn {
+.changeFrameBtn, .downloadBtn, .deleteRoomBtn {
     border-radius:4px;
     background-color: #AC2F2F;
     color: white;
     border: none;
-    height:44px;
+    height:48px;
     padding: 10px 0;
     width: 100%;
     transition: all 0.3s ease;
