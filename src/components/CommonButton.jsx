@@ -13,7 +13,7 @@ const CommonButton = ({ text, onClick, size = "medium", className = "" }) => {
     // 버튼 클릭 시 오디오 재생 함수
     const handleClick = () => {
         const audio = new Audio(CLICKSOUND);
-        audio.volume = 1.0; // 볼륨을 최대로 설정 (1배 증가)
+        audio.volume = 0.1; // 볼륨을 최대로 설정 (1배 증가)
         audio.play();
 
         if (onClick) {

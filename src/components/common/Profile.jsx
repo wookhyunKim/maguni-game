@@ -14,7 +14,7 @@ const Profile = ({role, btnName, setRole, withInput, generatedCode, generateRoom
 
   const playClickSound = () => {
     const audio = new Audio(CLICKSOUND);
-    audio.volume = 1.0;
+    audio.volume = 0.1;
     audio.play();
   };
 

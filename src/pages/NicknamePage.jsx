@@ -17,7 +17,7 @@ const NicknamePage = () => {
         e.preventDefault();
         if (username.trim()) {
             const audio = new Audio(CLICKSOUND);
-            audio.volume = 1.0;
+            audio.volume = 0.1;
             audio.play();
             
             setIsExiting(true);

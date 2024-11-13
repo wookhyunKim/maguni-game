@@ -213,7 +213,7 @@ const HostGuestPage = () => {
 
         //버튼 눌렀을 떼ㅐ
         const audio = new Audio(CLICKSOUND);
-        audio.volume = 1.0;
+        audio.volume = 0.1;
         audio.play();
     
 

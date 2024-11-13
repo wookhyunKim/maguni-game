@@ -236,8 +236,6 @@ const GameRoomPage = () => {
         });
 
         _socket.on('hit user', (user) => {
-            // const audio = new Audio(SPRING);
-            // audio.play();
             if (user !== username) {
                 return;
             }
@@ -252,11 +250,15 @@ const GameRoomPage = () => {
                     nextIndex = index + 1;
                 }
 
-                socket.emit('do take photo', participantList[nextIndex]);
+                _socket.emit('do take photo', participantList[nextIndex]);
             }
 
 
-            
+        _socket.on('sound on',()=>{
+            const audio = new Audio(SPRING);
+            audio.play();
+        })
+        
 
 
         });
