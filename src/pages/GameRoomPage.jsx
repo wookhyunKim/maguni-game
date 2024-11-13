@@ -74,7 +74,7 @@ const GameRoomPage = () => {
 
     // 사진용 div
     const divRef = useRef(null);
-    const [ablePic,setablePic]= useState(true);
+    const [ablePic,setablePic]= useState(false);
     const [people,setPeople]= useState([])
 
     const handlePenalty = () => {
@@ -226,7 +226,7 @@ const GameRoomPage = () => {
                 return;
             }
             handlePenalty();
-            setablePic(false);
+            setablePic(true);
         })
 
         _socket.on('sound on',()=>{
@@ -278,7 +278,7 @@ const GameRoomPage = () => {
 
     useEffect(()=>{
         let nextIndex;
-        if(!ablePic){
+        if(ablePic){
             // const index = people.indexOf(user);
             const index = people.findIndex(person => person === username);
             if (index == (people.length-1)){

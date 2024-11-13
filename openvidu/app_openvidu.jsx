@@ -426,7 +426,7 @@ function animateImage(ctx, x, yPosition) {
                 case "fallingImage":{
                   // 떨어지는 이미지 애니메이션
                   const fallPosition = faces[0].keypoints[10];
-                  if (filter.yPosition < (fallPosition.y - 20))  {
+                  if (filter.yPosition < (fallPosition.y - 140))  {
                     filter.yPosition += 5; // 떨어지는 속도 조절
                   }
                   animateImage(ctx, fallPosition.x, filter.yPosition);
