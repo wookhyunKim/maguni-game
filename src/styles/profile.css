@@ -37,6 +37,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    font-size: 4rem;
 }
 
 /* borderlind과 그 바로 밑의 내용물 간격을 주기 위함 */
@@ -62,7 +63,8 @@
   color: #2D2D2D;
   display: inline-block;
   text-align: center;
-  font-size: 3.5rem;
+  font-size: 4.2rem;
+  margin-bottom: 10px;
 }
 
 .guest-text {
@@ -152,7 +154,7 @@ input {
 }
 
 .kakaotalk-share-btn-code {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: #3C1E1E;  /* 코드 텍스트 색상도 맞춤 */
   margin-right: 16px;  /* 코드와 버튼 사이 간격 */
 }

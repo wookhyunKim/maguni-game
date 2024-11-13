@@ -80,7 +80,7 @@
     width: 300px; /* 고정된 너비 설정 */
     height: 100%;
     min-width: 300px; /* 최소 너비 보장 */
-    padding: 20px;
+    padding: 10px;
     background-color: #D4BFA6;
     border-radius: 8px;
     height: 100%;
@@ -110,6 +110,7 @@
     background-color: #D4BFA6;
     border: 1px solid #C4AB8D;
     border-radius: 0 0 4px 4px;
+    font-size: 1.5rem;
 }
 
 .user-wordlist-table {
@@ -164,7 +165,6 @@
 .sidebar-btn {
     display: flex;
     justify-content: center;
-    padding: 15px 0;
 }
 
 
@@ -209,7 +209,13 @@
 
 #buttonLeaveSession {
     padding: 0;
-    font-size: 1.7rem;
+    font-size: 2.2rem;
+    height: 52px;
+    background-color: #AC2F2F;
+}
+
+#buttonLeaveSession:hover {
+    background-color: #8B2424;
 }
 
 
@@ -288,4 +294,20 @@
 
 .sidebar_mymission.show {
     display: block; /* show 클래스가 있을 때만 표시 */
+}
+
+.startGameButton {
+    border-radius:4px;
+    background-color: #AC2F2F;
+    color: white;
+    border: none;
+    height:52px;
+    width: 100%;
+    transition: all 0.3s ease;
+    font-size: 2.2rem;
+}
+
+.startGameButton:hover {
+    background-color: #8B2424;
+    color: white;
 }

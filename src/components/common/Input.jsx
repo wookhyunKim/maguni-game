@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import '../../styles/input.css';
 import axios from 'axios';
 import PropTypes from 'prop-types'; 
-import { UsePlayerStore } from '../store/playerStore';
 
 function Input({ username, roomcode, showInput, onComplete }) {
   const [inputValue, setInputValue] = useState('');
@@ -80,10 +79,10 @@ function Input({ username, roomcode, showInput, onComplete }) {
 
 
 const handleSubmit = (e) => {
-    e.preventDefault(); // 폼 기본 동작 방지
-    if (inputValue.trim()) { // 입력값이 있을 때만 전송
+    e.preventDefault();
+    if (inputValue.trim()) {
         insertWord();
-        onComplete(); // 완료 버튼 클릭 시 콜백 함수 호출
+        onComplete();
     }
 };
 
@@ -107,13 +106,13 @@ return (
             </button>
         </form>
     </>
-);
+  );
 }
 
 Input.propTypes = {
   username: PropTypes.string.isRequired,
   roomcode: PropTypes.string.isRequired,
-  showInput: PropTypes.bool.isRequired, // Make showInput required
+  showInput: PropTypes.bool.isRequired,
   onComplete: PropTypes.func.isRequired,
 };
 
