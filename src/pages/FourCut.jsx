@@ -20,7 +20,7 @@ const FourCut = () => {
     const [imageList, setImageList] = useState([]);
     const location = useLocation();
     const roomCode = location.state.roomCode;
-
+    const navigate = useNavigate();
     // 프레임 옵션
     const frameOptions = [
         { id: 'frame1', image: BasicFrame, name: '기본 프레임' },
@@ -38,6 +38,21 @@ const FourCut = () => {
             console.error("이미지 로딩 실패:", error);
         }
     };
+
+    const deleteRoom = async() =>{
+        try{
+            await axios.delete(`http://localhost:3001/room/api/v1/${roomCode}`)
+        }catch(err){
+            console.log("방 삭제 실패")
+        }
+    }
+
+    function out(){
+        deleteRoom();
+        navigate('/');
+        window.location.reload();
+      }
+    
 
     useEffect(() => {
         fetchImages();
@@ -161,25 +176,13 @@ const FourCut = () => {
                         >
                             이미지 다운로드
                         </button>
+                        <button 
+                            className="deleteRoom" 
+                            onClick={out}
+                        >
+                            나가기
+                        </button>
                     </div>
-
-
-
-
-                    {/* 이미지 목록 */}
-                    {/* <div className="image-list">
-                        <h2>저장된 사진</h2>
-                        <div className="image-grid-preview">
-                            {imageList.map((image, index) => (
-                                <img
-                                    key={index}
-                                    src={`http://localhost:3001/images/${image}`}
-                                    alt={`이미지 ${index + 1}`}
-                                    className="preview-image"
-                                />
-                            ))}
-                        </div>
-                    </div> */}
                 </>
             )}
         </div>
