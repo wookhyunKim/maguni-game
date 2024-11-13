@@ -211,14 +211,8 @@
     padding: 0;
     font-size: 2.2rem;
     height: 52px;
-    background-color: #AC2F2F;
+    background-color: #dc3545
 }
-
-#buttonLeaveSession:hover {
-    background-color: #8B2424;
-}
-
-
 
 /* 로딩 애니메이션을 위한 스타일 */
 .loading-container {
@@ -310,4 +304,11 @@
 .startGameButton:hover {
     background-color: #8B2424;
     color: white;
+}
+
+
+.sidebar_waitingBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
