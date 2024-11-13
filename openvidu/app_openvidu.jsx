@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { OpenVidu } from 'openvidu-browser';
 import {calculateFilterPosition} from '../filter/calculate-filter-position.ts';
 import { loadDetectionModel } from '../filter/load-detection-model.js';
+//import SUNGLASS from "../src/assets/images/sunglasses.png";
 import MUSTACHE from "../src/assets/images/mustache.png";
 import MUMURI from "../src/assets/images/mumuri.png";
 import DISH from "../src/assets/images/dish.png";
@@ -62,8 +63,6 @@ export function joinSession(mySessionId,myUserName) {
          // 새 컨테이너에 비디오 요소 추가
          individualContainer.appendChild(subscriber_video);
 
-         appendUserData(event.element, subscriber.stream.connection);
-         appendCanvas(event.element, subscriber.stream.connection);
       });
    });
 
@@ -372,7 +371,7 @@ function animateImage(ctx, x, yPosition) {
          case "faceOutlineFilter":
             newFilter.timeoutId = setTimeout(() => {
                activeFilters = activeFilters.filter((f) => f !== newFilter);
-            }, 15000);
+            }, 7000);
             activeFilters.push(newFilter);
          break;
          case "noseEnlarge":
@@ -381,7 +380,7 @@ function animateImage(ctx, x, yPosition) {
                               // 타이머가 만료되면 필터를 제거
          newFilter.timeoutId = setTimeout(() => {
             activeFilters = activeFilters.filter((f) => f !== newFilter);
-         }, 15000);
+         }, 7000);
 
          activeFilters.push(newFilter);
          break;
@@ -427,7 +426,7 @@ function animateImage(ctx, x, yPosition) {
                 case "fallingImage":{
                   // 떨어지는 이미지 애니메이션
                   const fallPosition = faces[0].keypoints[10];
-                  if (filter.yPosition < (fallPosition.y + 20))  {
+                  if (filter.yPosition < (fallPosition.y - 20))  {
                     filter.yPosition += 5; // 떨어지는 속도 조절
                   }
                   animateImage(ctx, fallPosition.x, filter.yPosition);
@@ -509,35 +508,6 @@ window.onbeforeunload = function () {
    if (session) session.disconnect();
 };
 
-function appendCanvas(videoElement, connection) {
-    let userData;
-    if (typeof connection === "string") {
-        userData = connection;
-    } else {
-        userData = JSON.parse(connection.data).clientData;
-    }
-
-    // 공통 부모 요소를 생성합니다.
-    const container = document.createElement('div');
-    container.style.position = "relative";
-    container.style.width = 640;
-    container.style.height = 480;
-
-    // 기존 비디오 요소를 부모 요소로 이동합니다.
-    videoElement.parentNode.insertBefore(container, videoElement);
-    container.appendChild(videoElement);
-
-    const canvas = document.createElement('canvas');
-    canvas.className = "canvas";
-    canvas.id = "canvas_" + userData;
-    canvas.width = 640;
-    canvas.height = 480;
-    canvas.style.position = 'absolute';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.zIndex = '1';
-    container.appendChild(canvas);
-}
 
 function removeUserData(connection) {
    var dataNode = document.getElementById("data-" + connection.connectionId);
@@ -551,21 +521,6 @@ function removeAllUserData() {
    }
 }
 
-/**
- * --------------------------------------------
- * GETTING A TOKEN FROM YOUR APPLICATION SERVER
- * --------------------------------------------
- * The methods below request the creation of a Session and a Token to
- * your application server. This keeps your OpenVidu deployment secure.
- *
- * In this sample code, there is no user control at all. Anybody could
- * access your application server endpoints! In a real production
- * environment, your application server must identify the user to allow
- * access to the endpoints.
- *
- * Visit https://docs.openvidu.io/en/stable/application-server to learn
- * more about the integration of OpenVidu in your application server.
- */
 
 var APPLICATION_SERVER_URL = "https://mmyopenvidu.onrender.com/";
 
