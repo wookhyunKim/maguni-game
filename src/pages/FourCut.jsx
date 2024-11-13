@@ -20,7 +20,7 @@ const FourCut = () => {
     const [imageList, setImageList] = useState([]);
     const location = useLocation();
     const roomCode = location.state.roomCode;
-
+    const navigate = useNavigate();
     // 프레임 옵션
     const frameOptions = [
         { id: 'frame1', image: BasicFrame, name: '기본 프레임' },
