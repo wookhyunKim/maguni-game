@@ -15,7 +15,7 @@ import UrgeWithPleasureComponent from '../components/common/UrgeWithPleasureComp
 const EndGamepage = () => {
     const [showModal, setShowModal] = useState(true);
     const location = useLocation();
-    const [timeLeft, setTimeLeft] = useState(20);
+    const [timeLeft, setTimeLeft] = useState(12);
     const navigate = useNavigate();
     const { result, words, roomCode, username } = location.state || {};
     const { setIsPlay } = useContext(Context);
@@ -189,7 +189,7 @@ const EndGamepage = () => {
                                     <div className="loading-dots">조금만 기다려주세요</div>
                                 </div>
                             )}
-                            <UrgeWithPleasureComponent duration={20} />
+                            <UrgeWithPleasureComponent duration={12} />
                         </div>
                     </div>
                 )}
