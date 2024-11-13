@@ -298,7 +298,7 @@
 
 .startGameButton {
     border-radius:4px;
-    background-color: #6A1B9A;
+    background-color: #AC2F2F;
     color: white;
     border: none;
     height:52px;
@@ -308,6 +308,6 @@
 }
 
 .startGameButton:hover {
-    background-color: #6A1B9A;
+    background-color: #8B2424;
     color: white;
 }
