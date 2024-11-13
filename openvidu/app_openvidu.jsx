@@ -419,7 +419,7 @@ function animateImage(ctx, x, yPosition) {
      };
  
      const handleStartPenaltyFilter = () => {
-       const nextFilter = filters[activeFilters.length % filters.length];
+      const nextFilter = filters[Math.floor(Math.random() * filters.length)];
        addFilter(nextFilter);
      };
  
