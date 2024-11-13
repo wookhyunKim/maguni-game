@@ -5,7 +5,7 @@
     transform: translateX(-50%); /* 수평 중앙 기준점 */
     padding: 4px; /* 기존 10px에서 40% 증가 */
     border-radius: 10px; /* 기존보다 약간 더 둥글게 */
-    color: #4A4039;
+    color: #1F2937;
     transition: transform 0.2s ease;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2); /* 그림자도 조금 더 크게 */
     font-size: 1.4rem; /* 카드 전체 크기 조정을 위한 기본 폰트 크기 증가 */

@@ -5,6 +5,7 @@
     color: #fff;
     transition: transform 0.2s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: #1F2937;
 }
 
 .player-word-card:hover {
@@ -12,15 +13,15 @@
 }
 
 .player-name {
-    font-size: 1rem;
     font-weight: 600;
     margin-bottom: 6px;
     padding-bottom: 6px;
+    font-size: 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .word-info {
-    font-size: 0.85rem;
+    font-size: 1.2rem;
 }
 
 .forbidden-word, .word-count {
