@@ -2,7 +2,6 @@ import $ from 'jquery';
 import { OpenVidu } from 'openvidu-browser';
 import {calculateFilterPosition} from '../filter/calculate-filter-position.ts';
 import { loadDetectionModel } from '../filter/load-detection-model.js';
-//import SUNGLASS from "../src/assets/images/sunglasses.png";
 import MUSTACHE from "../src/assets/images/mustache.png";
 import MUMURI from "../src/assets/images/mumuri.png";
 import DISH from "../src/assets/images/dish.png";
@@ -373,7 +372,7 @@ function animateImage(ctx, x, yPosition) {
          case "faceOutlineFilter":
             newFilter.timeoutId = setTimeout(() => {
                activeFilters = activeFilters.filter((f) => f !== newFilter);
-            }, 4000);
+            }, 15000);
             activeFilters.push(newFilter);
          break;
          case "noseEnlarge":
@@ -382,7 +381,7 @@ function animateImage(ctx, x, yPosition) {
                               // 타이머가 만료되면 필터를 제거
          newFilter.timeoutId = setTimeout(() => {
             activeFilters = activeFilters.filter((f) => f !== newFilter);
-         }, 5000);
+         }, 15000);
 
          activeFilters.push(newFilter);
          break;

@@ -74,7 +74,8 @@ const GameRoomPage = () => {
 
     // 사진용 div
     const divRef = useRef(null);
-    const [ablePic,setablePic]= useState(false)
+    const [ablePic,setablePic]= useState(true);
+    const [people,setPeople]= useState([])
 
     const handlePenalty = () => {
         const event = new CustomEvent('startPenaltyFilter');
@@ -101,6 +102,8 @@ const GameRoomPage = () => {
             url: `http://localhost:3001/member/api/v1/word/${roomcode}`,
         }).then((res) => {
             setForbiddenWordlist(res.data)
+            const nicknames = res.data.map((item) => item.nickname);
+            setPeople(nicknames);
         }).catch((err) => {
             console.log(err)
         })
@@ -218,33 +221,19 @@ const GameRoomPage = () => {
             setModal('SettingForbiddenWordModal', false);
         });
 
-        _socket.on('hit user', (user) => {
+        _socket.on('hit user', (user, users) => {
             if (user !== username) {
                 return;
             }
             handlePenalty();
-            let nextIndex;
-            if(!ablePic){
-                setablePic(true);
-                const index = participantList.indexOf(user);
-                if (index == participantList.length-1){
-                    nextIndex = 0;
-                }else{
-                    nextIndex = index + 1;
-                }
-
-                _socket.emit('do take photo', participantList[nextIndex]);
-            }
-
+            setablePic(false);
+        })
 
         _socket.on('sound on',()=>{
             const audio = new Audio(SPRING);
             audio.play();
         })
         
-
-
-        });
 
         _socket.on('take a picture', (user) => {
             if (user == username) {
@@ -253,18 +242,17 @@ const GameRoomPage = () => {
             }
         })
 
-        // 타이머 업데이트
-        _socket.on('who', async() => {
-            // 모달 띄우기 
-            const audio = new Audio(WHO);
-            // audio.volume = 1.5; // 음량을 20%로 설정
-            audio.play();
-            setModal('WhoModal',true)
-            //모달 끄기 4초후
-            // 모달이 닫히기를 기다림
-            await new Promise(resolve => setTimeout(resolve, 4000));
-            setModal('WhoModal', false);
-        });
+        // _socket.on('who', async() => {
+        //     // 모달 띄우기 
+        //     const audio = new Audio(WHO);
+        //     // audio.volume = 1.5; // 음량을 20%로 설정
+        //     audio.play();
+        //     setModal('WhoModal',true)
+        //     //모달 끄기 4초후
+        //     // 모달이 닫히기를 기다림
+        //     await new Promise(resolve => setTimeout(resolve, 4000));
+        //     setModal('WhoModal', false);
+        // });
 
     }
 
@@ -288,6 +276,19 @@ const GameRoomPage = () => {
         }
     }, [gameActive, timer]);
 
+    useEffect(()=>{
+        let nextIndex;
+        if(!ablePic){
+            // const index = people.indexOf(user);
+            const index = people.findIndex(person => person === username);
+            if (index == (people.length-1)){
+                nextIndex = 0;
+            }else{
+                nextIndex = index + 1;
+            }
+            socket.emit('do take photo', people[nextIndex]);
+        }
+    },[ablePic])
 
     useEffect(() => {
         // 금칙어를 각 유저의 비디오 컨테이너에 추가
@@ -311,7 +312,8 @@ const GameRoomPage = () => {
                 axios.post("http://localhost:3001/upload/api/v1",
                     {
                         image: imageData,
-                        filename: `${roomcode}_${nowtime}.png`
+                        // filename: `${roomcode}_${nowtime}.png`
+                        filename:`${roomcode}_${username}.png`
                     }
                 ).then(response => {
                     console.log("Image saved on server:", response.data);
@@ -447,10 +449,8 @@ const GameRoomPage = () => {
         <>
             <StatusBar username={username} sessionTime={timer} playerNumber={playerNumber} />
             <div id="main-container" className="container">
-                {/* ---------- 대기실 2 ----------*/}
                 <div id="join">
                 </div>
-                {/* ---------- Join - 게임 ----------*/}
                 <div id="session" style={{ display: 'none' }}>
                     <div id="session-body">
                         <div className="main-content">
