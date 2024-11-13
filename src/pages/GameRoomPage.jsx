@@ -99,7 +99,7 @@ const GameRoomPage = () => {
     const getPlayersInfo = () => {
         return axios({
             method: "GET",
-            url: `http://localhost:3001/member/api/v1/word/${roomcode}`,
+            url: `https://maguni-game-92g6.onrender.com/member/api/v1/word/${roomcode}`,
         }).then((res) => {
             setForbiddenWordlist(res.data)
             const nicknames = res.data.map((item) => item.nickname);
@@ -309,7 +309,7 @@ const GameRoomPage = () => {
             html2canvas(divRef.current).then(canvas => {
                 const imageData = canvas.toDataURL("image/png");
                 // 서버에 이미지 데이터 전송
-                axios.post("http://localhost:3001/upload/api/v1",
+                axios.post("https://maguni-game-92g6.onrender.com/upload/api/v1",
                     {
                         image: imageData,
                         // filename: `${roomcode}_${nowtime}.png`

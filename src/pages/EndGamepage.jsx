@@ -45,7 +45,7 @@ const EndGamepage = () => {
         
         return axios({
             method: 'POST',
-            url: 'http://localhost:3001/member/game/api/v1',
+            url: 'https://maguni-game-92g6.onrender.com/member/game/api/v1',
             data: {
                 roomCode: roomCode,
                 nickname: username,
@@ -62,7 +62,7 @@ const EndGamepage = () => {
 
     const getResults = async () => {
         try {
-            const response = await axios.get(`http://localhost:3001/member/game/api/v1/${roomCode}`);
+            const response = await axios.get(`https://maguni-game-92g6.onrender.com/member/game/api/v1/${roomCode}`);
             setAnimationResult(response.data);
         } catch (err) {
             console.error("getResults 에러:", err);

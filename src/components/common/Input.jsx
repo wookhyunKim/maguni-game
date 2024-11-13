@@ -25,7 +25,7 @@ function Input({ username, roomcode, showInput, onComplete }) {
     setInputValue('');
     return axios({
       method: 'POST',
-      url: 'http://localhost:3001/member/api/v1/word',
+      url: 'https://maguni-game-92g6.onrender.com/member/api/v1/word',
       data: {
         roomCode: roomcode,
         nickname: index !== 0 ? playerlist[index - 1] : playerlist[playerlist.length - 1],
@@ -43,7 +43,7 @@ function Input({ username, roomcode, showInput, onComplete }) {
   const getWords = () => {
     return axios({
       method: 'GET',
-      url: `http://localhost:3001/member/api/v1/word/${roomcode}/${username}`,
+      url: `https://maguni-game-92g6.onrender.com/member/api/v1/word/${roomcode}/${username}`,
     })
       .then((res) => {
         setGetCode(res.data[0][0]);
@@ -57,7 +57,7 @@ function Input({ username, roomcode, showInput, onComplete }) {
   const getPlayersInfo = () => {
     return axios({
       method: 'GET',
-      url: `http://localhost:3001/member/api/v1/word/${roomcode}`,
+      url: `https://maguni-game-92g6.onrender.com/member/api/v1/word/${roomcode}`,
     })
       .then((res) => {
         setGamers(res.data);
