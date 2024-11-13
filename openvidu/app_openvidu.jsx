@@ -10,8 +10,6 @@ import GOONGYE from "../src/assets/images/goongYe.png";
 import RCEYE from "../src/assets/images/RCeye.png";
 import SMILEMOUTH from "../src/assets/images/smileMouth2.png";
 import MINIONS from "../src/assets/images/minions.png";
-import { createRoot } from 'react-dom/client';
-import UsernameWordCard from '../src/components/common/UsernameWordCard.jsx';
 
 
 var OV;
@@ -31,22 +29,13 @@ export function joinSession(mySessionId,myUserName) {
 
    myName = myUserName;
 
-   // --- 1) Get an OpenVidu object ---
-
    OV = new OpenVidu();
 
-   // --- 2) Init a session ---
 
    session = OV.initSession();
 
-   // --- 3) Specify the actions when events take place in the session ---
 
-   // On every new Stream received...
    session.on('streamCreated', event => {
-
-      // Subscribe to the Stream to receive it. HTML video will be appended to element with 'video-container' id
-      //let subscriber = session.subscribe(event.stream, 'video-container');
-
       //등록하되 생성하진 않음
       let subscriber = session.subscribe(event.stream, 'video-container');
 
@@ -57,15 +46,9 @@ export function joinSession(mySessionId,myUserName) {
 
       subscribers = [...subscribers,subscriber];
 
-      //const videoContainer = document.getElementById('video-container');
-
-
-      // When the HTML video has been appended to DOM...
       subscriber.on('videoElementCreated', event => {
-      //    // 비디오 element가 생성될 때 해당 element를 반환하여 GameRoomPage.jsx에서 필터링 처리
-      //   const videoElement = event.element;
-      //   // 이벤트 발생 시 videoElement를 콜백으로 호출
-      //   handleVideoElementCreated(videoElement, subscriber.stream.connection);
+      // 비디오 element가 생성될 때 해당 element를 반환하여 GameRoomPage.jsx에서 필터링 처리
+      // 이벤트 발생 시 videoElement를 콜백으로 호출
          let subscriber_video = event.element;
 
          // 개별 subscriber 비디오 요소를 담을 컨테이너 생성
@@ -80,41 +63,32 @@ export function joinSession(mySessionId,myUserName) {
          // 새 컨테이너에 비디오 요소 추가
          individualContainer.appendChild(subscriber_video);
 
-         // Add a new <p> element for the user's nickname just below its video
          appendUserData(event.element, subscriber.stream.connection);
          appendCanvas(event.element, subscriber.stream.connection);
       });
    });
 
-   // On every Stream destroyed...
    session.on('streamDestroyed', event => {
 
-      // Delete the HTML element with the user's nickname. HTML videos are automatically removed from DOM
       removeUserData(event.stream.connection);
 
       subscribers.filter((sub) =>
       sub !== event.stream.streamManager);
    });
 
-   // On every asynchronous exception...
    session.on('exception', (exception) => {
       console.warn(exception);
    });
 
 
-   // --- 4) Connect to the session with a valid user token ---
 
-   // Get a token from the OpenVidu deployment
    getToken(mySessionId).then(token => {
 
-      // First param is the token got from the OpenVidu deployment. Second param can be retrieved by every user on event
-      // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
       session.connect(token, { clientData: myUserName })
          .then(() => {
             OV.getUserMedia({
                audioSource: false,
                videoSource: undefined,
-               // resolution: '1280x720',
                resolution: '640x480',
                frameRate: FRAME_RATE,
             }).then((mediaStream) =>{
@@ -122,7 +96,6 @@ export function joinSession(mySessionId,myUserName) {
                startStreaming(session,OV,mediaStream);
             });
 
-            // --- 5) Set page layout for active call ---
 
             document.getElementById('session-title').innerText = mySessionId;
             document.getElementById('join').style.display = 'none';
@@ -365,7 +338,6 @@ const filters = [
    { type: "smile" },
    { type: "foreHead" },
  ];
- //filters[0].image.src = SUNGLASS;
  filters[0].image.src = MUSTACHE;
  filters[1].image.src = MUMURI;
  filters[2].image.src = DISH;
@@ -473,7 +445,6 @@ function animateImage(ctx, x, yPosition) {
                   break;
 
                case "noseEnlarge":
-                  //applyNoseEnlargeEffect(ctx, faces[0].keypoints,compositeCanvas); // 코 확대 필터 호출
                   applyEnhancedLensDistortion(ctx,faces[0].keypoints);
                   break;
 
@@ -526,15 +497,11 @@ export function leaveSession() {
    if(session && publisher){
       session.unpublish(publisher);
    } 
-   // --- 9) Leave the session by calling 'disconnect' method over the Session object ---
 
    session.disconnect();
 
-   // Removing all HTML elements with user's nicknames.
-   // HTML videos are automatically removed when leaving a Session
    removeAllUserData();
 
-   // Back to 'Join session' page
    document.getElementById('join').style.display = 'block';
    document.getElementById('session').style.display = 'none';
 }
@@ -543,17 +510,6 @@ window.onbeforeunload = function () {
    if (session) session.disconnect();
 };
 
-function appendUserData(videoElement, connection) {
-   var userData;
-   var nodeId;
-   if (typeof connection === "string") {
-      userData = connection;
-      nodeId = connection;
-   } else {
-      userData = JSON.parse(connection.data).clientData;
-      nodeId = connection.connectionId;
-   }
-}
 function appendCanvas(videoElement, connection) {
     let userData;
     if (typeof connection === "string") {
@@ -595,20 +551,6 @@ function removeAllUserData() {
       nicknameElements[0].parentNode.removeChild(nicknameElements[0]);
    }
 }
-
-function addClickListener(videoElement, userData) {
-   videoElement.addEventListener('click', function () {
-      var mainVideo = $('#main-video video').get(0);
-      if (mainVideo.srcObject !== videoElement.srcObject) {
-         $('#main-video').fadeOut("fast", () => {
-            $('#main-video p').html(userData);
-            mainVideo.srcObject = videoElement.srcObject;
-            $('#main-video').fadeIn("fast");
-         });
-      }
-   });
-}
-
 
 /**
  * --------------------------------------------
