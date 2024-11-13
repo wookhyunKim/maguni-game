@@ -128,21 +128,6 @@ const EndGamepage = () => {
         playMusic();
     }, [setIsPlay]);
 
-    //모달 띄우는 함수
-    // const showModal = () => {
-    //     setShowModal(false);
-    // }
-    
-    // useEffect(() => {
-    //     // 기존 audio 태그 중지 또는 음소거
-    //     const existingAudio = document.getElementById('bgm');
-    //     if (existingAudio) {
-    //         existingAudio.pause();  // 중지
-    //         existingAudio.muted = true;  // 음소거
-    //     }
-
-    // }, []);
-
 
     useEffect(() => {
         if(!showModal){
@@ -201,7 +186,7 @@ const EndGamepage = () => {
                                 </div>
                             ) : (
                                 <div className="loading-wrapper">
-                                    <div className="loading-dots">대기해주세요</div>
+                                    <div className="loading-dots">조금만 기다려주세요</div>
                                 </div>
                             )}
                             <UrgeWithPleasureComponent duration={20} />
@@ -216,7 +201,6 @@ const EndGamepage = () => {
                     </div>
                 </div>
                 <div className="endPageFooter">
-                    {/* <button onClick={gotoPhoto}>추억 남기기</button> */}
                     <button className=" gotofourcutBtn commonButton" onClick={gotoFourcut}>추억 남기기</button>
                 </div>
                 </div>

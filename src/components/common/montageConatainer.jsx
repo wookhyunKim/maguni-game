@@ -3,11 +3,6 @@ import '../../styles/endGame.css'
 import PropTypes from 'prop-types';
 
 
-
-
-
-
-
 const MontageConatainer = ({children}) => {
   return (
     <div className="hanji" style={{backgroundImage: `url(${hanjiImage})`}}>

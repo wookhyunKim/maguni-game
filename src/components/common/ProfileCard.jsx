@@ -15,13 +15,9 @@ function ProfileCard({ nickname}) {
               className="profile-image-placeholder" style={{ backgroundColor: PROFILE_COLORS[`COLOR_${userNumber}`] }}>
                 <div>{userNumber}</div>
               </div>
-            {/* )} */}
           </div>
-          
-          {/* 텍스트 정보 */}
           <div className="profile-text">
             <span className="profile-nickname">{nickname}</span>
-            {/* <span className="profile-number">정 {userNumber}품</span> */}
           </div>
         </div>
       </div>

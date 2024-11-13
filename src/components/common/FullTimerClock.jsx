@@ -7,33 +7,8 @@
 import { useEffect} from "react";
 import {useStoreTime} from "../store/gameInfoStore";  // 전역 시간 상태 관리
 import '../../styles/fulltimeclock.css'
+import PropTypes from 'prop-types';
 
-// 타이머 스타일 정의 (현재 미사용)
-const timerStyles = {
-    container: {
-        height:'48px',
-        border: '2px solid black',
-        background: 'white',
-        padding: '10px 30px',
-        fontSize: '48px',
-        fontWeight: 'bold',
-        color: '#0066FF',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textShadow: '-1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black'
-    }
-};
-
-// 초 단위 시간을 두 자리 숫자로 포맷팅하는 헬퍼 함수 (현재 미사용)
-const getSeconds = (time) => {
-    const seconds = Number(time % 60);
-    if(seconds < 10) {
-        return "0" + String(seconds);
-    } else {
-        return String(seconds);
-    }
-}
 
 // 타이머 컴포넌트
 // isModalOpen: 모달창 열림 여부를 전달받는 prop
@@ -69,6 +44,10 @@ const Timer = ({ isModalOpen }) => {
             </div>
         </div>
     );
+};
+
+Timer.propTypes = {
+    isModalOpen: PropTypes.bool.isRequired
 };
 
 export default Timer;
