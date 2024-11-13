@@ -39,6 +39,20 @@ const FourCut = () => {
         }
     };
 
+    const deleteRoom = async() =>{
+        try{
+            await axios.delete(`https://maguni-game-92g6.onrender.com/room/api/v1/${roomCode}`)
+        }catch(err){
+            console.log("방 삭제 실패")
+        }
+    }
+
+    function out(){
+        deleteRoom();
+        navigate('/');
+        window.location.reload();
+      }
+
     useEffect(() => {
         fetchImages();
     }, []);
@@ -158,6 +172,12 @@ const FourCut = () => {
                             onClick={handleDownload}
                         >
                             이미지 다운로드
+                        </button>
+                        <button 
+                            className="deleteRoomBtn" 
+                            onClick={out}
+                        >
+                            나가기
                         </button>
                     </div>
                 </>
