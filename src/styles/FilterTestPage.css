@@ -1,0 +1,56 @@
+/* Video Container Styling */
+#video-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    max-height: 80vh; /* Slightly lower to ensure no scrollbars */
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+/* Video Element Styling */
+#video-container video, 
+#video-container canvas {
+    width: 30%; /* Further reduced width for a mobile look */
+    height: auto;
+    max-width: 30%; /* Keeps video within 75% of the container width */
+    max-height: 70vh; /* Slightly reduced height */
+    aspect-ratio: 9/16; /* Mobile-friendly portrait ratio */
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+/* Composite Canvas Styling */
+#compositeCanvas {
+    max-width: 70%;
+    max-height: 100%;
+    object-fit: cover;
+}
+/* Button Container Styling */
+.test_button_container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    padding: 20px;
+    max-width: 80%;
+    margin: auto;
+}
+
+/* Button Styling */
+#penaltyTestButton {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4a4a4a;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#penaltyTestButton:hover {
+    background-color: #333;
+    transform: scale(1.05);
+}

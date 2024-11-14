@@ -12,7 +12,7 @@ const HomePage = () => {
     const goToNickname = () => {
         setIsExiting(true);
         setTimeout(() => {
-            navigate('/nickname');
+            navigate('/filtertest');
         }, 500);
     }
 

@@ -16,13 +16,72 @@ var session;
 export var subscribers = [];
 var FRAME_RATE = 30;
 
-// 외부 변수로 선언
-let gMediaStream;
 let compositeStream;
 let publisher;
-let myName;
 
 /* OPENVIDU METHODS */
+
+export function joinTestSession(mySessionId,myUserName) {
+   {
+   
+      // --- 1) Get an OpenVidu object ---
+   
+      OV = new OpenVidu();
+   
+      // --- 2) Init a session ---
+   
+      session = OV.initSession();
+   
+      // --- 3) Specify the actions when events take place in the session ---
+   
+      
+   
+      // On every Stream destroyed...
+      session.on('streamDestroyed', event => {
+   
+         // Delete the HTML element with the user's nickname. HTML videos are automatically removed from DOM
+         removeUserData(event.stream.connection);
+   
+         subscribers.filter((sub) =>
+         sub !== event.stream.streamManager);
+      });
+   
+      // On every asynchronous exception...
+      session.on('exception', (exception) => {
+         console.warn(exception);
+      });
+   
+   
+      // --- 4) Connect to the session with a valid user token ---
+   
+      // Get a token from the OpenVidu deployment
+      getToken(mySessionId).then(token => {
+   
+         // First param is the token got from the OpenVidu deployment. Second param can be retrieved by every user on event
+         // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
+         session.connect(token, { clientData: myUserName })
+            .then(() => {
+               OV.getUserMedia({
+                  audioSource: false,
+                  videoSource: undefined,
+                  resolution: '1280x720',
+                  frameRate: FRAME_RATE,
+               }).then((mediaStream) =>{
+                  startStreaming(session,OV,mediaStream);
+               });
+   
+               // --- 5) Set page layout for active call ---
+   
+               // document.getElementById('session-title').innerText = mySessionId;
+               // document.getElementById('join').style.display = 'none';
+               // document.getElementById('session').style.display = 'block';
+   
+            })
+            .catch(error => {
+            });
+      });
+   }
+}
 
 export function joinSession(mySessionId,myUserName) {
 
@@ -115,7 +174,6 @@ export function joinSession(mySessionId,myUserName) {
                resolution: '640x480',
                frameRate: FRAME_RATE,
             }).then((mediaStream) =>{
-               gMediaStream = mediaStream;
                startStreaming(session,OV,mediaStream);
             });
 
@@ -134,7 +192,7 @@ export function joinSession(mySessionId,myUserName) {
 function applyEnhancedMouthDistortion(ctx, keypoints) {
    const mouthCenter = keypoints[13]; // 입 중심 좌표 (입을 나타내는 키포인트)
    const radius = 50; // 입 주변의 효과 범위 조정 반경
-   const strength = 0.5; // 왜곡 강도 (값을 높일수록 왜곡이 강해짐)
+   const strength = 0.8; // 왜곡 강도 (값을 높일수록 왜곡이 강해짐)
 
    // 입 주변의 픽셀 데이터를 가져옵니다.
    const imageData = ctx.getImageData(
@@ -193,7 +251,7 @@ function applyEnhancedMouthDistortion(ctx, keypoints) {
 function applyEnhancedLensDistortion(ctx, keypoints) {
    const noseCenter = keypoints[4]; // 코 중심 좌표
    const radius = 80; // 효과 범위를 조정하는 반경
-   const strength = 0.5; // 왜곡 강도 (값을 높일수록 왜곡이 강해짐)
+   const strength = 0.8; // 왜곡 강도 (값을 높일수록 왜곡이 강해짐)
 
    // 코 주변의 픽셀 데이터를 가져옵니다.
    const imageData = ctx.getImageData(
@@ -310,31 +368,11 @@ function stretchForehead(ctx, keypoints) {
 
 const startStreaming = async (session, OV, mediaStream) => {
 
-   // Publisher 화면에 원본 비디오 표시용 publisherCanvasContainer 생성
-   const publisherCanvasContainer = document.createElement('div');
-   publisherCanvasContainer.style.position = 'relative';
-   publisherCanvasContainer.width = 640;
-   publisherCanvasContainer.height = 480;
-   publisherCanvasContainer.className = myName;
-
-
-   // Publisher 화면에 원본 비디오 표시용 publisherCanvas 생성
-   const publisherCanvas = document.createElement('canvas');
-   publisherCanvas.width = 640;
-   publisherCanvas.height = 480;
-   publisherCanvas.id ="canvas_"+myName
-   publisherCanvas.className ="canvasChild"
-   
-   
-   
-   publisherCanvasContainer.appendChild(publisherCanvas);
-
-   const publisherCtx = publisherCanvas.getContext('2d');
-
    // 필터 적용 후 Subscriber에게 전송할 `compositeCanvas`
    const compositeCanvas = document.createElement('canvas');
-   compositeCanvas.width = 640;
-   compositeCanvas.height = 480;
+   compositeCanvas.width = 1280;
+   compositeCanvas.height = 720;
+   compositeCanvas.id = 'compositeCanvas';
    const ctx = compositeCanvas.getContext('2d');
    
    // 비디오 요소 생성 및 원본 비디오 스트림 할당
@@ -343,10 +381,6 @@ const startStreaming = async (session, OV, mediaStream) => {
    video.autoplay = true;
    video.playsInline = true;
    
-
-   // Publisher 화면에 원본 비디오 표시
-   document.getElementById('video-container').appendChild(publisherCanvasContainer);
-
 
 // 이미지와 필터 타입 배열
 const filters = [
@@ -465,11 +499,7 @@ function animateImage(ctx, x, yPosition) {
      window.addEventListener('testPenaltyFilter', handleTestPenaltyFilter);
  
      const estimateFacesLoop = () => {
-       model.estimateFaces(publisherCanvas).then((faces) => {
-         // Publisher 화면에는 원본 비디오 표시
-         publisherCtx.clearRect(0, 0, publisherCanvas.width, publisherCanvas.height);
-         publisherCtx.drawImage(video, 0, 0, publisherCanvas.width, publisherCanvas.height);
-
+       model.estimateFaces(compositeCanvas).then((faces) => {
          // 필터가 적용된 영상은 `compositeCanvas`에 그리기
          ctx.clearRect(0, 0, compositeCanvas.width, compositeCanvas.height);
          ctx.drawImage(video, 0, 0, compositeCanvas.width, compositeCanvas.height);
@@ -481,8 +511,29 @@ function animateImage(ctx, x, yPosition) {
 
               switch (filter.type) {
                 case "eyeFilter":
+                  // 기존 필터의 위치 계산
+                  ctx.save();
+                  ctx.translate(x + width / 2, y + height / 2);
+                  ctx.rotate(angle);
+                  ctx.drawImage(filter.image, -width / 2, -height / 2 - 5, width, height);
+                  ctx.restore();
+                  break;
                 case "mustacheFilter":
+                  // 기존 필터의 위치 계산
+                  ctx.save();
+                  ctx.translate(x + width / 2, y + height / 2);
+                  ctx.rotate(angle);
+                  ctx.drawImage(filter.image, -width / 2 - 15, -height / 2, width, height);
+                  ctx.restore();
+                  break;
                 case "baldFilter":
+                  // 기존 필터의 위치 계산
+                  ctx.save();
+                  ctx.translate(x + width / 2, y + height / 2);
+                  ctx.rotate(angle);
+                  ctx.drawImage(filter.image, -width / 2 - 20, -height / 2, width, height);
+                  ctx.restore();
+                  break;
                 case "mouthFilter":
                   // 기존 필터의 위치 계산
                   ctx.save();
@@ -495,7 +546,7 @@ function animateImage(ctx, x, yPosition) {
                 case "fallingImage":{
                   // 떨어지는 이미지 애니메이션
                   const fallPosition = faces[0].keypoints[10];
-                  if (filter.yPosition < (fallPosition.y + 20))  {
+                  if (filter.yPosition < (fallPosition.y - 120))  {
                     filter.yPosition += 5; // 떨어지는 속도 조절
                   }
                   animateImage(ctx, fallPosition.x, filter.yPosition);
@@ -508,7 +559,7 @@ function animateImage(ctx, x, yPosition) {
                   break;
 
                case "faceOutlineFilter":
-                  ctx.drawImage(filter.image,x,y,width,height);
+                  ctx.drawImage(filter.image,x,y,width,height + 20);
                   break;
 
                case "noseEnlarge":
@@ -555,6 +606,8 @@ function animateImage(ctx, x, yPosition) {
        frameRate: FRAME_RATE,
        videoCodec: 'H264',
    });
+
+   document.getElementById('video-container').appendChild(compositeCanvas);
 
    await session.publish(publisher);
 
