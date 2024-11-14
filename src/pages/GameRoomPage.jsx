@@ -229,10 +229,10 @@ const GameRoomPage = () => {
             setablePic(true);
         })
 
-        _socket.on('sound on',()=>{
-            const audio = new Audio(SPRING);
-            audio.play();
-        })
+        // _socket.on('sound on',()=>{
+        //     const audio = new Audio(SPRING);
+        //     audio.play();
+        // })
         
 
         _socket.on('take a picture', (user) => {
