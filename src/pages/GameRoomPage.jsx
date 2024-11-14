@@ -238,7 +238,10 @@ const GameRoomPage = () => {
         _socket.on('take a picture', (user) => {
             if (user == username) {
                 console.log("사진찍힘")
-                sendImage()
+                setTimeout(() => {
+                    sendImage()
+                  }, 5000);
+                
             }
         })
 
