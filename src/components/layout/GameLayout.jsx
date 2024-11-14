@@ -33,7 +33,7 @@ const GameLayout = ({ children, title, subtitle }) => {
     <>
       <div className="beforeGameRoomBody" style={{backgroundImage: `url(${backgroundImage})`}}>
         <div className="game-title">
-          <h1>{title || "금칙어 게임"}</h1>
+          <h1>{title || "마구니 게임"}</h1>
           <h5>{subtitle || "Never, say The word"}</h5>
         </div>
         <div className="game-container">

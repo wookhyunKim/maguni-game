@@ -38,6 +38,18 @@ const FourCut = () => {
             console.error("이미지 로딩 실패:", error);
         }
     };
+    const checkRoom = () => {
+        return axios({
+            method: 'GET',
+            url: `https://maguni-game-92g6.onrender.com/room/api/v1/${roomCode}`,
+        })
+            .then((res) => {
+                return res.data['success']
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
     const deleteRoom = async() =>{
         try{
@@ -47,8 +59,9 @@ const FourCut = () => {
         }
     }
 
-    function out(){
-        deleteRoom();
+    async function out(){
+        const result = await checkRoom(); // 방 생성 여부 false : 없는 방   true : 있는 방
+        if (result){ deleteRoom(); }
         navigate('/');
         window.location.reload();
       }
