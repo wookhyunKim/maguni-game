@@ -221,7 +221,7 @@ const GameRoomPage = () => {
             setModal('SettingForbiddenWordModal', false);
         });
 
-        _socket.on('hit user', (user, users) => {
+        _socket.on('hit user', (user) => {
             if (user !== username) {
                 return;
             }
