@@ -115,7 +115,7 @@ const EndGamepage = () => {
         const audio = document.getElementById('bgm');
         if (audio) {
             audio.muted = false;
-            audio.volume = 0.05; // 볼륨을 50%로 설정
+            audio.volume = 0.05; // 볼륨을 5%로 설정
             audio.play().catch((error) => {
                 console.log("재생 오류:", error);
             });

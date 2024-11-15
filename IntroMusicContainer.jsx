@@ -13,7 +13,7 @@ const IntroMusicContainer = ({ children }) => {
   useEffect(() => {
     const audio = document.getElementById('beginbgm');
     if (audio) {
-      audio.volume = 0.2; // 음량을 20%로 설정
+      audio.volume = 0.06; // 음량을 6%로 설정
     }
   }, []);
 
