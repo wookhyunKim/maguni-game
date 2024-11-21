@@ -40,7 +40,9 @@
 |---|---|
 |**Frontend**|채팅, 데이터 전송|Polling / Long Polling / Web Socket|WebSocket 사용 결정|
 |**WebRTC (SFU)**|실시간 스트리밍 및 음성|HLS / Mesh / SFU / MCU|WebRTC (SFU) 사용 결정|
-|**Github Action & DockerHub / AWS CodeDeploy**|지속적 통합과 지속적 배포를 통한 업무 효율 상승|Jenkins / Github Action / Travis CI|Github Action과 AWS CodeDeploy 사용 결정|
 |**Zustand**|상태관리도구|redux,zustand|zustand 사용 결정|
 
 ## 시간이 더 있었으면 도전하거나, 개선했을 점들
+- 리플레이 기능
+- 커스텀 필터 추가
+- 더 다양한 게임 모드. 예를 들어, 다른 사람에게 금칙어를 유도하면 보상을 준다거나 하는 등
