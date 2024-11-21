@@ -2,7 +2,7 @@
 
 
 # 목차
-1. ![프로젝트 개요](https://github.com/tamtam0330/maguni-game/blob/main/README.md#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EC%9A%94)
+1. 프로젝트 개요
 2. 서비스 소개
 3. 아키텍쳐
 4. 프로젝트 포스터
