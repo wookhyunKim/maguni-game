@@ -11,13 +11,14 @@
 기획 기간: 2024.10.10 ~ 2024.10.21 (총 12일)
 
 개발 기간: 2024.10.22 ~ 2024.11.15 (총 25일)
+
 팀원: 김욱현, 김태민, 염종인, 강경임
 
 ## 기술 스택
 | 분류 | 기술 |
 |---|---|
 |Frontend|<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white"><img src="https://img.shields.io/badge/zustand-orange?style=for-the-badge&logo=zustand&logoColor=white">|
-|Backend|![image](https://github.com/user-attachments/assets/8116907a-3df2-48b9-8c17-899fbbe7998a)|
+|Backend|<img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white"><img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white"><img src="https://img.shields.io/badge/express.js-339933?style=for-the-badge&logo=Express.js&logoColor=white">|
 |Database||
 |Infra||
 
