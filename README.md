@@ -24,7 +24,8 @@
 
 ## 서비스 소개
 서비스 소개 영상 : https://drive.google.com/file/d/1DHCoOLbcjKonwvLDpYEUP4ij9P3J7M81/view?usp=drive_link
-서비스 발표 영상 : 
+
+서비스 발표 영상 : https://drive.google.com/file/d/1U7vF52thLhcsN8t_ZEPcD7AUFQNRhRKm/view?usp=sharing
 
 ## 아키텍쳐
 ![프로젝트 아키텍쳐](https://github.com/user-attachments/assets/37e6325b-fc17-4ae1-973f-d123704ba065)
