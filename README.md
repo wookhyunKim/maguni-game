@@ -29,7 +29,8 @@
 서비스 발표 영상 : https://drive.google.com/file/d/1U7vF52thLhcsN8t_ZEPcD7AUFQNRhRKm/view?usp=sharing
 
 ## 아키텍쳐
-![프로젝트 아키텍쳐](https://github.com/user-attachments/assets/37e6325b-fc17-4ae1-973f-d123704ba065)
+![image](https://github.com/user-attachments/assets/354eec7e-4353-4b7d-9fe5-5b4d8578f2ae)
+
 
 ## 프로젝트 포스터
 ![image](https://github.com/user-attachments/assets/44ef48aa-4ba3-4de5-ab4d-ddc658f9e3f1)
@@ -38,7 +39,7 @@
 ## 기술적 의사 결정
 |분류|기술|
 |---|---|
-|**데이터베이스**|채팅, 데이터 전송|Polling / Long Polling / Web Socket|WebSocket 사용 결정|
+|**데이터베이스**|MongoDB|
 |**백엔드 프레임워크**|Express|
 |**디자인 패턴**|MVC 패턴|
 |**상태관리도구**|zustand|
